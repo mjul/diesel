@@ -1,0 +1,16 @@
+﻿using System;
+
+namespace Diesel
+{
+    public class PropertyDeclaration
+    {
+        public string Name { get; private set; }
+        public Type Type { get; private set; }
+
+        public PropertyDeclaration(string name, Type type)
+        {
+            Name = name;
+            Type = type;
+        }
+    }
+}
