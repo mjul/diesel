@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Generated;
 using NUnit.Framework;
 using Test.Diesel.TestHelpers;
 
@@ -21,7 +22,7 @@ namespace Test.Diesel
             const string first = "Alice";
             const string last = "von Lastname";
 
-            var actual = new Generated.ImportEmployeeCommand(number, first, last);
+            var actual = new ImportEmployeeCommand(number, first, last);
 
             Assert.That(actual.EmployeeNumber, Is.EqualTo(number));
             Assert.That(actual.FirstName, Is.EqualTo(first));
@@ -35,21 +36,21 @@ namespace Test.Diesel
             const string first = "Alice";
             const string last = "von Lastname";
 
-            var a = new Generated.ImportEmployeeCommand(number, first, last);
-            var b = new Generated.ImportEmployeeCommand(number, first, last);
-            var c = new Generated.ImportEmployeeCommand(number, first, last);
+            var a = new ImportEmployeeCommand(number, first, last);
+            var b = new ImportEmployeeCommand(number, first, last);
+            var c = new ImportEmployeeCommand(number, first, last);
 
-            var otherEmployeeNumber = new Generated.ImportEmployeeCommand(number+1, first, last);
-            var otherFirstName = new Generated.ImportEmployeeCommand(number, first + "x", last);
-            var otherFirstNameNull = new Generated.ImportEmployeeCommand(number, null, last);
-            var otherLastName = new Generated.ImportEmployeeCommand(number, first, last+ "x");
-            var otherLastNameNull = new Generated.ImportEmployeeCommand(number, first, null);
+            var otherEmployeeNumber = new ImportEmployeeCommand(number + 1, first, last);
+            var otherFirstName = new ImportEmployeeCommand(number, first + "x", last);
+            var otherFirstNameNull = new ImportEmployeeCommand(number, null, last);
+            var otherLastName = new ImportEmployeeCommand(number, first, last + "x");
+            var otherLastNameNull = new ImportEmployeeCommand(number, first, null);
 
             EqualityTesting.TestEqualsAndGetHashCode(a, b, c,
                 otherEmployeeNumber, otherFirstName, otherFirstNameNull,
                 otherLastName, otherLastNameNull);
 
-            EqualityTesting.TestEqualityOperators(a, b, c, 
+            EqualityTesting.TestEqualityOperators(a, b, c,
                 otherEmployeeNumber, otherFirstName, otherFirstNameNull,
                 otherLastName, otherLastNameNull);
         }

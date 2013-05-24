@@ -34,6 +34,10 @@ namespace Diesel
             var ns = new CodeNamespace(declaration.Name);
             ns.Imports.Add(new CodeNamespaceImport("System"));
             unit.Namespaces.Add(ns);
+            foreach (var valuetypeDeclaration in declaration.Declarations)
+            {
+                AddValueType(ns, valuetypeDeclaration);
+            }
             return unit;
         }
 

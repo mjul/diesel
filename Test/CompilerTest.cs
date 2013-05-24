@@ -2,6 +2,7 @@
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.IO;
+using System.Reflection;
 using Diesel;
 using NUnit.Framework;
 
@@ -11,7 +12,7 @@ namespace Test.Diesel
     public class CompilerTest
     {
         [Test]
-        public void ValueType_ValidDeclaration_ShouldParse()
+        public void ValueType_ValidDeclaration_ShouldCompile()
         {
             var actual = Compiler.Compile(new ValueTypeDeclaration("EmployeeNumber", typeof(int)));
             Assert.That(actual, Is.Not.Null);
@@ -20,7 +21,7 @@ namespace Test.Diesel
         }
 
         [Test]
-        public void CommandDeclaration_ValidDeclaration_ShouldParse()
+        public void CommandDeclaration_ValidDeclaration_ShouldCompile()
         {
             var actual = Compiler.Compile(new CommandDeclaration("ImportEmployeeCommand", new[]
                 {
@@ -30,6 +31,21 @@ namespace Test.Diesel
                 }));
             Assert.That(actual, Is.Not.Null);
             var source = CompileToSource(actual);
+            Assert.That(source, Is.StringContaining("class ImportEmployeeCommand"));
+            Console.WriteLine(source);
+        }
+
+        [Test]
+        public void Namespace_ValidDeclaration_ShouldCompile()
+        {
+            var ns = typeof (CompilerTest).Namespace + ".Generated";
+            var actual = Compiler.Compile(
+                new Namespace(ns, new [] { new ValueTypeDeclaration("EmployeeNumber", typeof(int))}));
+            Assert.That(actual, Is.Not.Null);
+            var source = CompileToSource(actual);
+            var expectedNamespaceDeclaration = String.Format("namespace {0}", ns);
+            Assert.That(source, Is.StringContaining(expectedNamespaceDeclaration));
+            Assert.That(source, Is.StringContaining("struct EmployeeNumber"));
             Console.WriteLine(source);
         }
 
