@@ -45,7 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DieselCompilerTest.cs" />
+    <Compile Include="DieselCompilerIntegrationTest.cs" />
     <Compile Include="GeneratedCommandTest.cs" />
     <Compile Include="GeneratedValueTypeTest.cs" />
     <Compile Include="Generated\GenerateExamples.cs">
@@ -55,6 +55,7 @@
     </Compile>
     <Compile Include="GrammarTest.cs" />
     <Compile Include="CodeDomGeneratorTest.cs" />
+    <Compile Include="ModelTransformationsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestHelpers\EqualityTesting.cs" />
   </ItemGroup>

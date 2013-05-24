@@ -8,6 +8,15 @@ namespace Diesel
 {
     public class CodeDomGenerator
     {
+        public static CodeCompileUnit Compile(AbstractSyntaxTree ast)
+        {
+            var unit = new CodeCompileUnit();
+            Add(unit, ast);
+            return unit;
+        }
+
+
+        [Obsolete]
         public static CodeCompileUnit Compile(ValueTypeDeclaration declaration)
         {
             var unit = new CodeCompileUnit();
@@ -18,6 +27,7 @@ namespace Diesel
             return unit;
         }
 
+        [Obsolete]
         public static CodeCompileUnit Compile(CommandDeclaration declaration)
         {
             var unit = new CodeCompileUnit();
@@ -28,17 +38,31 @@ namespace Diesel
             return unit;
         }
 
+        [Obsolete]
         public static CodeCompileUnit Compile(Namespace declaration)
         {
             var unit = new CodeCompileUnit();
+            Add(unit, declaration);
+            return unit;
+        }
+
+        private static void Add(CodeCompileUnit codeCompileUnit, AbstractSyntaxTree ast)
+        {
+            foreach (var ns in ast.Namespaces)
+            {
+                Add(codeCompileUnit, ns);                
+            }
+        }
+
+        private static void Add(CodeCompileUnit codeCompileUnit, Namespace declaration)
+        {
             var ns = new CodeNamespace(declaration.Name);
             ns.Imports.Add(new CodeNamespaceImport("System"));
-            unit.Namespaces.Add(ns);
-            foreach (var valuetypeDeclaration in declaration.Declarations)
+            codeCompileUnit.Namespaces.Add(ns);
+            foreach (var typeDeclaration in declaration.Declarations)
             {
-                Add(ns, (dynamic)valuetypeDeclaration);
+                Add(ns, (dynamic)typeDeclaration);
             }
-            return unit;
         }
 
         private static void Add(CodeNamespace ns, CommandDeclaration declaration)

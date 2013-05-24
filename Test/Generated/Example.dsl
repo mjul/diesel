@@ -1,3 +1,3 @@
 ﻿(namespace Test.Diesel.Generated 
-	(defvaluetype EmployeeNumber int) 
+	(defvaluetype EmployeeNumber)
 	(defcommand ImportEmployeeCommand (int EmployeeNumber, string FirstName, string LastName)))

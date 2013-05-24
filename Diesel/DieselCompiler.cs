@@ -15,8 +15,9 @@ namespace Diesel
 
         public static string Compile(string modelSourceCode)
         {
-            var ast = Grammar.Namespace.Token().Parse(modelSourceCode);
-            return CompileToSource(CodeDomGenerator.Compile(ast), GetCSharpProvider());
+            var ast = Grammar.AbstractSyntaxTree.Parse(modelSourceCode);
+            var transformed = ModelTransformations.ApplyDefaults(ast);
+            return CompileToSource(CodeDomGenerator.Compile(transformed), GetCSharpProvider());
         }
 
         public static string CompileToSource(CodeCompileUnit actual, CodeDomProvider codeDomProvider)

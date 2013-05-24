@@ -9,15 +9,18 @@ using NUnit.Framework;
 namespace Test.Diesel
 {
     [TestFixture]
-    public class DieselCompilerTest
+    public class DieselCompilerIntegrationTest
     {
         [Test]
         public void Compile_ValidModelSource_ShouldGenerateSourceCode()
         {
-            const string modelSource = @"(namespace Test (defvaluetype EmployeeNumber int))";
+            const string modelSource = 
+                @"(namespace Employees (defvaluetype EmployeeNumber int))" +
+                @"(namespace Clients (defvaluetype ClientId))";
             var sourceCode = DieselCompiler.Compile(modelSource);
             Assert.That(sourceCode, Is.Not.Empty);
-            Assert.That(sourceCode, Is.StringContaining("namespace Test"));
+            Assert.That(sourceCode, Is.StringContaining("namespace Employees"));
+            Assert.That(sourceCode, Is.StringContaining("namespace Clients"));
         }
     }
 }

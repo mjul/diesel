@@ -189,5 +189,16 @@ namespace Test.Diesel
             Assert.That(actual.Name, Is.EqualTo(expectedName));
             Assert.That(actual.Type, Is.EqualTo(expectedType));
         }
+
+        [Test]
+        public void AbstractSyntaxTree_MultipleNamespaces_ShouldParseNamespaces()
+        {
+            var actual =
+                Grammar.AbstractSyntaxTree.Parse(
+                    "(namespace Foo (defvaluetype FooId)) "+
+                    "(namespace Bar (defcommand Say (string message)))");
+            Assert.That(actual, Is.Not.Null);
+            Assert.That(actual.Namespaces.Count(), Is.EqualTo(2));
+        }
     }
 }

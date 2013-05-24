@@ -5,7 +5,7 @@ using Sprache;
 
 namespace Diesel
 {
-    public class Grammar
+    public static class Grammar
     {
         public static Parser<string> Identifier =
             (from first in Parse.Letter.Once().Text()
@@ -90,5 +90,9 @@ namespace Diesel
                from close in Parse.Char(')')
                let declarationList = typeDeclarations.GetOrElse(new List<ITypeDeclaration>())
                select new Namespace(name, declarationList));
+
+        public static Parser<AbstractSyntaxTree> AbstractSyntaxTree
+            = (from namespaces in Namespace.Token().Many().Token()
+               select new AbstractSyntaxTree(namespaces));
     }
 }

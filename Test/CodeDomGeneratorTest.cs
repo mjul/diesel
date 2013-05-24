@@ -46,15 +46,7 @@ namespace Test.Diesel
         [Test]
         public void Namespace_ValidDeclarationWithCommandDeclaration_ShouldCompile()
         {
-            var declarations = new[]
-                {
-                    new CommandDeclaration("ImportEmployeeCommand", new[]
-                        {
-                            new PropertyDeclaration("EmployeeNumber", typeof (int)),
-                            new PropertyDeclaration("FirstName", typeof (String)),
-                            new PropertyDeclaration("LastName", typeof (String))
-                        })
-                };
+            var declarations = new[] { CreateImportEmployeeCommandDeclaration() };
             AssertNamespaceCompiledCodeShouldContain(declarations, "class ImportEmployeeCommand");
         }
 
@@ -63,17 +55,51 @@ namespace Test.Diesel
         {
             var declarations = new ITypeDeclaration[]
                 {
-                    new CommandDeclaration("ImportEmployeeCommand", new[]
-                        {
-                            new PropertyDeclaration("EmployeeNumber", typeof (int)),
-                            new PropertyDeclaration("FirstName", typeof (String)),
-                            new PropertyDeclaration("LastName", typeof (String))
-                        }),
-                    new ValueTypeDeclaration("EmployeeNumber", typeof(int))
+                    CreateImportEmployeeCommandDeclaration(),
+                    CreateEmployeeNumberValueTypeDeclaration()
                 };
 
             AssertNamespaceCompiledCodeShouldContain(declarations, 
                 "class ImportEmployeeCommand", "struct EmployeeNumber");
+        }
+
+        private static ValueTypeDeclaration CreateEmployeeNumberValueTypeDeclaration()
+        {
+            return new ValueTypeDeclaration("EmployeeNumber", typeof(int));
+        }
+
+        private static CommandDeclaration CreateImportEmployeeCommandDeclaration()
+        {
+            return new CommandDeclaration("ImportEmployeeCommand", new[]
+                {
+                    new PropertyDeclaration("EmployeeNumber", typeof (int)),
+                    new PropertyDeclaration("FirstName", typeof (String)),
+                    new PropertyDeclaration("LastName", typeof (String))
+                });
+        }
+
+
+        [Test]
+        public void AbstractSyntaxTree_ValidDeclarationWithMultipleDeclarations_ShouldCompile()
+        {
+            var ast = new AbstractSyntaxTree(new Namespace[]
+                {
+                    new Namespace("Employees.Commands", new[] {CreateImportEmployeeCommandDeclaration()}),
+                    new Namespace("Employees.Model", new[] {CreateEmployeeNumberValueTypeDeclaration()}),
+                });
+
+            var dom = CodeDomGenerator.Compile(ast);
+            var source = CompileToSource(dom);
+
+            var expectedSnippets = new[]
+                {
+                    "namespace Employees.Commands",
+                    "namespace Employees.Model",
+                    "class ImportEmployeeCommand", 
+                    "struct EmployeeNumber"
+                };
+
+            Array.ForEach(expectedSnippets, (x=> Assert.That(source, Is.StringContaining(x))));
         }
 
 
