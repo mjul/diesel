@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Diesel
 {
-    public class Compiler
+    public class CodeDomGenerator
     {
         public static CodeCompileUnit Compile(ValueTypeDeclaration declaration)
         {

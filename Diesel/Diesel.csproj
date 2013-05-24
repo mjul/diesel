@@ -49,7 +49,7 @@
     <Compile Include="Namespace.cs" />
     <Compile Include="PropertyDeclaration.cs" />
     <Compile Include="ValueTypeDeclaration.cs" />
-    <Compile Include="Compiler.cs" />
+    <Compile Include="CodeDomGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

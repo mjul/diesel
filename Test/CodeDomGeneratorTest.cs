@@ -10,12 +10,12 @@ using NUnit.Framework;
 namespace Test.Diesel
 {
     [TestFixture]
-    public class CompilerTest
+    public class CodeDomGeneratorTest
     {
         [Test]
         public void ValueType_ValidDeclaration_ShouldCompile()
         {
-            var actual = Compiler.Compile(new ValueTypeDeclaration("EmployeeNumber", typeof(int)));
+            var actual = CodeDomGenerator.Compile(new ValueTypeDeclaration("EmployeeNumber", typeof(int)));
             Assert.That(actual, Is.Not.Null);
             var source = CompileToSource(actual);
             Console.WriteLine(source);
@@ -24,7 +24,7 @@ namespace Test.Diesel
         [Test]
         public void CommandDeclaration_ValidDeclaration_ShouldCompile()
         {
-            var actual = Compiler.Compile(new CommandDeclaration("ImportEmployeeCommand", new[]
+            var actual = CodeDomGenerator.Compile(new CommandDeclaration("ImportEmployeeCommand", new[]
                 {
                     new PropertyDeclaration("EmployeeNumber", typeof(int)), 
                     new PropertyDeclaration("FirstName", typeof(String)), 
@@ -80,8 +80,8 @@ namespace Test.Diesel
         private static void AssertNamespaceCompiledCodeShouldContain(IEnumerable<ITypeDeclaration> declarations, 
             params string[] expectedTypeDeclarations)
         {
-            var ns = typeof (CompilerTest).Namespace + ".Generated";
-            var actual = Compiler.Compile(new Namespace(ns, declarations));
+            var ns = typeof (CodeDomGeneratorTest).Namespace + ".Generated";
+            var actual = CodeDomGenerator.Compile(new Namespace(ns, declarations));
             Assert.That(actual, Is.Not.Null);
             
             var source = CompileToSource(actual);
