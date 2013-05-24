@@ -2,7 +2,7 @@
 
 namespace Diesel
 {
-    public class CommandDeclaration
+    public class CommandDeclaration : ITypeDeclaration
     {
         public string Name { get; private set; }
         public IEnumerable<PropertyDeclaration> Properties { get; private set; }

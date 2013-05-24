@@ -2,7 +2,7 @@
 
 namespace Diesel
 {
-    public class ValueTypeDeclaration 
+    public class ValueTypeDeclaration : ITypeDeclaration
     {
         public ValueTypeDeclaration(string name, Type type)
         {

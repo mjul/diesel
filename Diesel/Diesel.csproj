@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="CommandDeclaration.cs" />
     <Compile Include="Grammar.cs" />
+    <Compile Include="ITypeDeclaration.cs" />
     <Compile Include="Namespace.cs" />
     <Compile Include="PropertyDeclaration.cs" />
     <Compile Include="ValueTypeDeclaration.cs" />

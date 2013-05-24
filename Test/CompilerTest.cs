@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Diesel;
@@ -36,16 +37,62 @@ namespace Test.Diesel
         }
 
         [Test]
-        public void Namespace_ValidDeclaration_ShouldCompile()
+        public void Namespace_ValidDeclarationWithValueTypeDeclaration_ShouldCompile()
+        {
+            var declarations = new[] { new ValueTypeDeclaration("EmployeeNumber", typeof(int)) };
+            AssertNamespaceCompiledCodeShouldContain(declarations, "struct EmployeeNumber");
+        }
+
+        [Test]
+        public void Namespace_ValidDeclarationWithCommandDeclaration_ShouldCompile()
+        {
+            var declarations = new[]
+                {
+                    new CommandDeclaration("ImportEmployeeCommand", new[]
+                        {
+                            new PropertyDeclaration("EmployeeNumber", typeof (int)),
+                            new PropertyDeclaration("FirstName", typeof (String)),
+                            new PropertyDeclaration("LastName", typeof (String))
+                        })
+                };
+            AssertNamespaceCompiledCodeShouldContain(declarations, "class ImportEmployeeCommand");
+        }
+
+        [Test]
+        public void Namespace_ValidDeclarationWithMultipleDeclarations_ShouldCompile()
+        {
+            var declarations = new ITypeDeclaration[]
+                {
+                    new CommandDeclaration("ImportEmployeeCommand", new[]
+                        {
+                            new PropertyDeclaration("EmployeeNumber", typeof (int)),
+                            new PropertyDeclaration("FirstName", typeof (String)),
+                            new PropertyDeclaration("LastName", typeof (String))
+                        }),
+                    new ValueTypeDeclaration("EmployeeNumber", typeof(int))
+                };
+
+            AssertNamespaceCompiledCodeShouldContain(declarations, 
+                "class ImportEmployeeCommand", "struct EmployeeNumber");
+        }
+
+
+        private static void AssertNamespaceCompiledCodeShouldContain(IEnumerable<ITypeDeclaration> declarations, 
+            params string[] expectedTypeDeclarations)
         {
             var ns = typeof (CompilerTest).Namespace + ".Generated";
-            var actual = Compiler.Compile(
-                new Namespace(ns, new [] { new ValueTypeDeclaration("EmployeeNumber", typeof(int))}));
+            var actual = Compiler.Compile(new Namespace(ns, declarations));
             Assert.That(actual, Is.Not.Null);
+            
             var source = CompileToSource(actual);
+            
             var expectedNamespaceDeclaration = String.Format("namespace {0}", ns);
             Assert.That(source, Is.StringContaining(expectedNamespaceDeclaration));
-            Assert.That(source, Is.StringContaining("struct EmployeeNumber"));
+            
+            foreach (var expected in expectedTypeDeclarations)
+            {
+                Assert.That(source, Is.StringContaining(expected));
+            }
             Console.WriteLine(source);
         }
 

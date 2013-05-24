@@ -14,7 +14,7 @@ namespace Diesel
             var ns = new CodeNamespace("Generated");
             unit.Namespaces.Add(ns);
             ns.Imports.Add(new CodeNamespaceImport("System"));
-            AddValueType(ns, declaration);
+            Add(ns, declaration);
             return unit;
         }
 
@@ -24,7 +24,7 @@ namespace Diesel
             var ns = new CodeNamespace("Generated");
             unit.Namespaces.Add(ns);
             ns.Imports.Add(new CodeNamespaceImport("System"));
-            AddCommand(ns, declaration);
+            Add(ns, declaration);
             return unit;
         }
 
@@ -36,16 +36,21 @@ namespace Diesel
             unit.Namespaces.Add(ns);
             foreach (var valuetypeDeclaration in declaration.Declarations)
             {
-                AddValueType(ns, valuetypeDeclaration);
+                Add(ns, (dynamic)valuetypeDeclaration);
             }
             return unit;
         }
 
-
-        private static void AddCommand(CodeNamespace ns, CommandDeclaration declaration)
+        private static void Add(CodeNamespace ns, CommandDeclaration declaration)
         {
             ns.Types.Add(CreateCommandDeclaration(declaration));
         }
+
+        private static void Add(CodeNamespace ns, ValueTypeDeclaration declaration)
+        {
+            ns.Types.Add(CreateValueTypeDeclaration(declaration));
+        }
+
 
         private static CodeTypeDeclaration CreateCommandDeclaration(CommandDeclaration declaration)
         {
@@ -58,12 +63,6 @@ namespace Diesel
             result.Members.AddRange(CreateEqualsOverloadingUsingEqualityOperator(declaration.Name, isValueType, declaration.Properties));
             result.Members.AddRange(CreateGetHashCode(declaration.Properties));
             return result;
-        }
-
-
-        private static void AddValueType(CodeNamespace ns, ValueTypeDeclaration declaration)
-        {
-            ns.Types.Add(CreateValueTypeDeclaration(declaration));
         }
 
         private static CodeTypeDeclaration CreateValueTypeDeclaration(ValueTypeDeclaration declaration)
