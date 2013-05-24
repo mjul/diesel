@@ -6,7 +6,7 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ assembly name="EnvDTE" #>
 <#@ import namespace="EnvDTE" #>
-<#@ assembly name="$(SolutionDir)Diesel\bin\Debug\Diesel.dll" #>
+<#@ assembly name="$(SolutionDir)Diesel\$(OutDir)Diesel.dll" #>
 <#@ import namespace="Diesel" #>
 <#@ output extension=".cs" #>
 <# 
