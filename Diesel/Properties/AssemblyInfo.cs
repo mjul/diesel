@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Diesel")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Diesel is a DSL toolkit for .NET code generation for DDD")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Martin Jul")]
 [assembly: AssemblyProduct("Diesel")]
 [assembly: AssemblyCopyright("Copyright ©  2013 Martin Jul (www.mjul.com)")]
 [assembly: AssemblyTrademark("")]
