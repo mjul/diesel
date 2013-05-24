@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandDeclaration.cs" />
+    <Compile Include="DieselCompiler.cs" />
     <Compile Include="Grammar.cs" />
     <Compile Include="ITypeDeclaration.cs" />
     <Compile Include="Namespace.cs" />
