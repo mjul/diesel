@@ -47,15 +47,26 @@
   <ItemGroup>
     <Compile Include="GeneratedCommandTest.cs" />
     <Compile Include="GeneratedValueTypeTest.cs" />
-    <Compile Include="Generated\EmployeeNumber.cs" />
-    <Compile Include="Generated\ImportEmployeeCommand.cs" />
+    <Compile Include="Generated\GenerateExamples.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GenerateExamples.tt</DependentUpon>
+    </Compile>
     <Compile Include="GrammarTest.cs" />
     <Compile Include="CompilerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestHelpers\EqualityTesting.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Generated\Example.dsl" />
+    <None Include="Generated\GenerateExamples.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>GenerateExamples.cs</LastGenOutput>
+    </None>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Diesel\Diesel.csproj">

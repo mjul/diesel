@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Generated;
 using NUnit.Framework;
+using Test.Diesel.Generated;
 using Test.Diesel.TestHelpers;
 
 namespace Test.Diesel

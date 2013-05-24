@@ -103,12 +103,43 @@ namespace Test.Diesel
         }
 
         [Test]
-        public void Namespace_WithDeclarations_ShouldParseDeclarations()
+        public void Namespace_WithSingleDeclaration_ShouldParseDeclaration()
         {
             var actual = Grammar.Namespace.Parse("(namespace Administration.Client" +
                                                  "  (defvaluetype ClientId))");
             Assert.That(actual.Name, Is.EqualTo("Administration.Client"));
+            var singleDeclaration = actual.Declarations.Single();
+            Assert.That(singleDeclaration.Name, Is.EqualTo("ClientId"));
+            Assert.That(singleDeclaration, Is.TypeOf<ValueTypeDeclaration>());
         }
+
+        [Test]
+        public void Namespace_WithMultipleDeclarations_ShouldParseDeclarations()
+        {
+            var actual = Grammar.Namespace.Parse("(namespace Administration.Client" +
+                                                 "  (defvaluetype ClientId)" +
+                                                 "  (defvaluetype UserId)" +
+                                                 ")");
+
+            
+            var clientIdDeclaration = actual.Declarations.SingleOrDefault(x => x.Name == "ClientId");
+            var userIdDeclaration = actual.Declarations.SingleOrDefault(x => x.Name == "UserId");
+            Assert.That(clientIdDeclaration, Is.Not.Null);
+            Assert.That(userIdDeclaration, Is.Not.Null);
+        }
+
+        [Test]
+        public void Namespace_DeclarationsOfMultipleTypes_ShouldParseDeclarations()
+        {
+            var actual = Grammar.Namespace.Parse("(namespace Administration.Client" +
+                                                 "  (defvaluetype ClientId)" +
+                                                 "  (defcommand ImportEmployee (int EmployeeNumber, string FirstName, string LastName))" +
+                                                 ")");
+            Assert.That(actual, Is.Not.Null);
+            Assert.That(actual.Declarations.Single(x => x.Name == "ClientId"), Is.Not.Null);
+            Assert.That(actual.Declarations.Single(x => x.Name == "ImportEmployee"), Is.Not.Null);
+        }
+
 
         [Test]
         public void CommandDeclaration_ValidDeclaration_ShouldParseName()

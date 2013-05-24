@@ -52,18 +52,6 @@ namespace Diesel
                         .Select(parts => String.Join(".", parts))
                         .Named("Namespace Identifier");
 
-        public static Parser<Namespace> Namespace
-            = (from open in Parse.Char('(')
-               from declaration in Parse.String("namespace").Token()
-               from name in NamespaceIdentifier.Named("namespace name").Token()
-               from valueTypeDeclarations in ValueTypeDeclaration
-                                .Token()
-                                .AtLeastOnce()
-                                .Optional()
-               from close in Parse.Char(')')
-               let declarationList = valueTypeDeclarations.GetOrElse(new List<ValueTypeDeclaration>())
-               select new Namespace(name, declarationList));
-
         public static Parser<PropertyDeclaration> PropertyDeclaration
             = (from type in PrimitiveType.Named("Property type").Token()
                from name in Identifier.Named("Property name").Token()
@@ -87,5 +75,20 @@ namespace Diesel
                from close in Parse.Char(')').Named("closing parenthesis for defcommand")
                select new CommandDeclaration(name, optionalPropertyDeclarations.GetOrElse(new List<PropertyDeclaration>())));
 
+        private static Parser<ITypeDeclaration> TypeDeclaration
+            = from declaration in ValueTypeDeclaration.Or<ITypeDeclaration>(CommandDeclaration)
+              select declaration;
+
+        public static Parser<Namespace> Namespace
+            = (from open in Parse.Char('(')
+               from declaration in Parse.String("namespace").Token()
+               from name in NamespaceIdentifier.Named("namespace name").Token()
+               from typeDeclarations in TypeDeclaration
+                   .Token()
+                   .AtLeastOnce()
+                   .Optional()
+               from close in Parse.Char(')')
+               let declarationList = typeDeclarations.GetOrElse(new List<ITypeDeclaration>())
+               select new Namespace(name, declarationList));
     }
 }

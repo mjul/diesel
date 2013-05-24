@@ -96,20 +96,9 @@ namespace Test.Diesel
             Console.WriteLine(source);
         }
 
-
-        private static string CompileToSource(CodeCompileUnit actual)
+        private static string CompileToSource(CodeCompileUnit codeCompileUnit)
         {
-            var output = new StringWriter();
-            var provider = CSharpProvider();
-            provider.GenerateCodeFromCompileUnit(actual, output,
-                                                 new CodeGeneratorOptions() { BlankLinesBetweenMembers = true });
-            var source = output.GetStringBuilder().ToString();
-            return source;
-        }
-
-        private static CodeDomProvider CSharpProvider()
-        {
-            return CodeDomProvider.CreateProvider("CSharp");
+            return DieselCompiler.CompileToSource(codeCompileUnit, DieselCompiler.GetCSharpProvider());
         }
     }
 }
