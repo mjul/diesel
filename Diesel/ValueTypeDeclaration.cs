@@ -12,5 +12,10 @@ namespace Diesel
 
         public String Name { get; private set; }
         public Type ValueType { get; private set; }
+
+        public ValueTypeDeclaration OverrideValueType(Type type)
+        {
+            return new ValueTypeDeclaration(Name, type);
+        }
     }
 }

@@ -43,11 +43,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractSyntaxTree.cs" />
+    <Compile Include="Transformations\ApplyDefaults.cs" />
     <Compile Include="CommandDeclaration.cs" />
     <Compile Include="DieselCompiler.cs" />
     <Compile Include="Grammar.cs" />
     <Compile Include="ITypeDeclaration.cs" />
-    <Compile Include="ModelTransformations.cs" />
+    <Compile Include="Transformations\ModelTransformation.cs" />
+    <Compile Include="Transformations\ModelTransformations.cs" />
     <Compile Include="Namespace.cs" />
     <Compile Include="PropertyDeclaration.cs" />
     <Compile Include="ValueTypeDeclaration.cs" />

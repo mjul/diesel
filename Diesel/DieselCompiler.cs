@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Diesel.Transformations;
 using Sprache;
 
 namespace Diesel
@@ -16,7 +17,7 @@ namespace Diesel
         public static string Compile(string modelSourceCode)
         {
             var ast = Grammar.AbstractSyntaxTree.Parse(modelSourceCode);
-            var transformed = ModelTransformations.ApplyDefaults(ast);
+            var transformed = ModelTransformations.Transform(ast);
             return CompileToSource(CodeDomGenerator.Compile(transformed), GetCSharpProvider());
         }
 

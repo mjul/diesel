@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Linq;
 using Diesel;
+using Diesel.Transformations;
 using NUnit.Framework;
 
-namespace Test.Diesel
+namespace Test.Diesel.Transformations
 {
     [TestFixture]
-    public class ModelTransformationsTest
+    public class ApplyDefaultsTest
     {
         [Test]
         public void ApplyDefaults_ValueTypeDeclarationWithNullType_ShouldSetTypeToInt32()
@@ -36,7 +37,7 @@ namespace Test.Diesel
                                       new[] {valueTypeDeclaration})
                     });
 
-            var actual = ModelTransformations.ApplyDefaults(input);
+            var actual = ModelTransformations.Transform(input);
             var actualDeclaration = (ValueTypeDeclaration) actual.Namespaces.Single().Declarations.Single();
             return actualDeclaration;
         }
