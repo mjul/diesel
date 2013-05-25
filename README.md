@@ -22,20 +22,20 @@ with a single method call: `DieselCompiler.Compile(modelSource)`.
 
 Now use it
 
-
-	// value types automatically get a constructor setting their value
+```csharp
+    // value types automatically get a constructor setting their value
     var founderNumber = new EmployeeNumber(1);
-	var lateHireNumber = new EmployeeNumber(100);
-	
-	// You get free value equality and equality operators 
-	var isFounder = (employee.EmployeeNumber == founderNumber);
+    var lateHireNumber = new EmployeeNumber(100);
+    
+    // You get free value equality and equality operators 
+    var isFounder = (employee.EmployeeNumber == founderNumber);
 
-	// Commands are classes and have a constructor that assigns all properties
-	var command = new ImportEmployeeCommand(1, "Martin", "Jul");
-	
-	// Properties exposing these are automatically added to the class:
-	var firstName = command.FirstName;
-
+    // Commands are classes and have a constructor that assigns all properties
+    var command = new ImportEmployeeCommand(1, "Martin", "Jul");
+    
+    // Properties exposing these are automatically added to the class:
+    var firstName = command.FirstName;
+```
 
   
 # Defining simple value types
