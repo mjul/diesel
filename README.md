@@ -90,10 +90,8 @@ Distributed under the MIT License. See the LICENSE.txt file for details.
 ## Dependencies
 
 ### Sprache Parser Combinator
-This library use the [Sprache](https://github.com/sprache/Sprache) parser combinator to easily 
-parse the model language.
-
-It rocks! 
+This library uses the amazing [Sprache](https://github.com/sprache/Sprache) parser combinator to easily 
+parse the model language. It rocks! 
 
 Sprache has the following license:
 
