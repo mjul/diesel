@@ -15,37 +15,6 @@ namespace Diesel
             return unit;
         }
 
-
-        [Obsolete]
-        public static CodeCompileUnit Compile(ValueTypeDeclaration declaration)
-        {
-            var unit = new CodeCompileUnit();
-            var ns = new CodeNamespace("Generated");
-            unit.Namespaces.Add(ns);
-            ns.Imports.Add(new CodeNamespaceImport("System"));
-            Add(ns, declaration);
-            return unit;
-        }
-
-        [Obsolete]
-        public static CodeCompileUnit Compile(CommandDeclaration declaration)
-        {
-            var unit = new CodeCompileUnit();
-            var ns = new CodeNamespace("Generated");
-            unit.Namespaces.Add(ns);
-            ns.Imports.Add(new CodeNamespaceImport("System"));
-            Add(ns, declaration);
-            return unit;
-        }
-
-        [Obsolete]
-        public static CodeCompileUnit Compile(Namespace declaration)
-        {
-            var unit = new CodeCompileUnit();
-            Add(unit, declaration);
-            return unit;
-        }
-
         private static void Add(CodeCompileUnit codeCompileUnit, AbstractSyntaxTree ast)
         {
             foreach (var ns in ast.Namespaces)

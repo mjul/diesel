@@ -15,25 +15,36 @@ namespace Test.Diesel
         [Test]
         public void ValueType_ValidDeclaration_ShouldCompile()
         {
-            var actual = CodeDomGenerator.Compile(new ValueTypeDeclaration("EmployeeNumber", typeof(int)));
+            var model = CreateAbstractSyntaxTreeWith(new ValueTypeDeclaration("EmployeeNumber", typeof (int)));
+            var actual = CodeDomGenerator.Compile(model);
             Assert.That(actual, Is.Not.Null);
             var source = CompileToSource(actual);
+            Assert.That(source, Is.StringContaining("struct EmployeeNumber"));
             Console.WriteLine(source);
         }
 
         [Test]
         public void CommandDeclaration_ValidDeclaration_ShouldCompile()
         {
-            var actual = CodeDomGenerator.Compile(new CommandDeclaration("ImportEmployeeCommand", new[]
+            var commandDeclaration = new CommandDeclaration("ImportEmployeeCommand", 
+                new[]
                 {
-                    new PropertyDeclaration("EmployeeNumber", typeof(int)), 
-                    new PropertyDeclaration("FirstName", typeof(String)), 
-                    new PropertyDeclaration("LastName", typeof(String))
-                }));
+                    new PropertyDeclaration("EmployeeNumber", typeof (int)), 
+                    new PropertyDeclaration("FirstName", typeof (String)), 
+                    new PropertyDeclaration("LastName", typeof (String))
+                });
+            var model = CreateAbstractSyntaxTreeWith(commandDeclaration);
+            var actual = CodeDomGenerator.Compile(model);
             Assert.That(actual, Is.Not.Null);
             var source = CompileToSource(actual);
             Assert.That(source, Is.StringContaining("class ImportEmployeeCommand"));
             Console.WriteLine(source);
+        }
+
+        private AbstractSyntaxTree CreateAbstractSyntaxTreeWith(ITypeDeclaration typeDeclaration)
+        {
+            var ns = typeof (CodeDomGeneratorTest).Namespace + ".Generated";
+            return new AbstractSyntaxTree(new[] { new Namespace(ns, new[] { typeDeclaration}) });
         }
 
         [Test]
@@ -82,7 +93,7 @@ namespace Test.Diesel
         [Test]
         public void AbstractSyntaxTree_ValidDeclarationWithMultipleDeclarations_ShouldCompile()
         {
-            var ast = new AbstractSyntaxTree(new Namespace[]
+            var ast = new AbstractSyntaxTree(new[]
                 {
                     new Namespace("Employees.Commands", new[] {CreateImportEmployeeCommandDeclaration()}),
                     new Namespace("Employees.Model", new[] {CreateEmployeeNumberValueTypeDeclaration()}),
@@ -107,7 +118,8 @@ namespace Test.Diesel
             params string[] expectedTypeDeclarations)
         {
             var ns = typeof (CodeDomGeneratorTest).Namespace + ".Generated";
-            var actual = CodeDomGenerator.Compile(new Namespace(ns, declarations));
+            var model = new AbstractSyntaxTree(new[] {new Namespace(ns, declarations)});
+            var actual = CodeDomGenerator.Compile(model);
             Assert.That(actual, Is.Not.Null);
             
             var source = CompileToSource(actual);
