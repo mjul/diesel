@@ -48,14 +48,7 @@ namespace Diesel
         private static CodeTypeDeclaration CreateCommandDeclaration(CommandDeclaration declaration)
         {
             const bool isValueType = false;
-            var result = new CodeTypeDeclaration(declaration.Name) { IsStruct = isValueType, IsPartial = true, IsClass = !isValueType };
-            result.BaseTypes.AddRange(CreateImplementsIEquatableOf(declaration.Name));
-            result.Members.AddRange(CreateConstructorAssigningBackingFieldsFor(declaration.Properties));
-            result.Members.AddRange(CreateReadOnlyProperties(declaration.Properties));
-            result.Members.AddRange(CreateEqualityOperatorOverloading(declaration.Name, isValueType));
-            result.Members.AddRange(CreateEqualsOverloadingUsingEqualityOperator(declaration.Name, isValueType, declaration.Properties));
-            result.Members.AddRange(CreateGetHashCode(declaration.Properties));
-            return result;
+            return CreateTypeWithValueSemantics(isValueType, declaration.Name, declaration.Properties.ToArray());
         }
 
         private static CodeTypeDeclaration CreateValueTypeDeclaration(ValueTypeDeclaration declaration)
@@ -64,16 +57,32 @@ namespace Diesel
             var valueProperty = new PropertyDeclaration(valuePropertyName, declaration.ValueType);
             var properties = new[] { valueProperty };
             const bool isValueType = true;
-
-            var result = new CodeTypeDeclaration(declaration.Name) { IsStruct = isValueType, IsPartial = true, IsClass = !isValueType};
+            var result = CreateTypeWithValueSemantics(isValueType, declaration.Name, properties);
             result.CustomAttributes.Add(CreateDebuggerDisplayAttribute(String.Format("{{{0}}}", valuePropertyName)));
-            result.BaseTypes.AddRange(CreateImplementsIEquatableOf(declaration.Name));
-            result.Members.AddRange(CreateConstructorAssigningBackingFieldsFor(new[] {valueProperty}));
-            result.Members.AddRange(CreateReadOnlyProperties(properties));
-            result.Members.AddRange(CreateEqualityOperatorOverloading(declaration.Name, isValueType));
-            result.Members.AddRange(CreateGetHashCode(properties));
-            result.Members.AddRange(CreateEqualsOverloadingUsingEqualityOperator(declaration.Name, isValueType, properties));
             return result;
+        }
+
+        private static CodeTypeDeclaration CreateTypeWithValueSemantics(bool isValueType, string name, PropertyDeclaration[] properties)
+        {
+            var result = new CodeTypeDeclaration(name)
+                {
+                    IsStruct = isValueType,
+                    IsPartial = true,
+                    IsClass = !isValueType
+                };
+            result.CustomAttributes.Add(CreateAttribute(typeof (SerializableAttribute)));
+            result.BaseTypes.AddRange(CreateImplementsIEquatableOf(name));
+            result.Members.AddRange(CreateConstructorAssigningBackingFieldsFor(properties));
+            result.Members.AddRange(CreateReadOnlyProperties(properties));
+            result.Members.AddRange(CreateEqualityOperatorOverloading(name, isValueType));
+            result.Members.AddRange(CreateGetHashCode(properties));
+            result.Members.AddRange(CreateEqualsOverloadingUsingEqualityOperator(name, isValueType, properties));
+            return result;
+        }
+
+        private static CodeAttributeDeclaration CreateAttribute(Type type)
+        {
+            return new CodeAttributeDeclaration(new CodeTypeReference(type));
         }
 
         private static CodeTypeMember[] CreateConstructorAssigningBackingFieldsFor(

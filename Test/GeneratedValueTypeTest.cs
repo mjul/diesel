@@ -32,5 +32,19 @@ namespace Test.Diesel
 
             EqualityTesting.TestEqualityOperators(a, b, c, otherEmployeeNumber);
         }
+
+        [Test]
+        public void Instance_WhenSerialized_ShouldBeSerializable()
+        {
+            const int number = 1;
+            var actual = new Generated.EmployeeNumber(number);
+
+            var deserialized = SerializationTesting.SerializeDeserializeWithBinaryFormatter(actual);
+
+            Assert.That(deserialized, Is.EqualTo(actual));
+            Assert.That(actual.Value, Is.EqualTo(number));
+        }
+
+
     }
 }

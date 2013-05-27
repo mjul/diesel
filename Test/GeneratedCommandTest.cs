@@ -15,36 +15,32 @@ namespace Test.Diesel
         // Generate the class to test and place it in the Generated folder:
         // (defcommand ImportEmployeeCommand (int EmployeeNumber, string FirstName, string LastName))
 
+        private const int EmployeeNumber = 1;
+        private const string FirstName = "Alice";
+        private const string Lastname = "von Lastname";
+
         [Test]
         public void Constructor_WithAllValues_ShouldSetProperties()
         {
-            const int number = 1;
-            const string first = "Alice";
-            const string last = "von Lastname";
+            var actual = new ImportEmployeeCommand(EmployeeNumber, FirstName, Lastname);
 
-            var actual = new ImportEmployeeCommand(number, first, last);
-
-            Assert.That(actual.EmployeeNumber, Is.EqualTo(number));
-            Assert.That(actual.FirstName, Is.EqualTo(first));
-            Assert.That(actual.LastName, Is.EqualTo(last));
+            Assert.That(actual.EmployeeNumber, Is.EqualTo(EmployeeNumber));
+            Assert.That(actual.FirstName, Is.EqualTo(FirstName));
+            Assert.That(actual.LastName, Is.EqualTo(Lastname));
         }
 
         [Test]
         public void EqualsGetHashCodeAndEqualityOperators()
         {
-            const int number = 1;
-            const string first = "Alice";
-            const string last = "von Lastname";
+            var a = new ImportEmployeeCommand(EmployeeNumber, FirstName, Lastname);
+            var b = new ImportEmployeeCommand(EmployeeNumber, FirstName, Lastname);
+            var c = new ImportEmployeeCommand(EmployeeNumber, FirstName, Lastname);
 
-            var a = new ImportEmployeeCommand(number, first, last);
-            var b = new ImportEmployeeCommand(number, first, last);
-            var c = new ImportEmployeeCommand(number, first, last);
-
-            var otherEmployeeNumber = new ImportEmployeeCommand(number + 1, first, last);
-            var otherFirstName = new ImportEmployeeCommand(number, first + "x", last);
-            var otherFirstNameNull = new ImportEmployeeCommand(number, null, last);
-            var otherLastName = new ImportEmployeeCommand(number, first, last + "x");
-            var otherLastNameNull = new ImportEmployeeCommand(number, first, null);
+            var otherEmployeeNumber = new ImportEmployeeCommand(EmployeeNumber + 1, FirstName, Lastname);
+            var otherFirstName = new ImportEmployeeCommand(EmployeeNumber, FirstName + "x", Lastname);
+            var otherFirstNameNull = new ImportEmployeeCommand(EmployeeNumber, null, Lastname);
+            var otherLastName = new ImportEmployeeCommand(EmployeeNumber, FirstName, Lastname + "x");
+            var otherLastNameNull = new ImportEmployeeCommand(EmployeeNumber, FirstName, null);
 
             EqualityTesting.TestEqualsAndGetHashCode(a, b, c,
                 otherEmployeeNumber, otherFirstName, otherFirstNameNull,
@@ -53,6 +49,14 @@ namespace Test.Diesel
             EqualityTesting.TestEqualityOperators(a, b, c,
                 otherEmployeeNumber, otherFirstName, otherFirstNameNull,
                 otherLastName, otherLastNameNull);
+        }
+
+        [Test]
+        public void Instance_WhenSerialized_ShouldBeSerializable()
+        {
+            var instance = new ImportEmployeeCommand(EmployeeNumber, FirstName, Lastname);
+            var deserialized = SerializationTesting.SerializeDeserializeWithBinaryFormatter(instance);
+            Assert.That(deserialized, Is.EqualTo(instance));
         }
     }
 }

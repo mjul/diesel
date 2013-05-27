@@ -12,6 +12,7 @@ namespace Test.Diesel.Generated {
     using System;
     
     
+    [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerDisplayAttribute("{Value}")]
     public partial struct EmployeeNumber : System.IEquatable<EmployeeNumber> {
         
@@ -52,6 +53,7 @@ namespace Test.Diesel.Generated {
         }
     }
     
+    [System.SerializableAttribute()]
     public partial class ImportEmployeeCommand : System.IEquatable<ImportEmployeeCommand> {
         
         private int _employeeNumber;
@@ -98,6 +100,10 @@ namespace Test.Diesel.Generated {
             return (false == left.Equals(right));
         }
         
+        public override int GetHashCode() {
+            return (0 + this.EmployeeNumber.GetHashCode());
+        }
+        
         public bool Equals(ImportEmployeeCommand other) {
             return ((((false == object.ReferenceEquals(null, other)) 
                         && (this.EmployeeNumber == other.EmployeeNumber)) 
@@ -110,10 +116,6 @@ namespace Test.Diesel.Generated {
                 return false;
             }
             return (typeof(ImportEmployeeCommand).IsAssignableFrom(obj.GetType()) && this.Equals(((ImportEmployeeCommand)(obj))));
-        }
-        
-        public override int GetHashCode() {
-            return (0 + this.EmployeeNumber.GetHashCode());
         }
     }
 }
