@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -52,11 +54,28 @@ namespace Test.Diesel
         }
 
         [Test]
-        public void Instance_WhenSerialized_ShouldBeSerializable()
+        public void Instance_WhenSerializedWithBinaryFormatter_ShouldBeSerializable()
         {
             var instance = new ImportEmployeeCommand(EmployeeNumber, FirstName, Lastname);
             var deserialized = SerializationTesting.SerializeDeserializeWithBinaryFormatter(instance);
             Assert.That(deserialized, Is.EqualTo(instance));
+        }
+
+        [Test]
+        public void Properties_Attributes_ShouldHaveOrderedDataMemberAttributes()
+        {
+            var getterProperties = typeof (Generated.ImportEmployeeCommand).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty);
+            Assert.That(GetDataMemberAttributeOrderValue(getterProperties, "EmployeeNumber"), Is.EqualTo(1));
+            Assert.That(GetDataMemberAttributeOrderValue(getterProperties, "FirstName"), Is.EqualTo(2));
+            Assert.That(GetDataMemberAttributeOrderValue(getterProperties, "LastName"), Is.EqualTo(3));
+        }
+
+        private static object GetDataMemberAttributeOrderValue(PropertyInfo[] getProperties, string employeenumber)
+        {
+            var employeeNumber = getProperties.Single(p => p.Name == employeenumber);
+            var dataMemberAttribute = employeeNumber.CustomAttributes
+                                                    .Single(a => a.AttributeType == typeof (DataMemberAttribute));
+            return dataMemberAttribute.NamedArguments.Single(a => a.MemberName == "Order").TypedValue.Value;
         }
     }
 }

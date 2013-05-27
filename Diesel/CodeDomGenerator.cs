@@ -3,6 +3,7 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace Diesel
 {
@@ -48,7 +49,7 @@ namespace Diesel
         private static CodeTypeDeclaration CreateCommandDeclaration(CommandDeclaration declaration)
         {
             const bool isValueType = false;
-            return CreateTypeWithValueSemantics(isValueType, declaration.Name, declaration.Properties.ToArray());
+            return CreateTypeWithValueSemantics(isValueType, declaration.Name, declaration.Properties.ToArray(), true);
         }
 
         private static CodeTypeDeclaration CreateValueTypeDeclaration(ValueTypeDeclaration declaration)
@@ -57,12 +58,13 @@ namespace Diesel
             var valueProperty = new PropertyDeclaration(valuePropertyName, declaration.ValueType);
             var properties = new[] { valueProperty };
             const bool isValueType = true;
-            var result = CreateTypeWithValueSemantics(isValueType, declaration.Name, properties);
+            var result = CreateTypeWithValueSemantics(isValueType, declaration.Name, properties, false);
             result.CustomAttributes.Add(CreateDebuggerDisplayAttribute(String.Format("{{{0}}}", valuePropertyName)));
             return result;
         }
 
-        private static CodeTypeDeclaration CreateTypeWithValueSemantics(bool isValueType, string name, PropertyDeclaration[] properties)
+        private static CodeTypeDeclaration CreateTypeWithValueSemantics(bool isValueType, string name, 
+            PropertyDeclaration[] properties, bool isDataContract)
         {
             var result = new CodeTypeDeclaration(name)
                 {
@@ -70,20 +72,33 @@ namespace Diesel
                     IsPartial = true,
                     IsClass = !isValueType
                 };
+
+            var attributesByProperty = properties.ToDictionary(pd => pd, pd => new List<CodeAttributeDeclaration>());
+            if (isDataContract)
+            {
+                result.CustomAttributes.Add(CreateAttribute(typeof(DataContractAttribute)));
+                var dataMemberAttributeByProperty = Enumerable.Zip(
+                        properties,
+                        Enumerable.Range(1, properties.Length),
+                        (p, i) => new
+                            {
+                                Property = p,
+                                Attribute = new [] {CreateDataMemberAttribute(i)}.ToList()
+                            })
+                                                              .ToDictionary(pi => pi.Property, pi => pi.Attribute);
+                attributesByProperty = dataMemberAttributeByProperty;
+            }
+
             result.CustomAttributes.Add(CreateAttribute(typeof (SerializableAttribute)));
             result.BaseTypes.AddRange(CreateImplementsIEquatableOf(name));
             result.Members.AddRange(CreateConstructorAssigningBackingFieldsFor(properties));
-            result.Members.AddRange(CreateReadOnlyProperties(properties));
+            result.Members.AddRange(CreateReadOnlyProperties(properties, p => attributesByProperty[p]));
             result.Members.AddRange(CreateEqualityOperatorOverloading(name, isValueType));
             result.Members.AddRange(CreateGetHashCode(properties));
             result.Members.AddRange(CreateEqualsOverloadingUsingEqualityOperator(name, isValueType, properties));
             return result;
         }
 
-        private static CodeAttributeDeclaration CreateAttribute(Type type)
-        {
-            return new CodeAttributeDeclaration(new CodeTypeReference(type));
-        }
 
         private static CodeTypeMember[] CreateConstructorAssigningBackingFieldsFor(
             IEnumerable<PropertyDeclaration> properties)
@@ -214,11 +229,25 @@ namespace Diesel
                     });
         }
 
+
+        private static CodeAttributeDeclaration CreateAttribute(Type type)
+        {
+            return new CodeAttributeDeclaration(new CodeTypeReference(type));
+        }
+
         private static CodeAttributeDeclaration CreateDebuggerDisplayAttribute(string formatString)
         {
             return new CodeAttributeDeclaration(
                 new CodeTypeReference(typeof(System.Diagnostics.DebuggerDisplayAttribute)),
                 new[] { new CodeAttributeArgument(new CodePrimitiveExpression(formatString)) });
+        }
+
+        
+        private static CodeAttributeDeclaration CreateDataMemberAttribute(int order)
+        {
+            return new CodeAttributeDeclaration(
+                new CodeTypeReference(typeof(DataMemberAttribute)),
+                new[] { new CodeAttributeArgument("Order", new CodePrimitiveExpression(order)) });
         }
 
 
@@ -263,7 +292,7 @@ namespace Diesel
         /// <summary>
         /// Create a read-only property using a backing field with standard name.
         /// </summary>
-        private static CodeTypeMember[] CreateReadOnlyProperty(string name, Type valueType)
+        private static CodeTypeMember[] CreateReadOnlyProperty(string name, Type valueType, IEnumerable<CodeAttributeDeclaration> customAttributes)
         {
             var backingFieldName = BackingFieldName(name);
             var backingField = new CodeMemberField(valueType, backingFieldName);
@@ -272,6 +301,7 @@ namespace Diesel
                 Name = name,
                 Type = new CodeTypeReference(valueType),
                 Attributes = MemberAttributes.Public | MemberAttributes.Final,
+                CustomAttributes = new CodeAttributeDeclarationCollection(customAttributes.ToArray()),
                 GetStatements = 
                         { 
                             new CodeMethodReturnStatement( 
@@ -284,8 +314,14 @@ namespace Diesel
 
         private static CodeTypeMember[] CreateReadOnlyProperties(IEnumerable<PropertyDeclaration> propertyDeclarations)
         {
-            return propertyDeclarations.SelectMany(p => CreateReadOnlyProperty(p.Name, p.Type)).ToArray();
+            return CreateReadOnlyProperties(propertyDeclarations, p => new List<CodeAttributeDeclaration>());
         }
+
+        private static CodeTypeMember[] CreateReadOnlyProperties(IEnumerable<PropertyDeclaration> propertyDeclarations, Func<PropertyDeclaration, IEnumerable<CodeAttributeDeclaration>> generateAttributesFunction)
+        {
+            return propertyDeclarations.SelectMany(p => CreateReadOnlyProperty(p.Name, p.Type, generateAttributesFunction(p))).ToArray();
+        }
+
 
         private static CodeMemberMethod[] CreateSetMethodForProperty(string name, Type valueType)
         {

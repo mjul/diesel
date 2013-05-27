@@ -53,6 +53,7 @@ namespace Test.Diesel.Generated {
         }
     }
     
+    [System.Runtime.Serialization.DataContractAttribute()]
     [System.SerializableAttribute()]
     public partial class ImportEmployeeCommand : System.IEquatable<ImportEmployeeCommand> {
         
@@ -68,18 +69,21 @@ namespace Test.Diesel.Generated {
             this._lastName = lastName;
         }
         
+        [System.Runtime.Serialization.DataMemberAttribute(Order=1)]
         public int EmployeeNumber {
             get {
                 return this._employeeNumber;
             }
         }
         
+        [System.Runtime.Serialization.DataMemberAttribute(Order=2)]
         public string FirstName {
             get {
                 return this._firstName;
             }
         }
         
+        [System.Runtime.Serialization.DataMemberAttribute(Order=3)]
         public string LastName {
             get {
                 return this._lastName;

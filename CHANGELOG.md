@@ -1,7 +1,8 @@
 # Version 1.1
 
-* _defvaluetype_ adds serializability.
+* _defvaluetype_ adds binary serializability.
 * _defcommand_ adds serializability.
+* _defcommand_ now adds DataContract and DataMember attributes for XML serialization.
 
 
 # Version 1.0

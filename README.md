@@ -40,7 +40,7 @@ Now use it
   
 # Defining simple value types
 
-## `(defvaluetype <typename> <type?>)`
+`(defvaluetype <typename> <type?>)`
 
 When you compile the defvaluetype, Diesel generates .NET code in your language,
 building a struct with a Value property carrying, constructor to set it, and
@@ -56,7 +56,7 @@ The type is optional, it defaults to Int32.
 
 # Defining Commands
 
-## `(defcommand <typename> <properties>)`
+`(defcommand <typename> <properties>)`
 
 This defines a class representing the Command, the properties are assigned via a constructor
 and equals and equality operators are implemented with value semantics.
@@ -69,7 +69,7 @@ This generates a class with properties `EmployeeNumber`, `FirstName` and `LastNa
 
 
 # Defining Namespaces
-## `(namespace <name> <typedeclarations*>)`
+`(namespace <name> <typedeclarations*>)`
 
 A model consists of one or more namespace declarations.
 
