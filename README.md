@@ -4,6 +4,7 @@ Diesel provides a declarative language for generating code for your .NET project
 
 * Value Types - generate strong types for value types, e.g. EmployeeNumber instead of int.
 * Commands - generates classes for the Command DTOs
+* Application Services - generate an interface for all the commands accepted by the service.
 
 ## Example
 
@@ -158,7 +159,7 @@ To use it, you just need to add two files to your project: the model generator, 
 model source code in the Diesel language.
 
 Here is the `GenerateModel.tt`  T4 template from one project, you need to adapt the name 
-of your model file `MetaModel.diesel` and the absolute path's to `Sprache` and `Diesel`.
+of your model file `MetaModel.diesel` and the absolute paths to `Sprache` and `Diesel`.
 After this, you just "Run Custom Tool" on the T4 file to regenerate your model from the 
 Diesel specification in `MetaModel.diesel`.
 
@@ -171,7 +172,7 @@ Diesel specification in `MetaModel.diesel`.
     <#@ assembly name="EnvDTE" #>
     <#@ import namespace="EnvDTE" #>
     <#@ assembly name="$(SolutionDir)Packages\Sprache.1.10.0.28\lib\net40\Sprache.dll" #>
-    <#@ assembly name="$(SolutionDir)Packages\Diesel.1.1.1.0\lib\net45\Diesel.dll" #>
+    <#@ assembly name="$(SolutionDir)Packages\Diesel.1.2.0.0\lib\net45\Diesel.dll" #>
     <#@ import namespace="Diesel" #>
     <#@ output extension=".cs" #>
     <# 
