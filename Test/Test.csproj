@@ -47,6 +47,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeExamples.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CodeExamples.resx</DependentUpon>
+    </Compile>
     <Compile Include="DieselCompilerIntegrationTest.cs" />
     <Compile Include="GeneratedCommandTest.cs" />
     <Compile Include="GeneratedValueTypeTest.cs" />
@@ -63,6 +68,7 @@
     <Compile Include="TestHelpers\EqualityTesting.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Examples\DieselCompilerIntegrationTestCase.txt" />
     <None Include="Generated\Example.dsl" />
     <None Include="Generated\GenerateExamples.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -78,6 +84,12 @@
       <Project>{199CBCF0-8F94-477B-AC53-31381D6617B2}</Project>
       <Name>Diesel</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CodeExamples.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CodeExamples.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -45,6 +45,41 @@ namespace Diesel
             ns.Types.Add(CreateValueTypeDeclaration(declaration));
         }
 
+        private static void Add(CodeNamespace ns, ApplicationServiceDeclaration declaration)
+        {
+            ns.Types.Add(CreateApplicationServiceInterface(declaration));
+            foreach (var command in declaration.Commands)
+            {
+                Add(ns, command);
+            }
+        }
+
+        private static CodeTypeDeclaration CreateApplicationServiceInterface(ApplicationServiceDeclaration declaration)
+        {
+            var interfaceName = InterfaceNameFor(declaration.Name);
+            var result = new CodeTypeDeclaration(interfaceName)
+            {
+                IsPartial = true,
+                IsInterface = true,
+            };
+            // Define an "Execute" overload for each command
+            var commandHandlerMembers =
+                (from c in declaration.Commands
+                 select (CodeTypeMember) new CodeMemberMethod()
+                     {
+                         Attributes = MemberAttributes.Public,
+                         Name = "Execute",
+                         Parameters = {new CodeParameterDeclarationExpression(c.Name, "command")},
+                     }).ToArray();
+
+            result.Members.AddRange(commandHandlerMembers);
+            return result;
+        }
+
+        private static string InterfaceNameFor(string name)
+        {
+            return String.Format("I{0}", name);
+        }
 
         private static CodeTypeDeclaration CreateCommandDeclaration(CommandDeclaration declaration)
         {

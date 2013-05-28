@@ -24,5 +24,11 @@ namespace Diesel.Transformations
         {
             return ds;
         }
+
+        public virtual ApplicationServiceDeclaration Transform(ApplicationServiceDeclaration ds)
+        {
+            return ds;
+        }
+
     }
 }

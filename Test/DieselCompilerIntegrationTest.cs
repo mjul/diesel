@@ -14,13 +14,16 @@ namespace Test.Diesel
         [Test]
         public void Compile_ValidModelSource_ShouldGenerateSourceCode()
         {
-            const string modelSource = 
-                @"(namespace Employees (defvaluetype EmployeeNumber int))" +
-                @"(namespace Clients (defvaluetype ClientId))";
+            var modelSource = CodeExamples.DieselCompilerIntegrationTestCase;
             var sourceCode = DieselCompiler.Compile(modelSource);
+
             Assert.That(sourceCode, Is.Not.Empty);
             Assert.That(sourceCode, Is.StringContaining("namespace Employees"));
+            Assert.That(sourceCode, Is.StringContaining("struct EmployeeNumber"));
+            Assert.That(sourceCode, Is.StringContaining("class ChangeTelephoneNumber"));
             Assert.That(sourceCode, Is.StringContaining("namespace Clients"));
+            Assert.That(sourceCode, Is.StringContaining("interface IImportService"));
+            Assert.That(sourceCode, Is.StringContaining("class ImportClient"));
         }
     }
 }

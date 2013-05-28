@@ -1,0 +1,9 @@
+﻿(namespace Employees
+	(defvaluetype EmployeeNumber int)
+	(defcommand ChangeTelephoneNumber (string TelephoneNumber)))
+
+(namespace Clients 
+	(defvaluetype ClientId)
+	(defapplicationservice ImportService
+		(defcommand ImportClient (int ClientId, string Name))))
+

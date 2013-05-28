@@ -53,9 +53,14 @@ namespace Test.Diesel.Generated {
         }
     }
     
+    public partial interface IImportService {
+        
+        void Execute(ImportEmployee command);
+    }
+    
     [System.Runtime.Serialization.DataContractAttribute()]
     [System.SerializableAttribute()]
-    public partial class ImportEmployeeCommand : System.IEquatable<ImportEmployeeCommand> {
+    public partial class ImportEmployee : System.IEquatable<ImportEmployee> {
         
         private int _employeeNumber;
         
@@ -63,7 +68,7 @@ namespace Test.Diesel.Generated {
         
         private string _lastName;
         
-        public ImportEmployeeCommand(int employeeNumber, string firstName, string lastName) {
+        public ImportEmployee(int employeeNumber, string firstName, string lastName) {
             this._employeeNumber = employeeNumber;
             this._firstName = firstName;
             this._lastName = lastName;
@@ -90,14 +95,14 @@ namespace Test.Diesel.Generated {
             }
         }
         
-        public static bool operator ==(ImportEmployeeCommand left, ImportEmployeeCommand right) {
+        public static bool operator ==(ImportEmployee left, ImportEmployee right) {
             if (object.ReferenceEquals(null, left)) {
                 return object.ReferenceEquals(null, right);
             }
             return left.Equals(right);
         }
         
-        public static bool operator !=(ImportEmployeeCommand left, ImportEmployeeCommand right) {
+        public static bool operator !=(ImportEmployee left, ImportEmployee right) {
             if (object.ReferenceEquals(null, left)) {
                 return (false == object.ReferenceEquals(null, right));
             }
@@ -108,7 +113,7 @@ namespace Test.Diesel.Generated {
             return (0 + this.EmployeeNumber.GetHashCode());
         }
         
-        public bool Equals(ImportEmployeeCommand other) {
+        public bool Equals(ImportEmployee other) {
             return ((((false == object.ReferenceEquals(null, other)) 
                         && (this.EmployeeNumber == other.EmployeeNumber)) 
                         && (this.FirstName == other.FirstName)) 
@@ -119,7 +124,7 @@ namespace Test.Diesel.Generated {
             if (object.ReferenceEquals(null, obj)) {
                 return false;
             }
-            return (typeof(ImportEmployeeCommand).IsAssignableFrom(obj.GetType()) && this.Equals(((ImportEmployeeCommand)(obj))));
+            return (typeof(ImportEmployee).IsAssignableFrom(obj.GetType()) && this.Equals(((ImportEmployee)(obj))));
         }
     }
 }

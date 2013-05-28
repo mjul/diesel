@@ -200,5 +200,37 @@ namespace Test.Diesel
             Assert.That(actual, Is.Not.Null);
             Assert.That(actual.Namespaces.Count(), Is.EqualTo(2));
         }
+
+
+        [Test]
+        public void ApplicationServiceDeclaration_NoCommands_ShouldNotParse()
+        {
+            var result = Grammar.ApplicationServiceDeclaration.TryParse("(defapplicationservice ImportService)");
+            Assert.That(result.WasSuccessful, Is.False);
+        }
+
+        [Test]
+        public void ApplicationServiceDeclaration_SingleCommand_ShouldParseName()
+        {
+            var actual = Grammar.ApplicationServiceDeclaration.Parse("(defapplicationservice ImportService" +
+                                                                     "  (defcommand ImportEmployee (int EmployeeNumber, string Name)))");
+            Assert.That(actual.Name, Is.EqualTo("ImportService"));
+        }
+
+
+        [Test]
+        public void ApplicationServiceDeclaration_MultipleCommands_ShouldParseCommands()
+        {
+            var actual = Grammar.ApplicationServiceDeclaration.Parse("(defapplicationservice ImportService" +
+                                                                     "  (defcommand ImportEmployee (int EmployeeNumber, string Name))" +
+                                                                     "  (defcommand ImportClient (int ClientNumber, string Name))" +
+                                                                     ")");
+            var commands = actual.Commands.ToList();
+            Assert.That(commands.Count, Is.EqualTo(2));
+            Assert.That(commands[0].Name, Is.EqualTo("ImportEmployee"));
+            Assert.That(commands[1].Name, Is.EqualTo("ImportClient"));
+        }
+
+
     }
 }

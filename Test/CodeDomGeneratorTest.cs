@@ -95,6 +95,22 @@ namespace Test.Diesel
         }
 
         [Test]
+        public void Namespace_ValidDeclarationWithApplicationServiceDeclaration_ShouldCompile()
+        {
+            var declarations = new[] { CreateImportApplicationServiceDeclaration(CreateImportEmployeeCommandDeclaration()) };
+            AssertNamespaceCompiledCodeShouldContain(declarations, "interface IImportApplicationService");
+            AssertNamespaceCompiledCodeShouldContain(declarations, "class ImportEmployeeCommand");
+        }
+
+        private ITypeDeclaration CreateImportApplicationServiceDeclaration(CommandDeclaration commandDeclaration)
+        {
+            return new ApplicationServiceDeclaration("ImportApplicationService", new[]
+                {
+                    commandDeclaration
+                });
+        }
+
+        [Test]
         public void Namespace_ValidDeclarationWithMultipleDeclarations_ShouldCompile()
         {
             var declarations = new ITypeDeclaration[]

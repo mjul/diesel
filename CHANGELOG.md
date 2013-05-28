@@ -1,3 +1,7 @@
+# Version 1.2
+
+* _defapplicationservice_ added, generating a service interface for the associated commands.
+
 # Version 1.1
 
 * _defvaluetype_ adds binary serializability.

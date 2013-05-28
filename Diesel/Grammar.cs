@@ -75,9 +75,19 @@ namespace Diesel
                from close in Parse.Char(')').Named("closing parenthesis for defcommand")
                select new CommandDeclaration(name, optionalPropertyDeclarations.GetOrElse(new List<PropertyDeclaration>())));
 
+
+        public static Parser<ApplicationServiceDeclaration> ApplicationServiceDeclaration
+            = (from open in Parse.Char('(')
+               from declaration in Parse.String("defapplicationservice").Token()
+               from name in Identifier.Token()
+               from commandDeclarations in CommandDeclaration.Token().AtLeastOnce()
+               from close in Parse.Char(')')
+               select new ApplicationServiceDeclaration(name, commandDeclarations));
+
         private static Parser<ITypeDeclaration> TypeDeclaration
-            = from declaration in ValueTypeDeclaration.Or<ITypeDeclaration>(CommandDeclaration)
-              select declaration;
+            = ValueTypeDeclaration
+                .Or<ITypeDeclaration>(CommandDeclaration)
+                .Or<ITypeDeclaration>(ApplicationServiceDeclaration);
 
         public static Parser<Namespace> Namespace
             = (from open in Parse.Char('(')
@@ -94,5 +104,6 @@ namespace Diesel
         public static Parser<AbstractSyntaxTree> AbstractSyntaxTree
             = (from namespaces in Namespace.Token().Many().Token()
                select new AbstractSyntaxTree(namespaces));
+
     }
 }

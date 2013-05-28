@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractSyntaxTree.cs" />
+    <Compile Include="ApplicationServiceDeclaration.cs" />
     <Compile Include="Transformations\ApplyDefaults.cs" />
     <Compile Include="CommandDeclaration.cs" />
     <Compile Include="DieselCompiler.cs" />
