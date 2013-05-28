@@ -154,6 +154,33 @@ It can be used as a template for adding code generation to your own project.
 It depends on the Diesel compiler and its dependencies being available in binary form 
 in the project (assemblies).
 
+To use it, you just need to add two files to your project: the model generator, and the 
+model source code in the Diesel language.
+
+Here is the `GenerateModel.tt`  T4 template from one project, you need to adapt the name 
+of your model file `MetaModel.diesel` and the absolute path's to `Sprache` and `Diesel`.
+After this, you just "Run Custom Tool" on the T4 file to regenerate your model from the 
+Diesel specification in `MetaModel.diesel`.
+
+    <#@ template debug="false" hostspecific="true" language="C#" #>
+    <#@ assembly name="System.Core" #>
+    <#@ import namespace="System.IO" #>
+    <#@ import namespace="System.Linq" #>
+    <#@ import namespace="System.Text" #>
+    <#@ import namespace="System.Collections.Generic" #>
+    <#@ assembly name="EnvDTE" #>
+    <#@ import namespace="EnvDTE" #>
+    <#@ assembly name="$(SolutionDir)Packages\Sprache.1.10.0.28\lib\net40\Sprache.dll" #>
+    <#@ assembly name="$(SolutionDir)Packages\Diesel.1.1.1.0\lib\net45\Diesel.dll" #>
+    <#@ import namespace="Diesel" #>
+    <#@ output extension=".cs" #>
+    <# 
+        var model = this.Host.ResolvePath("MetaModel.diesel");
+        var source = File.ReadAllText(model);
+        var output = DieselCompiler.Compile(source);
+    #>
+    <#= output #>
+
 
 # License
 Copyright (C)2013 Martin Jul (www.mjul.com)
