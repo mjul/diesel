@@ -2,10 +2,11 @@
 
 Diesel provides a declarative language for generating code for your .NET projects.
 
-* Value Types - generate strong types for value types, e.g. EmployeeNumber instead of int.
-* Commands - generates classes for the Command DTOs
-* Application Services - generate an interface for all the commands accepted by the service.
+* __Value Types__ - generate strong types for value types, e.g. EmployeeNumber instead of int. 
+* __Commands__ - generates classes for the Command DTOs.
+* __Application Services__ - generate an interface for all the commands accepted by the service.
 
+Planned features include declarations for Value Objects, Aggregate Roots, Domain Events and Projections.
 
 ## Example
 
@@ -43,22 +44,34 @@ Now use it
 ```
 
   
-# Defining simple value types
+# Defining Simple Value Types
 
-    (defvaluetype <typename> <type?>)
+    (defvaluetype <typename>)
+    (defvaluetype <typename> <type>)
+    (defvaluetype <typename> <properties>)
 
-When you compile the defvaluetype, Diesel generates .NET code in your language,
-building a struct with a Value property carrying, constructor to set it, and
-equality operator overloads.
+When you compile the `defvaluetype`, Diesel generates .NET code in your language, 
+emitting a  value type (`struct` in C#) with the declared properties, 
+a constructor to set them and equality operator overloads to give it full value equality semantics.
 
+In the first two cases, where properties are not declared the property name is always `Value`.
 The type is optional, it defaults to Int32.
 
-### Example
+If multiple properties are desired, the list of properties and their types must be declared.
+
+
+### Examples
 
     (defvaluetype EmployeeNumber)
     (defvaluetype Amount Decimal)
+    (defvaluetype EmployeeName (string First, string Last))
 
-The first of these declarations yields a type with value semantics and equality operator overloads:
+The single-property declaration can also be written in the property list format, i.e. the `Amount` 
+type above can also be declared as `(defvaluetype Amound (Decimal Value))`.
+
+The code generation is straight-forward, for example, the declaration 
+`(defvaluetype EmployeeNumber)` yields a type with value semantics and
+equality operator overloads like this:
 
 ```csharp
 
