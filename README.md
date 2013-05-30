@@ -67,7 +67,7 @@ If multiple properties are desired, the list of properties and their types must 
     (defvaluetype EmployeeName (string First, string Last))
 
 The single-property declaration can also be written in the property list format, i.e. the `Amount` 
-type above can also be declared as `(defvaluetype Amound (Decimal Value))`.
+type above can also be declared as `(defvaluetype Amount (Decimal Value))`.
 
 The code generation is straight-forward, for example, the declaration 
 `(defvaluetype EmployeeNumber)` yields a type with value semantics and
