@@ -53,6 +53,97 @@ namespace Test.Diesel.Generated {
         }
     }
     
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerDisplayAttribute("{Value}")]
+    public partial struct EmailAddress : System.IEquatable<EmailAddress> {
+        
+        private string _value;
+        
+        public EmailAddress(string value) {
+            this._value = value;
+        }
+        
+        public string Value {
+            get {
+                return this._value;
+            }
+        }
+        
+        public static bool operator ==(EmailAddress left, EmailAddress right) {
+            return left.Equals(right);
+        }
+        
+        public static bool operator !=(EmailAddress left, EmailAddress right) {
+            return (false == left.Equals(right));
+        }
+        
+        public override int GetHashCode() {
+            return 0;
+        }
+        
+        public bool Equals(EmailAddress other) {
+            return (true 
+                        && (this.Value == other.Value));
+        }
+        
+        public override bool Equals(object obj) {
+            if (object.ReferenceEquals(null, obj)) {
+                return false;
+            }
+            return (typeof(EmailAddress).IsAssignableFrom(obj.GetType()) && this.Equals(((EmailAddress)(obj))));
+        }
+    }
+    
+    [System.SerializableAttribute()]
+    public partial struct EmployeeName : System.IEquatable<EmployeeName> {
+        
+        private string _firstName;
+        
+        private string _lastName;
+        
+        public EmployeeName(string firstName, string lastName) {
+            this._firstName = firstName;
+            this._lastName = lastName;
+        }
+        
+        public string FirstName {
+            get {
+                return this._firstName;
+            }
+        }
+        
+        public string LastName {
+            get {
+                return this._lastName;
+            }
+        }
+        
+        public static bool operator ==(EmployeeName left, EmployeeName right) {
+            return left.Equals(right);
+        }
+        
+        public static bool operator !=(EmployeeName left, EmployeeName right) {
+            return (false == left.Equals(right));
+        }
+        
+        public override int GetHashCode() {
+            return 0;
+        }
+        
+        public bool Equals(EmployeeName other) {
+            return ((true 
+                        && (this.FirstName == other.FirstName)) 
+                        && (this.LastName == other.LastName));
+        }
+        
+        public override bool Equals(object obj) {
+            if (object.ReferenceEquals(null, obj)) {
+                return false;
+            }
+            return (typeof(EmployeeName).IsAssignableFrom(obj.GetType()) && this.Equals(((EmployeeName)(obj))));
+        }
+    }
+    
     public partial interface IImportService {
         
         void Execute(ImportEmployee command);

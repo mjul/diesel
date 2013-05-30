@@ -1,21 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Diesel
 {
     public class ValueTypeDeclaration : ITypeDeclaration
     {
-        public ValueTypeDeclaration(string name, Type type)
+        public ValueTypeDeclaration(string name, IEnumerable<PropertyDeclaration> propertyDeclarations)
         {
             Name = name;
-            ValueType = type;
+            Properties = propertyDeclarations;
         }
 
         public String Name { get; private set; }
-        public Type ValueType { get; private set; }
+        public IEnumerable<PropertyDeclaration> Properties { get; private set; }
 
-        public ValueTypeDeclaration OverrideValueType(Type type)
+        public ValueTypeDeclaration ReplaceProperties(Func<PropertyDeclaration, PropertyDeclaration> function)
         {
-            return new ValueTypeDeclaration(Name, type);
+            return new ValueTypeDeclaration(Name, Properties.Select(function));
         }
     }
 }

@@ -24,6 +24,11 @@ namespace Test.Diesel
             Assert.That(sourceCode, Is.StringContaining("namespace Clients"));
             Assert.That(sourceCode, Is.StringContaining("interface IImportService"));
             Assert.That(sourceCode, Is.StringContaining("class ImportClient"));
+
+            Assert.That(sourceCode, Is.StringContaining("struct InvoiceNumber"));
+            Assert.That(sourceCode, Is.StringContaining("struct Amount"));
+            Assert.That(sourceCode, Is.StringContaining("struct LineItemNumber"));
+            Assert.That(sourceCode, Is.StringContaining("struct Name"));
         }
     }
 }

@@ -47,6 +47,5 @@ namespace Test.Diesel
             Assert.That(deserialized, Is.EqualTo(actual));
             Assert.That(actual.Value, Is.EqualTo(number));
         }
-
     }
 }

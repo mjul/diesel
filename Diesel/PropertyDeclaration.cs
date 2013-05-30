@@ -12,5 +12,15 @@ namespace Diesel
             Name = name;
             Type = type;
         }
+
+        public PropertyDeclaration OverrideType(Type type)
+        {
+            return new PropertyDeclaration(this.Name, type);
+        }
+
+        public PropertyDeclaration OverrideName(string name)
+        {
+            return new PropertyDeclaration(name, this.Type);
+        }
     }
 }

@@ -12,20 +12,34 @@ namespace Test.Diesel.Transformations
         [Test]
         public void ApplyDefaults_ValueTypeDeclarationWithNullType_ShouldSetTypeToInt32()
         {
-            var valueTypeDeclaration = new ValueTypeDeclaration("EmployeeNumber", null);
+            var valueTypeDeclaration = new ValueTypeDeclaration("EmployeeNumber",
+                                                                new[] {new PropertyDeclaration(null, null)});
             var actualDeclaration =
                 (ValueTypeDeclaration) ApplyDefaultsOnSingleDeclarationNamespace(valueTypeDeclaration);
             Assert.That(actualDeclaration.Name, Is.EqualTo(valueTypeDeclaration.Name));
-            Assert.That(actualDeclaration.ValueType, Is.EqualTo(typeof (Int32)));
+            Assert.That(actualDeclaration.Properties.Single().Type, Is.EqualTo(typeof (Int32)));
         }
 
         [Test]
-        public void ApplyDefaults_ValueTypeDeclarationWithType_ShouldNotModifyType()
+        public void ApplyDefaults_ValueTypeDeclarationWithNullPropertyName_ShouldSetPropertyName()
         {
-            var valueTypeDeclaration = new ValueTypeDeclaration("Name", typeof (string));
+            var valueTypeDeclaration = new ValueTypeDeclaration("EmployeeNumber",
+                                                                new[] { new PropertyDeclaration(null, null) });
+            var actualDeclaration =
+                (ValueTypeDeclaration)ApplyDefaultsOnSingleDeclarationNamespace(valueTypeDeclaration);
+            Assert.That(actualDeclaration.Properties.Single().Name, Is.EqualTo("Value"));
+        }
+
+        [Test]
+        public void ApplyDefaults_ValueTypeDeclarationWithType_ShouldNotModifyNameOrType()
+        {
+            var valueTypeDeclaration = new ValueTypeDeclaration("Name",
+                                                                new[] {new PropertyDeclaration("FullName", typeof (string))});
             var actualDeclaration =
                 (ValueTypeDeclaration) ApplyDefaultsOnSingleDeclarationNamespace(valueTypeDeclaration);
-            Assert.That(actualDeclaration, Is.SameAs(valueTypeDeclaration));
+            var actualProperty = actualDeclaration.Properties.Single();
+            Assert.That(actualProperty.Name, Is.EqualTo("FullName"));
+            Assert.That(actualProperty.Type, Is.EqualTo(typeof (string)));
         }
 
         private static ITypeDeclaration ApplyDefaultsOnSingleDeclarationNamespace(ITypeDeclaration valueTypeDeclaration)
@@ -36,7 +50,6 @@ namespace Test.Diesel.Transformations
                         new Namespace("Test",
                                       new[] {valueTypeDeclaration})
                     });
-
             var actual = ModelTransformations.Transform(input);
             var actualDeclaration = (ValueTypeDeclaration) actual.Namespaces.Single().Declarations.Single();
             return actualDeclaration;

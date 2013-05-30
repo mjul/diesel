@@ -59,26 +59,63 @@ namespace Test.Diesel
         }
 
         [Test]
-        public void ValueTypeDeclaration_ValidDeclaration_ShouldParseName()
+        public void ValueTypeDeclaration_JustNameNoType_ShouldParseName()
         {
             var actual = Grammar.ValueTypeDeclaration.Parse("(defvaluetype EmployeeNumber)");
             Assert.That(actual.Name, Is.EqualTo("EmployeeNumber"));
         }
 
         [Test]
-        public void ValueTypeDeclaration_ValidDeclarationNoType_ShouldSetNoType()
+        public void ValueTypeDeclaration_JustNameNoType_ShouldNotSetPropertyName()
         {
             var actual = Grammar.ValueTypeDeclaration.Parse("(defvaluetype EmployeeNumber)");
-            Assert.That(actual.ValueType, Is.Null);
+            Assert.That(actual.Properties.Single().Name, Is.Null);
         }
 
         [Test]
-        public void ValueTypeDeclaration_ValidDeclarationWithExplicitType_ShouldSetType()
+        public void ValueTypeDeclaration_JustNameNoType_ShouldSetNoPropertyType()
+        {
+            var actual = Grammar.ValueTypeDeclaration.Parse("(defvaluetype EmployeeNumber)");
+            var actualProperty = actual.Properties.Single();
+            Assert.That(actualProperty.Type, Is.Null);
+        }
+
+        [Test]
+        public void ValueTypeDeclaration_NameAndExplicitType_ShouldSetType()
         {
             var actual = Grammar.ValueTypeDeclaration.Parse("(defvaluetype GradePointAverage Decimal)");
-            Assert.That(actual, Is.Not.Null);
-            Assert.That(actual.ValueType, Is.EqualTo(typeof(decimal)));
+            var actualProperty = actual.Properties.Single();
+            Assert.That(actualProperty.Type, Is.EqualTo(typeof(decimal)));
         }
+
+        [Test]
+        public void ValueTypeDeclaration_NameAndExplicitType_ShouldNotSetPropertyName()
+        {
+            var actual = Grammar.ValueTypeDeclaration.Parse("(defvaluetype GradePointAverage Decimal)");
+            var actualProperty = actual.Properties.Single();
+            Assert.That(actualProperty.Name, Is.Null);
+        }
+
+        [Test]
+        public void ValueTypeDeclaration_ComplexWithSingleProperty_ShouldSetNameAndType()
+        {
+            var actual = Grammar.ValueTypeDeclaration.Parse("(defvaluetype BookSize (int Pages))");
+            var actualProperty = actual.Properties.Single();
+            Assert.That(actualProperty.Name, Is.EqualTo("Pages"));
+            Assert.That(actualProperty.Type, Is.EqualTo(typeof(int)));
+        }
+
+        [Test]
+        public void ValueTypeDeclaration_ComplexWithMultipleProperties_ShouldSetNamesAndTypes()
+        {
+            var actual = Grammar.ValueTypeDeclaration.Parse("(defvaluetype BookSize (int Pages, int Chapters))");
+            var actualProperties = actual.Properties.ToList();
+            Assert.That(actualProperties[0].Name, Is.EqualTo("Pages"));
+            Assert.That(actualProperties[0].Type, Is.EqualTo(typeof(int)));
+            Assert.That(actualProperties[1].Name, Is.EqualTo("Chapters"));
+            Assert.That(actualProperties[1].Type, Is.EqualTo(typeof(int)));
+        }
+
 
         [Test]
         public void Namespace_SinglePartName_ShouldParse()

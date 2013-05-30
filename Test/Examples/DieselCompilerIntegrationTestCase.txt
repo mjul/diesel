@@ -7,3 +7,9 @@
 	(defapplicationservice ImportService
 		(defcommand ImportClient (int ClientId, string Name))))
 
+(namespace TestCases.Defvaluetype
+	(defvaluetype InvoiceNumber)
+	(defvaluetype Amount decimal)
+	(defvaluetype LineItemNumber (int Value))
+	(defvaluetype Name (string FirstName, string LastName)))
+

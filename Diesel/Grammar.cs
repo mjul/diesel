@@ -36,27 +36,11 @@ namespace Diesel
              select type)
             .Named("PrimitiveType");
 
-        public static Parser<ValueTypeDeclaration> ValueTypeDeclaration
-            = (from open in Parse.Char('(')
-               from declaration in Parse.String("defvaluetype").Token()
-               from name in Identifier.Token()
-               from optionalTypeDeclaration in PrimitiveType.Optional().Token()
-               from close in Parse.Char(')')
-               let valueType = optionalTypeDeclaration.GetOrDefault()
-               select new ValueTypeDeclaration(name, valueType))
-               .Named("ValueTypeDeclaration");
-
-        public static Parser<string> NamespaceIdentifier
-            = Identifier.Named("Namespace part")
-                        .DelimitedBy(Parse.Char('.'))
-                        .Select(parts => String.Join(".", parts))
-                        .Named("Namespace Identifier");
-
         public static Parser<PropertyDeclaration> PropertyDeclaration
             = (from type in PrimitiveType.Named("Property type").Token()
                from name in Identifier.Named("Property name").Token()
                select new PropertyDeclaration(name, type))
-               .Named("PropertyDeclartion ::= PrimitiveType NAME");
+                .Named("PropertyDeclartion ::= PrimitiveType NAME");
 
         public static Parser<IEnumerable<PropertyDeclaration>> PropertyDeclarations
             = (from open in Parse.Char('(')
@@ -66,6 +50,26 @@ namespace Diesel
                    .Token()
                from close in Parse.Char(')')
                select declarations.SelectMany(x => x));
+
+        public static Parser<ValueTypeDeclaration> ValueTypeDeclaration
+            = (from open in Parse.Char('(')
+               from declaration in Parse.String("defvaluetype").Token()
+               from name in Identifier.Token()
+               from properties in PropertyDeclarations.Optional().Token()
+               from optionalTypeDeclaration in PrimitiveType.Optional().Token()
+               from close in Parse.Char(')')
+               where !(properties.IsDefined && optionalTypeDeclaration.IsDefined)
+               let propertyDeclarations = properties.IsDefined
+                                ? properties.Get() 
+                                : new[] { new PropertyDeclaration(null, optionalTypeDeclaration.GetOrDefault()) }
+               select new ValueTypeDeclaration(name, propertyDeclarations))
+               .Named("ValueTypeDeclaration");
+
+        public static Parser<string> NamespaceIdentifier
+            = Identifier.Named("Namespace part")
+                        .DelimitedBy(Parse.Char('.'))
+                        .Select(parts => String.Join(".", parts))
+                        .Named("Namespace Identifier");
 
         public static Parser<CommandDeclaration> CommandDeclaration
             = (from open in Parse.Char('(')

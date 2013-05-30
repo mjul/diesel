@@ -15,7 +15,9 @@ namespace Test.Diesel
         [Test]
         public void ValueType_ValidDeclaration_ShouldCompile()
         {
-            var model = CreateAbstractSyntaxTreeWith(new ValueTypeDeclaration("EmployeeNumber", typeof (int)));
+            var model = CreateAbstractSyntaxTreeWith(
+                new ValueTypeDeclaration("EmployeeNumber",
+                                         new[] {new PropertyDeclaration("Value", typeof (int))}));
             var actual = CodeDomGenerator.Compile(model);
             Assert.That(actual, Is.Not.Null);
             var source = CompileToSource(actual);
@@ -24,9 +26,29 @@ namespace Test.Diesel
         }
 
         [Test]
+        public void ValueType_ValidDeclarationMultipleProperties_ShouldCompile()
+        {
+            var model = CreateAbstractSyntaxTreeWith(
+                new ValueTypeDeclaration("Point",
+                                         new[]
+                                             {
+                                                 new PropertyDeclaration("X", typeof (int)),
+                                                 new PropertyDeclaration("Y", typeof (int))
+                                             }));
+            var actual = CodeDomGenerator.Compile(model);
+            Assert.That(actual, Is.Not.Null);
+            var source = CompileToSource(actual);
+            Assert.That(source, Is.StringContaining("struct Point"));
+            Console.WriteLine(source);
+        }
+
+
+        [Test]
         public void ValueType_ValidDeclaration_ShouldNotHaveDataContractAttributes()
         {
-            var model = CreateAbstractSyntaxTreeWith(new ValueTypeDeclaration("EmployeeNumber", typeof(int)));
+            var model = CreateAbstractSyntaxTreeWith(
+                new ValueTypeDeclaration("EmployeeNumber",
+                                         new[] { new PropertyDeclaration("Value", typeof(int)) }));
             var actual = CodeDomGenerator.Compile(model);
             var source = CompileToSource(actual);
             Assert.That(source, Is.Not.StringContaining("DataContractAttribute"));
@@ -83,7 +105,11 @@ namespace Test.Diesel
         [Test]
         public void Namespace_ValidDeclarationWithValueTypeDeclaration_ShouldCompile()
         {
-            var declarations = new[] { new ValueTypeDeclaration("EmployeeNumber", typeof(int)) };
+            var declarations = new[]
+                {
+                    new ValueTypeDeclaration("EmployeeNumber",
+                                             new[] {new PropertyDeclaration("Value", typeof(int))})
+                };
             AssertNamespaceCompiledCodeShouldContain(declarations, "struct EmployeeNumber");
         }
 
@@ -125,7 +151,10 @@ namespace Test.Diesel
 
         private static ValueTypeDeclaration CreateEmployeeNumberValueTypeDeclaration()
         {
-            return new ValueTypeDeclaration("EmployeeNumber", typeof(int));
+            return new ValueTypeDeclaration("EmployeeNumber", new[]
+                {
+                    new PropertyDeclaration("Value", typeof (int))
+                });
         }
 
         private static CommandDeclaration CreateImportEmployeeCommandDeclaration()

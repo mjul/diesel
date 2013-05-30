@@ -89,12 +89,13 @@ namespace Diesel
 
         private static CodeTypeDeclaration CreateValueTypeDeclaration(ValueTypeDeclaration declaration)
         {
-            const string valuePropertyName = "Value";
-            var valueProperty = new PropertyDeclaration(valuePropertyName, declaration.ValueType);
-            var properties = new[] { valueProperty };
             const bool isValueType = true;
-            var result = CreateTypeWithValueSemantics(isValueType, declaration.Name, properties, false);
-            result.CustomAttributes.Add(CreateDebuggerDisplayAttribute(String.Format("{{{0}}}", valuePropertyName)));
+            var result = CreateTypeWithValueSemantics(isValueType, declaration.Name, declaration.Properties.ToArray(), false);
+            if (declaration.Properties.Count() == 1)
+            {
+                var displayTemplate = String.Format("{{{0}}}", declaration.Properties.Single().Name);
+                result.CustomAttributes.Add(CreateDebuggerDisplayAttribute(displayTemplate));
+            }
             return result;
         }
 
