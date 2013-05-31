@@ -2,7 +2,7 @@
 
 namespace Diesel.Parsing
 {
-    public class Namespace : TreeNode
+    public class Namespace : ITreeNode
     {
         public string Name { get; private set; }
         public IEnumerable<TypeDeclaration> Declarations;
@@ -13,7 +13,7 @@ namespace Diesel.Parsing
             Declarations = declarations;
         }
 
-        public override IEnumerable<TreeNode> Children
+        public IEnumerable<ITreeNode> Children
         {
             get { return Declarations; }
         }

@@ -14,7 +14,7 @@ namespace Diesel.Parsing
 
         public IEnumerable<PropertyDeclaration> Properties { get; private set; }
 
-        public override IEnumerable<TreeNode> Children
+        public override IEnumerable<ITreeNode> Children
         {
             get { return Properties; }
         }

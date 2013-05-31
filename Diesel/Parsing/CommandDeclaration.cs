@@ -12,7 +12,7 @@ namespace Diesel.Parsing
             Properties = properties;
         }
 
-        public override IEnumerable<TreeNode> Children
+        public override IEnumerable<ITreeNode> Children
         {
             get { return Properties; }
         }

@@ -2,12 +2,7 @@
 
 namespace Diesel.Parsing
 {
-    public abstract class TreeNode
-    {
-        public abstract IEnumerable<TreeNode> Children { get; }
-    }
-
-    public class AbstractSyntaxTree : TreeNode
+    public class AbstractSyntaxTree : ITreeNode
     {
         public IEnumerable<Namespace> Namespaces { get; private set; }
 
@@ -16,7 +11,7 @@ namespace Diesel.Parsing
             Namespaces = namespaces;
         }
 
-        public override IEnumerable<TreeNode> Children
+        public IEnumerable<ITreeNode> Children
         {
             get { return Namespaces; }
         }

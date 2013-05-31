@@ -48,6 +48,7 @@
     <Compile Include="CodeGeneration\ValueTypeGenerator.cs" />
     <Compile Include="Parsing\AbstractSyntaxTree.cs" />
     <Compile Include="Parsing\ApplicationServiceDeclaration.cs" />
+    <Compile Include="Parsing\ITreeNode.cs" />
     <Compile Include="Transformations\ApplyDefaults.cs" />
     <Compile Include="Parsing\CommandDeclaration.cs" />
     <Compile Include="DieselCompiler.cs" />

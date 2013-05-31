@@ -12,18 +12,19 @@ namespace Diesel.Parsing
             Commands = commands;
         }
 
-        public override IEnumerable<TreeNode> Children
+        public override IEnumerable<ITreeNode> Children
         {
             get { return Commands; }
         }
     }
 
-    public abstract class TypeDeclaration : TreeNode, ITypeDeclaration
+    public abstract class TypeDeclaration : ITypeDeclaration
     {
         public string Name { get; private set; }
         protected TypeDeclaration(string name)
         {
             Name = name;
         }
+        public abstract IEnumerable<ITreeNode> Children { get; }
     }
 }

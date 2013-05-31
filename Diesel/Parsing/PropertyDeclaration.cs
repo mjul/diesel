@@ -12,7 +12,7 @@ namespace Diesel.Parsing
             Type = type;
         }
 
-        public override IEnumerable<TreeNode> Children
+        public override IEnumerable<ITreeNode> Children
         {
             get { yield break; }
         }
