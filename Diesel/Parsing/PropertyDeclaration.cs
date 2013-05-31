@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Diesel
+namespace Diesel.Parsing
 {
     public class PropertyDeclaration
     {

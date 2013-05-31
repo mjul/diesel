@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Diesel
+namespace Diesel.Parsing
 {
     public class ValueTypeDeclaration : ITypeDeclaration
     {

@@ -52,12 +52,12 @@
     <Compile Include="Parsing\CommandDeclaration.cs" />
     <Compile Include="DieselCompiler.cs" />
     <Compile Include="Parsing\Grammar.cs" />
-    <Compile Include="ITypeDeclaration.cs" />
+    <Compile Include="Parsing\ITypeDeclaration.cs" />
     <Compile Include="Transformations\ModelTransformation.cs" />
     <Compile Include="Transformations\ModelTransformations.cs" />
     <Compile Include="Parsing\Namespace.cs" />
-    <Compile Include="PropertyDeclaration.cs" />
-    <Compile Include="ValueTypeDeclaration.cs" />
+    <Compile Include="Parsing\PropertyDeclaration.cs" />
+    <Compile Include="Parsing\ValueTypeDeclaration.cs" />
     <Compile Include="CodeGeneration\CodeDomGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

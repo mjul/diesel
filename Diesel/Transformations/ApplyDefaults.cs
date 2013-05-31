@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Diesel.Parsing;
 
 namespace Diesel.Transformations
 {
