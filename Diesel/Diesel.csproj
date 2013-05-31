@@ -49,6 +49,7 @@
     <Compile Include="Parsing\AbstractSyntaxTree.cs" />
     <Compile Include="Parsing\ApplicationServiceDeclaration.cs" />
     <Compile Include="Parsing\ITreeNode.cs" />
+    <Compile Include="Parsing\Symbol.cs" />
     <Compile Include="Transformations\ApplyDefaults.cs" />
     <Compile Include="Parsing\CommandDeclaration.cs" />
     <Compile Include="DieselCompiler.cs" />

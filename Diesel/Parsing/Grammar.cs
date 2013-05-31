@@ -7,11 +7,30 @@ namespace Diesel.Parsing
 {
     public static class Grammar
     {
+        
+        private static Parser<Char> Char(char c, string name) 
+        {
+            return Parse.Char(c).Named(name);
+        }
+
+        private static readonly Parser<Char> LeftParen = Char('(', "LeftParen");
+        private static readonly Parser<Char> RightParen = Char(')', "RightParen");
+        private static readonly Parser<Char> Letter = Parse.Letter;
+        private static readonly Parser<Char> LetterOrDigit = Parse.LetterOrDigit;
+        private static readonly Parser<Char> Comma = Char(',', "Comma");
+
+        private static Parser<Symbol> Symbol(string value)
+        {
+            return Parse.String(value).Text()
+                .Select(s => new Symbol(s))
+                .Named(String.Format("Symbol {0}", value));
+        }
+
         public static Parser<string> Identifier =
-            (from first in Parse.Letter.Once().Text()
-             from rest in Parse.LetterOrDigit.Many().Text()
+            (from first in Letter.Once().Text()
+             from rest in LetterOrDigit.Many().Text()
              select first + rest)
-            .Named("Identifier");
+                .Named("Identifier");
 
         private static Parser<Type> TypeName(string name, Type type)
         {
@@ -22,90 +41,103 @@ namespace Diesel.Parsing
 
         public static Parser<Type> PrimitiveType =
             (from type in TypeName("Int32", typeof (Int32))
-                             .Or(TypeName("String", typeof (String)))
-                             .Or(TypeName("Decimal", typeof (Decimal)))
-                             .Or(TypeName("Single", typeof (Single)))
-                             .Or(TypeName("Double", typeof (Double)))
-                             .Or(TypeName("Int64", typeof (Int64)))
-                             .Or(TypeName("int", typeof (Int32)))
-                             .Or(TypeName("string", typeof (String)))
-                             .Or(TypeName("decimal", typeof (Decimal)))
-                             .Or(TypeName("float", typeof (Single)))
-                             .Or(TypeName("double", typeof (Double)))
-                             .Or(TypeName("long", typeof (Int64)))
+                 .Or(TypeName("String", typeof (String)))
+                 .Or(TypeName("Decimal", typeof (Decimal)))
+                 .Or(TypeName("Single", typeof (Single)))
+                 .Or(TypeName("Double", typeof (Double)))
+                 .Or(TypeName("Int64", typeof (Int64)))
+                 .Or(TypeName("int", typeof (Int32)))
+                 .Or(TypeName("string", typeof (String)))
+                 .Or(TypeName("decimal", typeof (Decimal)))
+                 .Or(TypeName("float", typeof (Single)))
+                 .Or(TypeName("double", typeof (Double)))
+                 .Or(TypeName("long", typeof (Int64)))
              select type)
-            .Named("PrimitiveType");
+                .Named("PrimitiveType");
 
         public static Parser<PropertyDeclaration> PropertyDeclaration
             = (from type in PrimitiveType.Named("Property type").Token()
                from name in Identifier.Named("Property name").Token()
                select new PropertyDeclaration(name, type))
-                .Named("PropertyDeclartion ::= PrimitiveType NAME");
+                .Named("PropertyDeclartion");
 
-        public static Parser<IEnumerable<PropertyDeclaration>> PropertyDeclarations
-            = (from open in Parse.Char('(')
-               from declarations in PropertyDeclaration
-                   .Many()
-                   .DelimitedBy(Parse.Char(','))
-                   .Token()
-               from close in Parse.Char(')')
-               select declarations.SelectMany(x => x));
 
-        public static Parser<ValueTypeDeclaration> ValueTypeDeclaration
-            = (from open in Parse.Char('(')
-               from declaration in Parse.String("defvaluetype").Token()
+        private static Parser<IEnumerable<TElement>> SequenceOf<TElement,TDelimiter>(Parser<TElement> elementParser, Parser<TDelimiter> delimiterParser)
+        {
+            return (from element in elementParser
+                        .Many()
+                        .DelimitedBy(delimiterParser)
+                        .Token()
+                        .Contained(LeftParen, RightParen)
+                    select element.SelectMany(x => x));
+        }
+
+        private static readonly Parser<IEnumerable<PropertyDeclaration>> PropertyDeclarations
+            = SequenceOf(PropertyDeclaration, Comma)
+                .Named("PropertyDeclarations");
+
+
+        private static readonly Parser<ValueTypeDeclaration> SimpleValueTypeDeclaration
+            = (from declaration in Symbol("defvaluetype").Token()
                from name in Identifier.Token()
-               from properties in PropertyDeclarations.Optional().Token()
                from optionalTypeDeclaration in PrimitiveType.Optional().Token()
-               from close in Parse.Char(')')
-               where !(properties.IsDefined && optionalTypeDeclaration.IsDefined)
-               let propertyDeclarations = properties.IsDefined
-                                ? properties.Get() 
-                                : new[] { new PropertyDeclaration(null, optionalTypeDeclaration.GetOrDefault()) }
-               select new ValueTypeDeclaration(name, propertyDeclarations))
-               .Named("ValueTypeDeclaration");
+               let properties = new[] {new PropertyDeclaration(null, optionalTypeDeclaration.GetOrDefault())}
+               select new ValueTypeDeclaration(name, properties))
+                .Contained(LeftParen, RightParen)
+                .Named("SimpleValueTypeDeclaration");
 
-        public static Parser<string> NamespaceIdentifier
+        private static readonly Parser<ValueTypeDeclaration> ValueTypeDeclarationWithPropertyList
+            = (from declaration in Symbol("defvaluetype").Token()
+               from name in Identifier.Token()
+               from properties in PropertyDeclarations.Token()
+               select new ValueTypeDeclaration(name, properties))
+                .Contained(LeftParen, RightParen)
+                .Named("ValueTypeDeclarationWithPropertyList");
+
+        public static readonly Parser<ValueTypeDeclaration> ValueTypeDeclaration
+            = SimpleValueTypeDeclaration
+                .Or(ValueTypeDeclarationWithPropertyList)
+                .Named("ValueTypeDeclaration");
+
+        private static readonly Parser<string> NamespaceIdentifier
             = Identifier.Named("Namespace part")
                         .DelimitedBy(Parse.Char('.'))
                         .Select(parts => String.Join(".", parts))
-                        .Named("Namespace Identifier");
+                        .Named("NamespaceIdentifier");
 
-        public static Parser<CommandDeclaration> CommandDeclaration
-            = (from open in Parse.Char('(')
-               from declaration in Parse.String("defcommand").Token()
+
+        public static readonly Parser<CommandDeclaration> CommandDeclaration
+            = (from declaration in Symbol("defcommand").Token()
                from name in Identifier.Token()
                from optionalPropertyDeclarations in PropertyDeclarations.Optional()
-               from close in Parse.Char(')').Named("closing parenthesis for defcommand")
-               select new CommandDeclaration(name, optionalPropertyDeclarations.GetOrElse(new List<PropertyDeclaration>())));
+               select new CommandDeclaration(name, optionalPropertyDeclarations.GetOrElse(new PropertyDeclaration[] {})))
+                .Contained(LeftParen, RightParen)
+                .Named("CommandDeclaration");
 
-
-        public static Parser<ApplicationServiceDeclaration> ApplicationServiceDeclaration
-            = (from open in Parse.Char('(')
-               from declaration in Parse.String("defapplicationservice").Token()
+        public static readonly Parser<ApplicationServiceDeclaration> ApplicationServiceDeclaration
+            = (from declaration in Symbol("defapplicationservice").Token()
                from name in Identifier.Token()
                from commandDeclarations in CommandDeclaration.Token().AtLeastOnce()
-               from close in Parse.Char(')')
-               select new ApplicationServiceDeclaration(name, commandDeclarations));
+               select new ApplicationServiceDeclaration(name, commandDeclarations))
+                .Contained(LeftParen, RightParen);
 
-        private static Parser<TypeDeclaration> TypeDeclaration
+        private static readonly Parser<TypeDeclaration> TypeDeclaration
             = ValueTypeDeclaration
                 .Or<TypeDeclaration>(CommandDeclaration)
                 .Or<TypeDeclaration>(ApplicationServiceDeclaration);
 
-        public static Parser<Namespace> Namespace
-            = (from open in Parse.Char('(')
-               from declaration in Parse.String("namespace").Token()
+        public static readonly Parser<Namespace> Namespace
+            = (from declaration in Symbol("namespace").Token()
                from name in NamespaceIdentifier.Named("namespace name").Token()
                from typeDeclarations in TypeDeclaration
                    .Token()
                    .AtLeastOnce()
                    .Optional()
-               from close in Parse.Char(')')
                let declarationList = typeDeclarations.GetOrElse(new List<TypeDeclaration>())
-               select new Namespace(name, declarationList));
+               select new Namespace(name, declarationList))
+                .Contained(LeftParen, RightParen);
 
-        public static Parser<AbstractSyntaxTree> AbstractSyntaxTree
+        public static readonly Parser<AbstractSyntaxTree> AbstractSyntaxTree
             = (from namespaces in Namespace.Token().Many().Token()
                select new AbstractSyntaxTree(namespaces));
 
