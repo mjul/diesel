@@ -2,15 +2,19 @@
 
 namespace Diesel.Parsing
 {
-    public class CommandDeclaration : ITypeDeclaration
+    public class CommandDeclaration : TypeDeclaration
     {
-        public string Name { get; private set; }
         public IEnumerable<PropertyDeclaration> Properties { get; private set; }
 
-        public CommandDeclaration(string name, IEnumerable<PropertyDeclaration> properties)
+        public CommandDeclaration(string name, IEnumerable<PropertyDeclaration> properties) 
+            : base(name)
         {
-            Name = name;
             Properties = properties;
+        }
+
+        public override IEnumerable<TreeNode> Children
+        {
+            get { return Properties; }
         }
     }
 }

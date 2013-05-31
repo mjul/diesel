@@ -13,7 +13,7 @@ namespace Diesel.Transformations
         public virtual Namespace Transform(Namespace ns)
         {
             return new Namespace(ns.Name, ns.Declarations
-                                            .Select<ITypeDeclaration, ITypeDeclaration>(d => Transform((dynamic)d)));
+                                            .Select<TypeDeclaration, TypeDeclaration>(d => Transform((dynamic)d)));
         }
 
         public virtual ValueTypeDeclaration Transform(ValueTypeDeclaration ns)

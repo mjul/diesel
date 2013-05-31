@@ -88,10 +88,10 @@ namespace Diesel.Parsing
                from close in Parse.Char(')')
                select new ApplicationServiceDeclaration(name, commandDeclarations));
 
-        private static Parser<ITypeDeclaration> TypeDeclaration
+        private static Parser<TypeDeclaration> TypeDeclaration
             = ValueTypeDeclaration
-                .Or<ITypeDeclaration>(CommandDeclaration)
-                .Or<ITypeDeclaration>(ApplicationServiceDeclaration);
+                .Or<TypeDeclaration>(CommandDeclaration)
+                .Or<TypeDeclaration>(ApplicationServiceDeclaration);
 
         public static Parser<Namespace> Namespace
             = (from open in Parse.Char('(')
@@ -102,7 +102,7 @@ namespace Diesel.Parsing
                    .AtLeastOnce()
                    .Optional()
                from close in Parse.Char(')')
-               let declarationList = typeDeclarations.GetOrElse(new List<ITypeDeclaration>())
+               let declarationList = typeDeclarations.GetOrElse(new List<TypeDeclaration>())
                select new Namespace(name, declarationList));
 
         public static Parser<AbstractSyntaxTree> AbstractSyntaxTree

@@ -95,7 +95,7 @@ namespace Test.Diesel.CodeGeneration
         }
 
 
-        private AbstractSyntaxTree CreateAbstractSyntaxTreeWith(ITypeDeclaration typeDeclaration)
+        private AbstractSyntaxTree CreateAbstractSyntaxTreeWith(TypeDeclaration typeDeclaration)
         {
             var ns = typeof (CodeDomGeneratorTest).Namespace + ".Generated";
             return new AbstractSyntaxTree(new[] { new Namespace(ns, new[] { typeDeclaration}) });
@@ -127,7 +127,7 @@ namespace Test.Diesel.CodeGeneration
             AssertNamespaceCompiledCodeShouldContain(declarations, "class ImportEmployeeCommand");
         }
 
-        private ITypeDeclaration CreateImportApplicationServiceDeclaration(CommandDeclaration commandDeclaration)
+        private ApplicationServiceDeclaration CreateImportApplicationServiceDeclaration(CommandDeclaration commandDeclaration)
         {
             return new ApplicationServiceDeclaration("ImportApplicationService", new[]
                 {
@@ -138,7 +138,7 @@ namespace Test.Diesel.CodeGeneration
         [Test]
         public void Namespace_ValidDeclarationWithMultipleDeclarations_ShouldCompile()
         {
-            var declarations = new ITypeDeclaration[]
+            var declarations = new TypeDeclaration[]
                 {
                     CreateImportEmployeeCommandDeclaration(),
                     CreateEmployeeNumberValueTypeDeclaration()
@@ -191,7 +191,7 @@ namespace Test.Diesel.CodeGeneration
         }
 
 
-        private static void AssertNamespaceCompiledCodeShouldContain(IEnumerable<ITypeDeclaration> declarations, 
+        private static void AssertNamespaceCompiledCodeShouldContain(IEnumerable<TypeDeclaration> declarations, 
             params string[] expectedTypeDeclarations)
         {
             var ns = typeof (CodeDomGeneratorTest).Namespace + ".Generated";

@@ -1,26 +1,33 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Diesel.Parsing
 {
-    public class PropertyDeclaration
+    public class PropertyDeclaration : TypeDeclaration
     {
-        public string Name { get; private set; }
         public Type Type { get; private set; }
 
-        public PropertyDeclaration(string name, Type type)
+        public PropertyDeclaration(string name, Type type) : base(name)
         {
-            Name = name;
             Type = type;
         }
 
+        public override IEnumerable<TreeNode> Children
+        {
+            get { yield break; }
+        }
+
+        [Obsolete("Move to semantic model")]
         public PropertyDeclaration OverrideType(Type type)
         {
             return new PropertyDeclaration(this.Name, type);
         }
 
+        [Obsolete("Move to semantic model")]
         public PropertyDeclaration OverrideName(string name)
         {
             return new PropertyDeclaration(name, this.Type);
         }
+
     }
 }

@@ -43,7 +43,7 @@ namespace Test.Diesel.Transformations
             Assert.That(actualProperty.Type, Is.EqualTo(typeof (string)));
         }
 
-        private static ITypeDeclaration ApplyDefaultsOnSingleDeclarationNamespace(ITypeDeclaration valueTypeDeclaration)
+        private static ITypeDeclaration ApplyDefaultsOnSingleDeclarationNamespace(TypeDeclaration valueTypeDeclaration)
         {
             var input = new AbstractSyntaxTree(
                 new[]
