@@ -43,6 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeGeneration\ApplicationServiceGenerator.cs" />
+    <Compile Include="CodeGeneration\CommandGenerator.cs" />
+    <Compile Include="CodeGeneration\ValueTypeGenerator.cs" />
     <Compile Include="Parsing\AbstractSyntaxTree.cs" />
     <Compile Include="Parsing\ApplicationServiceDeclaration.cs" />
     <Compile Include="Transformations\ApplyDefaults.cs" />

@@ -147,6 +147,8 @@ namespace Test.Diesel.Generated {
     public partial interface IImportService {
         
         void Execute(ImportEmployee command);
+        
+        void Execute(ImportConsultant command);
     }
     
     [System.Runtime.Serialization.DataContractAttribute()]
@@ -216,6 +218,76 @@ namespace Test.Diesel.Generated {
                 return false;
             }
             return (typeof(ImportEmployee).IsAssignableFrom(obj.GetType()) && this.Equals(((ImportEmployee)(obj))));
+        }
+    }
+    
+    [System.Runtime.Serialization.DataContractAttribute()]
+    [System.SerializableAttribute()]
+    public partial class ImportConsultant : System.IEquatable<ImportConsultant> {
+        
+        private string _firstName;
+        
+        private string _lastName;
+        
+        private string _company;
+        
+        public ImportConsultant(string firstName, string lastName, string company) {
+            this._firstName = firstName;
+            this._lastName = lastName;
+            this._company = company;
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Order=1)]
+        public string FirstName {
+            get {
+                return this._firstName;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Order=2)]
+        public string LastName {
+            get {
+                return this._lastName;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Order=3)]
+        public string Company {
+            get {
+                return this._company;
+            }
+        }
+        
+        public static bool operator ==(ImportConsultant left, ImportConsultant right) {
+            if (object.ReferenceEquals(null, left)) {
+                return object.ReferenceEquals(null, right);
+            }
+            return left.Equals(right);
+        }
+        
+        public static bool operator !=(ImportConsultant left, ImportConsultant right) {
+            if (object.ReferenceEquals(null, left)) {
+                return (false == object.ReferenceEquals(null, right));
+            }
+            return (false == left.Equals(right));
+        }
+        
+        public override int GetHashCode() {
+            return 0;
+        }
+        
+        public bool Equals(ImportConsultant other) {
+            return ((((false == object.ReferenceEquals(null, other)) 
+                        && (this.FirstName == other.FirstName)) 
+                        && (this.LastName == other.LastName)) 
+                        && (this.Company == other.Company));
+        }
+        
+        public override bool Equals(object obj) {
+            if (object.ReferenceEquals(null, obj)) {
+                return false;
+            }
+            return (typeof(ImportConsultant).IsAssignableFrom(obj.GetType()) && this.Equals(((ImportConsultant)(obj))));
         }
     }
 }

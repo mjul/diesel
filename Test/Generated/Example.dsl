@@ -3,5 +3,6 @@
 	(defvaluetype EmailAddress string)
 	(defvaluetype EmployeeName (string FirstName, string LastName))
 	(defapplicationservice ImportService
-		(defcommand ImportEmployee (int EmployeeNumber, string FirstName, string LastName))))
+		(defcommand ImportEmployee (int EmployeeNumber, string FirstName, string LastName))
+		(defcommand ImportConsultant (string FirstName, string LastName, string Company))))
 

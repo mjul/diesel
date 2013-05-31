@@ -38,69 +38,25 @@ namespace Diesel.CodeGeneration
 
         private static void Add(CodeNamespace ns, CommandDeclaration declaration)
         {
-            ns.Types.Add(CreateCommandDeclaration(declaration));
+            ns.Types.Add(CommandGenerator.CreateCommandDeclaration(declaration));
         }
 
         private static void Add(CodeNamespace ns, ValueTypeDeclaration declaration)
         {
-            ns.Types.Add(CreateValueTypeDeclaration(declaration));
+            ns.Types.Add(ValueTypeGenerator.CreateValueTypeDeclaration(declaration));
         }
 
         private static void Add(CodeNamespace ns, ApplicationServiceDeclaration declaration)
         {
-            ns.Types.Add(CreateApplicationServiceInterface(declaration));
+            ns.Types.Add(ApplicationServiceGenerator.CreateApplicationServiceInterface(declaration));
             foreach (var command in declaration.Commands)
             {
                 Add(ns, command);
             }
         }
 
-        private static CodeTypeDeclaration CreateApplicationServiceInterface(ApplicationServiceDeclaration declaration)
-        {
-            var interfaceName = InterfaceNameFor(declaration.Name);
-            var result = new CodeTypeDeclaration(interfaceName)
-            {
-                IsPartial = true,
-                IsInterface = true,
-            };
-            // Define an "Execute" overload for each command
-            var commandHandlerMembers =
-                (from c in declaration.Commands
-                 select (CodeTypeMember) new CodeMemberMethod()
-                     {
-                         Attributes = MemberAttributes.Public,
-                         Name = "Execute",
-                         Parameters = {new CodeParameterDeclarationExpression(c.Name, "command")},
-                     }).ToArray();
 
-            result.Members.AddRange(commandHandlerMembers);
-            return result;
-        }
-
-        private static string InterfaceNameFor(string name)
-        {
-            return String.Format("I{0}", name);
-        }
-
-        private static CodeTypeDeclaration CreateCommandDeclaration(CommandDeclaration declaration)
-        {
-            const bool isValueType = false;
-            return CreateTypeWithValueSemantics(isValueType, declaration.Name, declaration.Properties.ToArray(), true);
-        }
-
-        private static CodeTypeDeclaration CreateValueTypeDeclaration(ValueTypeDeclaration declaration)
-        {
-            const bool isValueType = true;
-            var result = CreateTypeWithValueSemantics(isValueType, declaration.Name, declaration.Properties.ToArray(), false);
-            if (declaration.Properties.Count() == 1)
-            {
-                var displayTemplate = String.Format("{{{0}}}", declaration.Properties.Single().Name);
-                result.CustomAttributes.Add(CreateDebuggerDisplayAttribute(displayTemplate));
-            }
-            return result;
-        }
-
-        private static CodeTypeDeclaration CreateTypeWithValueSemantics(bool isValueType, string name, 
+        protected static CodeTypeDeclaration CreateTypeWithValueSemantics(bool isValueType, string name, 
             PropertyDeclaration[] properties, bool isDataContract)
         {
             var result = new CodeTypeDeclaration(name)
@@ -272,7 +228,7 @@ namespace Diesel.CodeGeneration
             return new CodeAttributeDeclaration(new CodeTypeReference(type));
         }
 
-        private static CodeAttributeDeclaration CreateDebuggerDisplayAttribute(string formatString)
+        protected static CodeAttributeDeclaration CreateDebuggerDisplayAttribute(string formatString)
         {
             return new CodeAttributeDeclaration(
                 new CodeTypeReference(typeof(System.Diagnostics.DebuggerDisplayAttribute)),
@@ -472,7 +428,6 @@ namespace Diesel.CodeGeneration
         }
 
 
-
         private static string CamelCase(string name)
         {
             var first = name[0].ToString(CultureInfo.InvariantCulture).ToLowerInvariant();
@@ -485,5 +440,9 @@ namespace Diesel.CodeGeneration
             return String.Format("_{0}", CamelCase(name));
         }
 
+        protected static string InterfaceNameFor(string name)
+        {
+            return String.Format("I{0}", name);
+        }
     }
 }
