@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Diesel
+namespace Diesel.Parsing
 {
     public class Namespace
     {

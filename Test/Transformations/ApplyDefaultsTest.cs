@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Diesel;
+using Diesel.Parsing;
 using Diesel.Transformations;
 using NUnit.Framework;
 

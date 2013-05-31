@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace Diesel
+namespace Diesel.Parsing
 {
     public class ApplicationServiceDeclaration : ITypeDeclaration
     {

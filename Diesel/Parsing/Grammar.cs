@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sprache;
 
-namespace Diesel
+namespace Diesel.Parsing
 {
     public static class Grammar
     {

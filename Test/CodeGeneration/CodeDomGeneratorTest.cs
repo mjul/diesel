@@ -1,13 +1,12 @@
 ﻿using System;
 using System.CodeDom;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using Diesel;
+using Diesel.CodeGeneration;
+using Diesel.Parsing;
 using NUnit.Framework;
 
-namespace Test.Diesel
+namespace Test.Diesel.CodeGeneration
 {
     [TestFixture]
     public class CodeDomGeneratorTest

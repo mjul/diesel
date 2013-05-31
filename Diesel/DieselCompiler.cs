@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Diesel.CodeGeneration;
+using Diesel.Parsing;
 using Diesel.Transformations;
 using Sprache;
 

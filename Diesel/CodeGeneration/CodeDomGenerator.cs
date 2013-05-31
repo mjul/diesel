@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
+using Diesel.Parsing;
 
-namespace Diesel
+namespace Diesel.CodeGeneration
 {
     public class CodeDomGenerator
     {

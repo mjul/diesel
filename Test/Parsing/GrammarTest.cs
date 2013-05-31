@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Linq;
 using Diesel;
+using Diesel.Parsing;
 using NUnit.Framework;
 using Sprache;
 
-namespace Test.Diesel
+namespace Test.Diesel.Parsing
 {
     [TestFixture]
     public class GrammarTest

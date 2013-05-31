@@ -61,8 +61,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>GenerateExamples.tt</DependentUpon>
     </Compile>
-    <Compile Include="GrammarTest.cs" />
-    <Compile Include="CodeDomGeneratorTest.cs" />
+    <Compile Include="Parsing\GrammarTest.cs" />
+    <Compile Include="CodeGeneration\CodeDomGeneratorTest.cs" />
     <Compile Include="TestHelpers\SerializationTesting.cs" />
     <Compile Include="Transformations\ApplyDefaultsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -90,6 +90,7 @@
     <EmbeddedResource Include="CodeExamples.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>CodeExamples.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
