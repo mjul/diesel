@@ -59,6 +59,24 @@ namespace Test.Diesel.Parsing
             Assert.Throws<ParseException>(() => Grammar.SimpleType.Parse("ArgumentException"));
         }
 
+
+        [Test]
+        public void NullableType_ForSimpleType_ShouldParse()
+        {
+            AssertNullableTypeParsesAs<Int32?>("Int32?");
+            AssertNullableTypeParsesAs<Int32?>("int?");
+            AssertNullableTypeParsesAs<Int64?>("Int64?");
+            AssertNullableTypeParsesAs<Int64?>("long?");
+            AssertNullableTypeParsesAs<Decimal?>("decimal?");
+            AssertNullableTypeParsesAs<Double?>("double?");
+        }
+
+        private static void AssertNullableTypeParsesAs<T>(string input)
+        {
+            var actual = Grammar.NullableType.Parse(input);
+            Assert.That(actual, Is.EqualTo(typeof(T)));
+        }
+
         [Test]
         public void ValueTypeDeclaration_JustNameNoType_ShouldParseName()
         {

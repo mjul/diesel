@@ -18,6 +18,7 @@ namespace Diesel.Parsing
         private static readonly Parser<Char> Letter = Parse.Letter;
         private static readonly Parser<Char> LetterOrDigit = Parse.LetterOrDigit;
         private static readonly Parser<Char> Comma = Char(',', "Comma");
+        private static readonly Parser<Char> QuestionMark = Char('?', "Question Mark");
 
         private static Parser<Symbol> Symbol(string value)
         {
@@ -54,6 +55,12 @@ namespace Diesel.Parsing
                  .Or(TypeName("long", typeof (Int64)))
              select type)
                 .Named("SimpleType");
+
+        public static Parser<Type> NullableType =
+            (from underlying in SimpleType
+             from nullableIndicator in QuestionMark
+             select Type.GetType(String.Format("System.Nullable`1[{0}]", underlying.FullName), true));
+
 
         public static Parser<PropertyDeclaration> PropertyDeclaration
             = (from type in SimpleType.Named("Property type").Token()
