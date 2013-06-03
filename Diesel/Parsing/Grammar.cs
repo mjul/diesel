@@ -39,7 +39,7 @@ namespace Diesel.Parsing
                     select type);
         }
 
-        public static Parser<Type> PrimitiveType =
+        public static Parser<Type> SimpleType =
             (from type in TypeName("Int32", typeof (Int32))
                  .Or(TypeName("String", typeof (String)))
                  .Or(TypeName("Decimal", typeof (Decimal)))
@@ -53,10 +53,10 @@ namespace Diesel.Parsing
                  .Or(TypeName("double", typeof (Double)))
                  .Or(TypeName("long", typeof (Int64)))
              select type)
-                .Named("PrimitiveType");
+                .Named("SimpleType");
 
         public static Parser<PropertyDeclaration> PropertyDeclaration
-            = (from type in PrimitiveType.Named("Property type").Token()
+            = (from type in SimpleType.Named("Property type").Token()
                from name in Identifier.Named("Property name").Token()
                select new PropertyDeclaration(name, type))
                 .Named("PropertyDeclartion");
@@ -80,7 +80,7 @@ namespace Diesel.Parsing
         private static readonly Parser<ValueTypeDeclaration> SimpleValueTypeDeclaration
             = (from declaration in Symbol("defvaluetype").Token()
                from name in Identifier.Token()
-               from optionalTypeDeclaration in PrimitiveType.Optional().Token()
+               from optionalTypeDeclaration in SimpleType.Optional().Token()
                let properties = new[] {new PropertyDeclaration(null, optionalTypeDeclaration.GetOrDefault())}
                select new ValueTypeDeclaration(name, properties))
                 .Contained(LeftParen, RightParen)

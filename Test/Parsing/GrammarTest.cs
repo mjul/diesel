@@ -32,31 +32,31 @@ namespace Test.Diesel.Parsing
         }
 
         [Test]
-        public void PrimitiveType_PrimitiveType_ShouldParse()
+        public void SimpleType_SimpleType_ShouldParse()
         {
-            AssertPrimitiveTypeParsesAs<decimal>("Decimal");
+            AssertSimpleTypeParsesAs<decimal>("Decimal");
         }
 
         [Test]
-        public void PrimitiveType_SyntacticSugarNames_ShouldParse()
+        public void SimpleType_SyntacticSugarNames_ShouldParse()
         {
-            AssertPrimitiveTypeParsesAs<Int32>("int");
-            AssertPrimitiveTypeParsesAs<Int64>("long");
-            AssertPrimitiveTypeParsesAs<Decimal>("decimal");
-            AssertPrimitiveTypeParsesAs<Double>("double");
+            AssertSimpleTypeParsesAs<Int32>("int");
+            AssertSimpleTypeParsesAs<Int64>("long");
+            AssertSimpleTypeParsesAs<Decimal>("decimal");
+            AssertSimpleTypeParsesAs<Double>("double");
         }
 
-        private static void AssertPrimitiveTypeParsesAs<T>(string input)
+        private static void AssertSimpleTypeParsesAs<T>(string input)
         {
-            var actual = Grammar.PrimitiveType.Parse(input);
+            var actual = Grammar.SimpleType.Parse(input);
             Assert.That(actual, Is.EqualTo(typeof(T)));
         }
 
 
         [Test]
-        public void PrimitiveType_ComplexType_ShouldNotParse()
+        public void SimpleType_ComplexType_ShouldNotParse()
         {
-            Assert.Throws<ParseException>(() => Grammar.PrimitiveType.Parse("ArgumentException"));
+            Assert.Throws<ParseException>(() => Grammar.SimpleType.Parse("ArgumentException"));
         }
 
         [Test]
