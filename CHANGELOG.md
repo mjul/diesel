@@ -1,3 +1,6 @@
+# Version 1.4 (June 3rd, 2013)
+* Support for nullable types in properties introduced (e.g. `defcommand` and `defvaluetype`).
+
 # Version 1.3 (June 3rd, 2013)
 * `defvaluetype` extended to also accept a list of properties like `defcommand`.
 

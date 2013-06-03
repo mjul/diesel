@@ -71,11 +71,31 @@ namespace Test.Diesel.Parsing
             AssertNullableTypeParsesAs<Double?>("double?");
         }
 
+
         private static void AssertNullableTypeParsesAs<T>(string input)
         {
             var actual = Grammar.NullableType.Parse(input);
             Assert.That(actual, Is.EqualTo(typeof(T)));
         }
+
+        [Test]
+        public void SimpleOrNullableType_ForSimpleType_ShouldParse()
+        {
+            AssertSimpleOrNullableTypeParsesAs<Int32>("Int32");
+        }
+
+        [Test]
+        public void SimpleOrNullableType_ForNullableType_ShouldParse()
+        {
+            AssertSimpleOrNullableTypeParsesAs<Int32?>("Int32?");
+        }
+
+        private static void AssertSimpleOrNullableTypeParsesAs<T>(string input)
+        {
+            var actual = Grammar.SimpleOrNullableType.Parse(input);
+            Assert.That(actual, Is.EqualTo(typeof(T)));
+        }
+
 
         [Test]
         public void ValueTypeDeclaration_JustNameNoType_ShouldParseName()
@@ -108,6 +128,14 @@ namespace Test.Diesel.Parsing
         }
 
         [Test]
+        public void ValueTypeDeclaration_NameAndExplicitNullableType_ShouldSetType()
+        {
+            var actual = Grammar.ValueTypeDeclaration.Parse("(defvaluetype Optional int?)");
+            var actualProperty = actual.Properties.Single();
+            Assert.That(actualProperty.Type, Is.EqualTo(typeof(int?)));
+        }
+
+        [Test]
         public void ValueTypeDeclaration_NameAndExplicitType_ShouldNotSetPropertyName()
         {
             var actual = Grammar.ValueTypeDeclaration.Parse("(defvaluetype GradePointAverage Decimal)");
@@ -135,6 +163,13 @@ namespace Test.Diesel.Parsing
             Assert.That(actualProperties[1].Type, Is.EqualTo(typeof(int)));
         }
 
+        [Test]
+        public void ValueTypeDeclaration_ComplexWithNullableProperty_ShouldSetTypes()
+        {
+            var actual = Grammar.ValueTypeDeclaration.Parse("(defvaluetype BookSize (int Pages, int? Chapters))");
+            var actualProperties = actual.Properties.ToList();
+            Assert.That(actualProperties[1].Type, Is.EqualTo(typeof(int?)));
+        }
 
         [Test]
         public void Namespace_SinglePartName_ShouldParse()

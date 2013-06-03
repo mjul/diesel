@@ -40,6 +40,7 @@ namespace Diesel.Parsing
                     select type);
         }
 
+        // In constrast to the C# grammar, we count string a simple type since it has value semantics
         public static Parser<Type> SimpleType =
             (from type in TypeName("Int32", typeof (Int32))
                  .Or(TypeName("String", typeof (String)))
@@ -61,13 +62,15 @@ namespace Diesel.Parsing
              from nullableIndicator in QuestionMark
              select Type.GetType(String.Format("System.Nullable`1[{0}]", underlying.FullName), true));
 
+        public static Parser<Type> SimpleOrNullableType =
+            NullableType
+            .Or(SimpleType);
 
         public static Parser<PropertyDeclaration> PropertyDeclaration
-            = (from type in SimpleType.Named("Property type").Token()
+            = (from type in SimpleOrNullableType.Named("Property type").Token()
                from name in Identifier.Named("Property name").Token()
                select new PropertyDeclaration(name, type))
                 .Named("PropertyDeclartion");
-
 
         private static Parser<IEnumerable<TElement>> SequenceOf<TElement,TDelimiter>(Parser<TElement> elementParser, Parser<TDelimiter> delimiterParser)
         {
@@ -87,9 +90,9 @@ namespace Diesel.Parsing
         private static readonly Parser<ValueTypeDeclaration> SimpleValueTypeDeclaration
             = (from declaration in Symbol("defvaluetype").Token()
                from name in Identifier.Token()
-               from optionalTypeDeclaration in SimpleType.Optional().Token()
-               let properties = new[] {new PropertyDeclaration(null, optionalTypeDeclaration.GetOrDefault())}
-               select new ValueTypeDeclaration(name, properties))
+               from optionalTypeDeclaration in SimpleOrNullableType.Optional().Token()
+               let property = new[] {new PropertyDeclaration(null, optionalTypeDeclaration.GetOrDefault())}
+               select new ValueTypeDeclaration(name, property))
                 .Contained(LeftParen, RightParen)
                 .Named("SimpleValueTypeDeclaration");
 

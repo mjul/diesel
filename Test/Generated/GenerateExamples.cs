@@ -144,6 +144,56 @@ namespace Test.Diesel.Generated {
         }
     }
     
+    [System.SerializableAttribute()]
+    public partial struct EmployeeMetadata : System.IEquatable<EmployeeMetadata> {
+        
+        private string _source;
+        
+        private System.Nullable<int> _sourceId;
+        
+        public EmployeeMetadata(string source, System.Nullable<int> sourceId) {
+            this._source = source;
+            this._sourceId = sourceId;
+        }
+        
+        public string Source {
+            get {
+                return this._source;
+            }
+        }
+        
+        public System.Nullable<int> SourceId {
+            get {
+                return this._sourceId;
+            }
+        }
+        
+        public static bool operator ==(EmployeeMetadata left, EmployeeMetadata right) {
+            return left.Equals(right);
+        }
+        
+        public static bool operator !=(EmployeeMetadata left, EmployeeMetadata right) {
+            return (false == left.Equals(right));
+        }
+        
+        public override int GetHashCode() {
+            return (0 + this.SourceId.GetHashCode());
+        }
+        
+        public bool Equals(EmployeeMetadata other) {
+            return ((true 
+                        && (this.Source == other.Source)) 
+                        && (this.SourceId == other.SourceId));
+        }
+        
+        public override bool Equals(object obj) {
+            if (object.ReferenceEquals(null, obj)) {
+                return false;
+            }
+            return (typeof(EmployeeMetadata).IsAssignableFrom(obj.GetType()) && this.Equals(((EmployeeMetadata)(obj))));
+        }
+    }
+    
     public partial interface IImportService {
         
         void Execute(ImportEmployee command);
@@ -161,10 +211,13 @@ namespace Test.Diesel.Generated {
         
         private string _lastName;
         
-        public ImportEmployee(int employeeNumber, string firstName, string lastName) {
+        private System.Nullable<int> _sourceId;
+        
+        public ImportEmployee(int employeeNumber, string firstName, string lastName, System.Nullable<int> sourceId) {
             this._employeeNumber = employeeNumber;
             this._firstName = firstName;
             this._lastName = lastName;
+            this._sourceId = sourceId;
         }
         
         [System.Runtime.Serialization.DataMemberAttribute(Order=1)]
@@ -188,6 +241,13 @@ namespace Test.Diesel.Generated {
             }
         }
         
+        [System.Runtime.Serialization.DataMemberAttribute(Order=4)]
+        public System.Nullable<int> SourceId {
+            get {
+                return this._sourceId;
+            }
+        }
+        
         public static bool operator ==(ImportEmployee left, ImportEmployee right) {
             if (object.ReferenceEquals(null, left)) {
                 return object.ReferenceEquals(null, right);
@@ -203,14 +263,16 @@ namespace Test.Diesel.Generated {
         }
         
         public override int GetHashCode() {
-            return (0 + this.EmployeeNumber.GetHashCode());
+            return ((0 + this.EmployeeNumber.GetHashCode()) 
+                        + this.SourceId.GetHashCode());
         }
         
         public bool Equals(ImportEmployee other) {
-            return ((((false == object.ReferenceEquals(null, other)) 
+            return (((((false == object.ReferenceEquals(null, other)) 
                         && (this.EmployeeNumber == other.EmployeeNumber)) 
                         && (this.FirstName == other.FirstName)) 
-                        && (this.LastName == other.LastName));
+                        && (this.LastName == other.LastName)) 
+                        && (this.SourceId == other.SourceId));
         }
         
         public override bool Equals(object obj) {

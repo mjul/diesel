@@ -127,9 +127,10 @@ and equals and equality operators are implemented with value semantics.
 
 ### Example
 
-    (defcommand ImportEmployee (int EmployeeNumber, string FirstName, string LastName))
+    (defcommand ImportEmployee (int EmployeeNumber, string FirstName, string LastName, int? SourceId))
 
-This generates a class with properties `EmployeeNumber`, `FirstName` and `LastName`.
+This generates a class with properties `EmployeeNumber`, `FirstName` and `LastName` and `SourceId`.
+Nullable types are supported in properties with C# short syntax, i.e. "int?" denotes a nullable Int32.
 
 
 # Defining Application Services

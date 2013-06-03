@@ -56,6 +56,7 @@
     <Compile Include="GeneratedCommandTest.cs" />
     <Compile Include="GeneratedValueTypeMultiplePropertiesTest.cs" />
     <Compile Include="GeneratedValueTypeTest.cs" />
+    <Compile Include="GeneratedValueTypeWithNullableProperty.cs" />
     <Compile Include="Generated\GenerateExamples.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
