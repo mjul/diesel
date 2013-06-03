@@ -25,10 +25,29 @@ namespace Test.Diesel
             Assert.That(sourceCode, Is.StringContaining("interface IImportService"));
             Assert.That(sourceCode, Is.StringContaining("class ImportClient"));
 
+            AssertIncludesDefvaluetypeExamples(sourceCode);
+            AssertIncludesDefcommandExamples(sourceCode);
+        }
+
+        private static void AssertIncludesDefvaluetypeExamples(string sourceCode)
+        {
+            Assert.That(sourceCode, Is.StringContaining("namespace TestCases.Defvaluetype"));
             Assert.That(sourceCode, Is.StringContaining("struct InvoiceNumber"));
             Assert.That(sourceCode, Is.StringContaining("struct Amount"));
             Assert.That(sourceCode, Is.StringContaining("struct LineItemNumber"));
             Assert.That(sourceCode, Is.StringContaining("struct Name"));
+            Assert.That(sourceCode, Is.StringContaining("struct SourceMetadata"));
         }
+
+        private static void AssertIncludesDefcommandExamples(string sourceCode)
+        {
+            Assert.That(sourceCode, Is.StringContaining("namespace TestCases.Defcommand"));
+            Assert.That(sourceCode, Is.StringContaining("class PrintString"));
+            Assert.That(sourceCode, Is.StringContaining("class PrintNullable"));
+            Assert.That(sourceCode, Is.StringContaining("class PrintMultiple"));
+            Assert.That(sourceCode, Is.StringContaining("class PrintDateTime"));
+            Assert.That(sourceCode, Is.StringContaining("class PrintGuid"));
+        }
+
     }
 }

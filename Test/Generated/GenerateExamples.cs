@@ -205,6 +205,8 @@ namespace Test.Diesel.Generated {
     [System.SerializableAttribute()]
     public partial class ImportEmployee : System.IEquatable<ImportEmployee> {
         
+        private System.Guid _commandId;
+        
         private int _employeeNumber;
         
         private string _firstName;
@@ -213,7 +215,8 @@ namespace Test.Diesel.Generated {
         
         private System.Nullable<int> _sourceId;
         
-        public ImportEmployee(int employeeNumber, string firstName, string lastName, System.Nullable<int> sourceId) {
+        public ImportEmployee(System.Guid commandId, int employeeNumber, string firstName, string lastName, System.Nullable<int> sourceId) {
+            this._commandId = commandId;
             this._employeeNumber = employeeNumber;
             this._firstName = firstName;
             this._lastName = lastName;
@@ -221,27 +224,34 @@ namespace Test.Diesel.Generated {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute(Order=1)]
+        public System.Guid CommandId {
+            get {
+                return this._commandId;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Order=2)]
         public int EmployeeNumber {
             get {
                 return this._employeeNumber;
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute(Order=2)]
+        [System.Runtime.Serialization.DataMemberAttribute(Order=3)]
         public string FirstName {
             get {
                 return this._firstName;
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute(Order=3)]
+        [System.Runtime.Serialization.DataMemberAttribute(Order=4)]
         public string LastName {
             get {
                 return this._lastName;
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute(Order=4)]
+        [System.Runtime.Serialization.DataMemberAttribute(Order=5)]
         public System.Nullable<int> SourceId {
             get {
                 return this._sourceId;
@@ -263,12 +273,14 @@ namespace Test.Diesel.Generated {
         }
         
         public override int GetHashCode() {
-            return ((0 + this.EmployeeNumber.GetHashCode()) 
+            return (((0 + this.CommandId.GetHashCode()) 
+                        + this.EmployeeNumber.GetHashCode()) 
                         + this.SourceId.GetHashCode());
         }
         
         public bool Equals(ImportEmployee other) {
-            return (((((false == object.ReferenceEquals(null, other)) 
+            return ((((((false == object.ReferenceEquals(null, other)) 
+                        && (this.CommandId == other.CommandId)) 
                         && (this.EmployeeNumber == other.EmployeeNumber)) 
                         && (this.FirstName == other.FirstName)) 
                         && (this.LastName == other.LastName)) 

@@ -11,5 +11,13 @@
 	(defvaluetype InvoiceNumber)
 	(defvaluetype Amount decimal)
 	(defvaluetype LineItemNumber (int Value))
-	(defvaluetype Name (string FirstName, string LastName)))
+	(defvaluetype Name (string FirstName, string LastName))
+	(defvaluetype SourceMetadata (string Source, int? SourceId)))
+
+(namespace TestCases.Defcommand
+	(defcommand PrintString (string Name))
+	(defcommand PrintNullable (int? Value))
+	(defcommand PrintMultiple (string First, string Last))
+	(defcommand PrintDateTime (DateTime OccurredOn))
+	(defcommand PrintGuid (Guid SourceId)))
 

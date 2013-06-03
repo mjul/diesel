@@ -70,7 +70,12 @@ namespace Test.Diesel {
         ///	(defapplicationservice ImportService
         ///		(defcommand ImportClient (int ClientId, string Name))))
         ///
-        ///.
+        ///(namespace TestCases.Defvaluetype
+        ///	(defvaluetype InvoiceNumber)
+        ///	(defvaluetype Amount decimal)
+        ///	(defvaluetype LineItemNumber (int Value))
+        ///	(defvaluetype Name (string FirstName, string LastName))
+        ///	(defvaluetype SourceMetadata (string Sour [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string DieselCompilerIntegrationTestCase {
             get {

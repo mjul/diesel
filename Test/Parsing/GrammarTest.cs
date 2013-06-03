@@ -59,23 +59,21 @@ namespace Test.Diesel.Parsing
             Assert.Throws<ParseException>(() => Grammar.SimpleType.Parse("ArgumentException"));
         }
 
-
         [Test]
-        public void NullableType_ForSimpleType_ShouldParse()
+        public void NullableOf_ForSimpleType_ShouldParse()
         {
-            AssertNullableTypeParsesAs<Int32?>("Int32?");
-            AssertNullableTypeParsesAs<Int32?>("int?");
-            AssertNullableTypeParsesAs<Int64?>("Int64?");
-            AssertNullableTypeParsesAs<Int64?>("long?");
-            AssertNullableTypeParsesAs<Decimal?>("decimal?");
-            AssertNullableTypeParsesAs<Double?>("double?");
+            AssertNullableOfSimpleTypeParsesAs<Int32?>("Int32?");
+            AssertNullableOfSimpleTypeParsesAs<Int32?>("int?");
+            AssertNullableOfSimpleTypeParsesAs<Int64?>("Int64?");
+            AssertNullableOfSimpleTypeParsesAs<Int64?>("long?");
+            AssertNullableOfSimpleTypeParsesAs<Decimal?>("decimal?");
+            AssertNullableOfSimpleTypeParsesAs<Double?>("double?");
         }
 
-
-        private static void AssertNullableTypeParsesAs<T>(string input)
+        private static void AssertNullableOfSimpleTypeParsesAs<TExpected>(string input)
         {
-            var actual = Grammar.NullableType.Parse(input);
-            Assert.That(actual, Is.EqualTo(typeof(T)));
+            var actual = Grammar.NullableOf(Grammar.SimpleType).Parse(input);
+            Assert.That(actual, Is.EqualTo(typeof(TExpected)));
         }
 
         [Test]
@@ -88,11 +86,16 @@ namespace Test.Diesel.Parsing
         public void SimpleOrNullableType_ForNullableType_ShouldParse()
         {
             AssertSimpleOrNullableTypeParsesAs<Int32?>("Int32?");
+            AssertSimpleOrNullableTypeParsesAs<Int32?>("int?");
+            AssertSimpleOrNullableTypeParsesAs<Int64?>("Int64?");
+            AssertSimpleOrNullableTypeParsesAs<Int64?>("long?");
+            AssertSimpleOrNullableTypeParsesAs<Decimal?>("decimal?");
+            AssertSimpleOrNullableTypeParsesAs<Double?>("double?");
         }
 
         private static void AssertSimpleOrNullableTypeParsesAs<T>(string input)
         {
-            var actual = Grammar.SimpleOrNullableType.Parse(input);
+            var actual = Grammar.SimpleTypeAllowNullable.Parse(input);
             Assert.That(actual, Is.EqualTo(typeof(T)));
         }
 
@@ -133,6 +136,14 @@ namespace Test.Diesel.Parsing
             var actual = Grammar.ValueTypeDeclaration.Parse("(defvaluetype Optional int?)");
             var actualProperty = actual.Properties.Single();
             Assert.That(actualProperty.Type, Is.EqualTo(typeof(int?)));
+        }
+
+        [Test]
+        public void ValueTypeDeclaration_NameAndExplicitSystemValueType_ShouldSetType()
+        {
+            var actual = Grammar.ValueTypeDeclaration.Parse("(defvaluetype AggregateRootId Guid)");
+            var actualProperty = actual.Properties.Single();
+            Assert.That(actualProperty.Type, Is.EqualTo(typeof(Guid)));
         }
 
         [Test]
@@ -254,6 +265,28 @@ namespace Test.Diesel.Parsing
             Assert.That(actual.Name, Is.EqualTo("EmployeeNumber"));
             Assert.That(actual.Type, Is.EqualTo(typeof(int)));
         }
+
+        [Test]
+        public void PropertyDeclaration_NullableType_ShouldSetType()
+        {
+            var actual = Grammar.PropertyDeclaration.Parse("int? Optional");
+            Assert.That(actual.Type, Is.EqualTo(typeof(int?)));
+        }
+
+        [Test]
+        public void PropertyDeclaration_UnqualifiedSystemTypeDateTime_ShouldSetType()
+        {
+            var actual = Grammar.PropertyDeclaration.Parse("DateTime OccurredOn");
+            Assert.That(actual.Type, Is.EqualTo(typeof(DateTime)));
+        }
+
+        [Test]
+        public void PropertyDeclaration_UnqualifiedSystemTypeGuid_ShouldSetType()
+        {
+            var actual = Grammar.PropertyDeclaration.Parse("Guid CommandId");
+            Assert.That(actual.Type, Is.EqualTo(typeof(Guid)));
+        }
+
 
         [Test]
         public void CommandDeclaration_SingleProperty_ShouldParseProperty()

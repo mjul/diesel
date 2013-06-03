@@ -42,32 +42,43 @@ namespace Diesel.Parsing
 
         // In constrast to the C# grammar, we count string a simple type since it has value semantics
         public static Parser<Type> SimpleType =
-            (from type in TypeName("Int32", typeof (Int32))
-                 .Or(TypeName("String", typeof (String)))
-                 .Or(TypeName("Decimal", typeof (Decimal)))
-                 .Or(TypeName("Single", typeof (Single)))
-                 .Or(TypeName("Double", typeof (Double)))
-                 .Or(TypeName("Int64", typeof (Int64)))
-                 .Or(TypeName("int", typeof (Int32)))
-                 .Or(TypeName("string", typeof (String)))
-                 .Or(TypeName("decimal", typeof (Decimal)))
-                 .Or(TypeName("float", typeof (Single)))
-                 .Or(TypeName("double", typeof (Double)))
-                 .Or(TypeName("long", typeof (Int64)))
-             select type)
+            TypeName("Int32", typeof (Int32))
+                .Or(TypeName("String", typeof (String)))
+                .Or(TypeName("Decimal", typeof (Decimal)))
+                .Or(TypeName("Single", typeof (Single)))
+                .Or(TypeName("Double", typeof (Double)))
+                .Or(TypeName("Int64", typeof (Int64)))
+                .Or(TypeName("int", typeof (Int32)))
+                .Or(TypeName("string", typeof (String)))
+                .Or(TypeName("decimal", typeof (Decimal)))
+                .Or(TypeName("float", typeof (Single)))
+                .Or(TypeName("double", typeof (Double)))
+                .Or(TypeName("long", typeof (Int64)))
                 .Named("SimpleType");
 
-        public static Parser<Type> NullableType =
-            (from underlying in SimpleType
-             from nullableIndicator in QuestionMark
-             select Type.GetType(String.Format("System.Nullable`1[{0}]", underlying.FullName), true));
+        
+        public static Parser<Type> NullableOf(Parser<Type> underlying)
+        {
+            return (from underlyingType in underlying
+                    from nullableIndicator in QuestionMark
+                    select Type.GetType(String.Format("System.Nullable`1[{0}]", underlyingType.FullName), true));
+        }
 
-        public static Parser<Type> SimpleOrNullableType =
-            NullableType
+        public static Parser<Type> SimpleTypeAllowNullable =
+            NullableOf(SimpleType)
             .Or(SimpleType);
 
+        private static readonly Parser<Type> SystemValueType =
+            TypeName("Guid", typeof (Guid))
+                .Or(TypeName("DateTime", typeof (DateTime)))
+                .Or(SimpleType);
+
+        public static Parser<Type> SystemValueTypeAllowNullable
+            = NullableOf(SystemValueType)
+                .Or(SystemValueType);
+
         public static Parser<PropertyDeclaration> PropertyDeclaration
-            = (from type in SimpleOrNullableType.Named("Property type").Token()
+            = (from type in SystemValueTypeAllowNullable.Named("Property type").Token()
                from name in Identifier.Named("Property name").Token()
                select new PropertyDeclaration(name, type))
                 .Named("PropertyDeclartion");
@@ -90,7 +101,7 @@ namespace Diesel.Parsing
         private static readonly Parser<ValueTypeDeclaration> SimpleValueTypeDeclaration
             = (from declaration in Symbol("defvaluetype").Token()
                from name in Identifier.Token()
-               from optionalTypeDeclaration in SimpleOrNullableType.Optional().Token()
+               from optionalTypeDeclaration in SystemValueTypeAllowNullable.Optional().Token()
                let property = new[] {new PropertyDeclaration(null, optionalTypeDeclaration.GetOrDefault())}
                select new ValueTypeDeclaration(name, property))
                 .Contained(LeftParen, RightParen)
