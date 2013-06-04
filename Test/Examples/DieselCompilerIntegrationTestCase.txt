@@ -21,3 +21,5 @@
 	(defcommand PrintDateTime (DateTime OccurredOn))
 	(defcommand PrintGuid (Guid SourceId)))
 
+(namespace TestCases.Defdomainevent
+	(defdomainevent PaymentReceived (Guid Id, Decimal Amount, String Currency)))

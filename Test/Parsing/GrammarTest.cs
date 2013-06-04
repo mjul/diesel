@@ -236,6 +236,7 @@ namespace Test.Diesel.Parsing
             var actual = Grammar.Namespace.Parse("(namespace Administration.Client" +
                                                  "  (defvaluetype ClientId)" +
                                                  "  (defcommand ImportEmployee (int EmployeeNumber, string FirstName, string LastName))" +
+                                                 "  (defdomainevent EmployeeImported (Guid Id, int EmployeeNumber, string FirstName, string LastName))" +
                                                  ")");
             Assert.That(actual, Is.Not.Null);
             Assert.That(actual.Declarations.Single(x => x.Name == "ClientId"), Is.Not.Null);
@@ -353,6 +354,40 @@ namespace Test.Diesel.Parsing
             Assert.That(commands[0].Name, Is.EqualTo("ImportEmployee"));
             Assert.That(commands[1].Name, Is.EqualTo("ImportClient"));
         }
+
+        [Test]
+        public void DomainEventDeclaration_MultipleProperties_ShouldParseProperties()
+        {
+            var actual = Grammar.DomainEventDeclaration.Parse("(defdomainevent EmployeeImported (Guid Id, int EmployeeNumber, string FirstName, string LastName))");
+            var properties = actual.Properties.ToList();
+            AssertPropertyEquals(properties[0], "Id", typeof(Guid));
+            AssertPropertyEquals(properties[1], "EmployeeNumber", typeof(int));
+            AssertPropertyEquals(properties[2], "FirstName", typeof(string));
+            AssertPropertyEquals(properties[3], "LastName", typeof(string));
+        }
+
+
+        [Test]
+        public void TypeDeclaration_ValueTypeDeclaration_ShouldBeAccepted()
+        {
+            var actual = Grammar.TypeDeclaration.TryParse("(defvaluetype EmployeeNumber)");
+            Assert.True(actual.WasSuccessful);
+        }
+
+        [Test]
+        public void TypeDeclaration_CommandDeclaration_ShouldBeAccepted()
+        {
+            var actual = Grammar.TypeDeclaration.TryParse("(defcommand ImportEmployee (int EmployeeNumber, String Name))");
+            Assert.True(actual.WasSuccessful);
+        }
+
+        [Test]
+        public void TypeDeclaration_DomainEventDeclaration_ShouldBeAccepted()
+        {
+            var actual = Grammar.TypeDeclaration.TryParse("(defdomainevent EmployeeImported (Guid Id, int EmployeeNumber, String Name))");
+            Assert.True(actual.WasSuccessful);
+        }
+
 
         [Test]
         public void Everything_ValidAstFollowedByInvalidSource_ShouldNotParse()

@@ -1,7 +1,9 @@
+# Version 1.6
+* `defdomainevent` added to generate domain event DTOs.
+
 # Version 1.5 (June 4th, 2013)
 * Parser requires entire source file to be valid (before it unintentionally allowed anything to follow the AST).
 * Added DataContractSerializer serializability for commands (`defcommand`).
-
 
 # Version 1.4 (June 3rd, 2013)
 * Support for nullable types in properties introduced (e.g. `defcommand` and `defvaluetype`).

@@ -194,6 +194,100 @@ namespace Test.Diesel.Generated {
         }
     }
     
+    [System.Runtime.Serialization.DataContractAttribute(Name="EmployeeImported")]
+    [System.SerializableAttribute()]
+    public partial class EmployeeImported : System.IEquatable<EmployeeImported> {
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Name="Id", Order=1)]
+        private System.Guid _id;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Name="EmployeeNumber", Order=2)]
+        private int _employeeNumber;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Name="FirstName", Order=3)]
+        private string _firstName;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Name="LastName", Order=4)]
+        private string _lastName;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Name="SourceId", Order=5)]
+        private System.Nullable<int> _sourceId;
+        
+        public EmployeeImported(System.Guid id, int employeeNumber, string firstName, string lastName, System.Nullable<int> sourceId) {
+            this._id = id;
+            this._employeeNumber = employeeNumber;
+            this._firstName = firstName;
+            this._lastName = lastName;
+            this._sourceId = sourceId;
+        }
+        
+        public System.Guid Id {
+            get {
+                return this._id;
+            }
+        }
+        
+        public int EmployeeNumber {
+            get {
+                return this._employeeNumber;
+            }
+        }
+        
+        public string FirstName {
+            get {
+                return this._firstName;
+            }
+        }
+        
+        public string LastName {
+            get {
+                return this._lastName;
+            }
+        }
+        
+        public System.Nullable<int> SourceId {
+            get {
+                return this._sourceId;
+            }
+        }
+        
+        public static bool operator ==(EmployeeImported left, EmployeeImported right) {
+            if (object.ReferenceEquals(null, left)) {
+                return object.ReferenceEquals(null, right);
+            }
+            return left.Equals(right);
+        }
+        
+        public static bool operator !=(EmployeeImported left, EmployeeImported right) {
+            if (object.ReferenceEquals(null, left)) {
+                return (false == object.ReferenceEquals(null, right));
+            }
+            return (false == left.Equals(right));
+        }
+        
+        public override int GetHashCode() {
+            return (((0 + this.Id.GetHashCode()) 
+                        + this.EmployeeNumber.GetHashCode()) 
+                        + this.SourceId.GetHashCode());
+        }
+        
+        public bool Equals(EmployeeImported other) {
+            return ((((((false == object.ReferenceEquals(null, other)) 
+                        && (this.Id == other.Id)) 
+                        && (this.EmployeeNumber == other.EmployeeNumber)) 
+                        && (this.FirstName == other.FirstName)) 
+                        && (this.LastName == other.LastName)) 
+                        && (this.SourceId == other.SourceId));
+        }
+        
+        public override bool Equals(object obj) {
+            if (object.ReferenceEquals(null, obj)) {
+                return false;
+            }
+            return (typeof(EmployeeImported).IsAssignableFrom(obj.GetType()) && this.Equals(((EmployeeImported)(obj))));
+        }
+    }
+    
     public partial interface IImportService {
         
         void Execute(ImportEmployee command);

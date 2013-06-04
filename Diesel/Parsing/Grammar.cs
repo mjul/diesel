@@ -135,6 +135,16 @@ namespace Diesel.Parsing
                 .Contained(LeftParen, RightParen)
                 .Named("CommandDeclaration");
 
+
+        public static readonly Parser<DomainEventDeclaration> DomainEventDeclaration
+            = (from declaration in Symbol("defdomainevent").Token()
+               from name in Identifier.Token()
+               from propertyDeclarations in PropertyDeclarations.Token()
+               select new DomainEventDeclaration(name, propertyDeclarations))
+                .Contained(LeftParen, RightParen)
+                .Named("DomainEventDeclaration");
+
+
         public static readonly Parser<ApplicationServiceDeclaration> ApplicationServiceDeclaration
             = (from declaration in Symbol("defapplicationservice").Token()
                from name in Identifier.Token()
@@ -142,9 +152,10 @@ namespace Diesel.Parsing
                select new ApplicationServiceDeclaration(name, commandDeclarations))
                 .Contained(LeftParen, RightParen);
 
-        private static readonly Parser<TypeDeclaration> TypeDeclaration
+        public static readonly Parser<TypeDeclaration> TypeDeclaration
             = ValueTypeDeclaration
                 .Or<TypeDeclaration>(CommandDeclaration)
+                .Or<TypeDeclaration>(DomainEventDeclaration)
                 .Or<TypeDeclaration>(ApplicationServiceDeclaration);
 
         public static readonly Parser<Namespace> Namespace

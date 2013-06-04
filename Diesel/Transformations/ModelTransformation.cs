@@ -16,19 +16,24 @@ namespace Diesel.Transformations
                                             .Select<TypeDeclaration, TypeDeclaration>(d => Transform((dynamic)d)));
         }
 
-        public virtual ValueTypeDeclaration Transform(ValueTypeDeclaration ns)
+        public virtual ValueTypeDeclaration Transform(ValueTypeDeclaration declaration)
         {
-            return ns;
+            return declaration;
         }
 
-        public virtual CommandDeclaration Transform(CommandDeclaration ds)
+        public virtual CommandDeclaration Transform(CommandDeclaration declaration)
         {
-            return ds;
+            return declaration;
         }
 
-        public virtual ApplicationServiceDeclaration Transform(ApplicationServiceDeclaration ds)
+        public virtual DomainEventDeclaration Transform(DomainEventDeclaration declaration)
         {
-            return ds;
+            return declaration;
+        }
+
+        public virtual ApplicationServiceDeclaration Transform(ApplicationServiceDeclaration declaration)
+        {
+            return declaration;
         }
 
     }

@@ -4,21 +4,22 @@ Diesel provides a declarative language for generating code for your .NET project
 
 * __Value Types__ - generate strong types for value types, e.g. EmployeeNumber instead of int. 
 * __Commands__ - generates classes for the Command DTOs.
+* __Domain Events__ - generates classes for the Domain Event DTOs.
 * __Application Services__ - generate an interface for all the commands accepted by the service.
 
 Planned features include declarations for Value Objects, Aggregate Roots, Domain Events and Projections.
 
 ## Example
 
-Create a model in the DSL language:
+Create a model in the Diesel DSL language:
 
 ```
     (namespace Employees
         (defvaluetype EmployeeNumber)
-        (defvaluetype FirstName string)
-        (defvaluetype LastName string)
+        (defvaluetype EmployeeName (string FirstName, string LastName))
         (defapplicationService ImportService
-            (defcommand ImportEmployee (int EmployeeNumber, string FirstName, string LastName))))
+            (defcommand ImportEmployee (int EmployeeNumber, string FirstName, string LastName))
+        (defdomainevent EmployeeImported (Guid Id, int EmployeeNumber, string FirstName, string LastName)))
 ```
 
 Use the Visual Studio T4 template to automatically generate the code (see below) or compile it the model source 
@@ -32,6 +33,9 @@ Now use it
     var founderNumber = new EmployeeNumber(1);
     var lateHireNumber = new EmployeeNumber(100);
             
+    // value types can have multiple fields 
+    var name = new EmployeeName("Martin", "Jul");
+
     // You get free value equality and equality operators 
     var isFounder = (employee.EmployeeNumber == founderNumber);
          
@@ -41,6 +45,7 @@ Now use it
     // Properties exposing these are automatically added to the class:
     var firstName = command.FirstName;
 
+     
 ```
 
   
@@ -60,7 +65,7 @@ The type is optional, it defaults to Int32.
 If multiple properties are desired, the list of properties and their types must be declared.
 
 
-### Examples
+## Examples
 
     (defvaluetype EmployeeNumber)
     (defvaluetype Amount Decimal)
@@ -128,12 +133,30 @@ and equals and equality operators are implemented with value semantics.
 Commands are DTOs (Data Transfer Objects), so they are also decorated with attributes
 to allow them to be serializable with the BinarySerializer and the DataContractSerializer.
 
-### Example
+## Example
 
     (defcommand ImportEmployee (int EmployeeNumber, string FirstName, string LastName, int? SourceId))
 
 This generates a class with properties `EmployeeNumber`, `FirstName` and `LastName` and `SourceId`.
 Nullable types are supported in properties with C# short syntax, i.e. "int?" denotes a nullable Int32.
+
+
+# Defining Domain Events
+
+    (defdomainevent <typename> <properties>)
+
+This defines a class representing the Domain Event, a constructor to assign its properties
+and equals and equality operators are implemented with value semantics.
+
+Like Commands, Domain Events are DTOs, so they are also decorated with attributes
+to allow them to be serializable with the BinarySerializer and the DataContractSerializer.
+
+## Example
+
+    (defdomainevent EmployeeImported (Guid Id, int EmployeeNumber, 
+                                      string FirstName, string LastName, int? SourceId))
+
+This generates a class with properties `Id`, `EmployeeNumber`, `FirstName` and `LastName` and `SourceId`.
 
 
 # Defining Application Services
@@ -149,21 +172,19 @@ defined in the scope of the application service.
 
 Given the following declaration
 
-    (defapplicationService ImportService
-        (defcommand ImportEmployee (int EmployeeNumber, string FirstName, string LastName))
+    (defapplicationservice ImportService
+        (defcommand ImportEmployee (Guid CommandId, int EmployeeNumber, string FirstName, string LastName, int? SourceId))
+        (defcommand ImportConsultant (string FirstName, string LastName, string Company)))
 
 This declares the `ImportEmployee` class as defined by the nested `defcommand` and the following
 interface for the service:
 
 ```csharp
-
     public partial interface IImportService {
-        
-        void Execute(ImportEmployee command);
+         void Execute(ImportEmployee command);
+         void Execute(ImportConsultant command);
     }
-
 ```
-
 
 
 # Defining Namespaces
@@ -207,6 +228,13 @@ Diesel specification in `MetaModel.diesel`.
     #>
     <#= output #>
 
+# NuGet Package
+
+The library is available on [NuGet](https://nuget.org/packages/Diesel/) under the package name "Diesel".
+
+To install: 
+
+        PM> Install-Package Diesel    
 
 # License
 Copyright (C)2013 Martin Jul (www.mjul.com)

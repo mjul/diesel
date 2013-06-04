@@ -42,6 +42,11 @@ namespace Diesel.CodeGeneration
             ns.Types.Add(CommandGenerator.CreateCommandDeclaration(declaration));
         }
 
+        private static void Add(CodeNamespace ns, DomainEventDeclaration declaration)
+        {
+            ns.Types.Add(DomainEventGenerator.CreateDomainEventDeclaration(declaration));
+        }
+
         private static void Add(CodeNamespace ns, ValueTypeDeclaration declaration)
         {
             ns.Types.Add(ValueTypeGenerator.CreateValueTypeDeclaration(declaration));
