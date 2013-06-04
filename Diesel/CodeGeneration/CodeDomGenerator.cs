@@ -3,6 +3,7 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using Diesel.Parsing;
 
@@ -68,9 +69,10 @@ namespace Diesel.CodeGeneration
 
             if (isDataContract)
             {
-                result.CustomAttributes.Add(CreateAttribute(typeof(DataContractAttribute)));
+                result.CustomAttributes.Add(CreateDataContractAttribute(name));
             }
             result.CustomAttributes.Add(CreateAttribute(typeof (SerializableAttribute)));
+
             var readOnlyProperties = ReadOnlyProperties(properties, isDataContract).ToList();
 
             result.BaseTypes.AddRange(CreateImplementsIEquatableOf(name));
@@ -230,6 +232,13 @@ namespace Diesel.CodeGeneration
         private static CodeAttributeDeclaration CreateAttribute(Type type)
         {
             return new CodeAttributeDeclaration(new CodeTypeReference(type));
+        }
+
+        private static CodeAttributeDeclaration CreateDataContractAttribute(string name)
+        {
+            return new CodeAttributeDeclaration(
+                new CodeTypeReference(typeof (DataContractAttribute)),
+                new[] {new CodeAttributeArgument("Name", new CodePrimitiveExpression(name))});
         }
 
         protected static CodeAttributeDeclaration CreateDebuggerDisplayAttribute(string formatString)

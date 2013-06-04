@@ -201,7 +201,7 @@ namespace Test.Diesel.Generated {
         void Execute(ImportConsultant command);
     }
     
-    [System.Runtime.Serialization.DataContractAttribute()]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ImportEmployee")]
     [System.SerializableAttribute()]
     public partial class ImportEmployee : System.IEquatable<ImportEmployee> {
         
@@ -295,7 +295,7 @@ namespace Test.Diesel.Generated {
         }
     }
     
-    [System.Runtime.Serialization.DataContractAttribute()]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ImportConsultant")]
     [System.SerializableAttribute()]
     public partial class ImportConsultant : System.IEquatable<ImportConsultant> {
         

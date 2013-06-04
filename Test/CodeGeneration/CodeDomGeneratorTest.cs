@@ -78,7 +78,7 @@ namespace Test.Diesel.CodeGeneration
         public void CommandDeclaration_ValidDeclaration_ShouldAddDataContractAttribute()
         {
             var source = CompileToSource(CompileImportEmployeeCommand());
-            Assert.That(source, Is.StringMatching(@"DataContractAttribute"));
+            Assert.That(source, Is.StringContaining(@"DataContractAttribute(Name=""ImportEmployeeCommand"")"));
         }
 
         private CodeCompileUnit CompileImportEmployeeCommand()
