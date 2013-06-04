@@ -1,4 +1,7 @@
-﻿(namespace Employees
+﻿(defconventions
+	:domainevent {:inherits [SomeNamespace.IDomainEvent]})
+
+(namespace Employees
 	(defvaluetype EmployeeNumber int)
 	(defcommand ChangeTelephoneNumber (string TelephoneNumber)))
 

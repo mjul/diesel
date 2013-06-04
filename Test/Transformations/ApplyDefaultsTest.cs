@@ -48,7 +48,7 @@ namespace Test.Diesel.Transformations
             var input = new AbstractSyntaxTree(
                 new[]
                     {
-                        new Namespace("Test",
+                        new Namespace(new NamespaceIdentifier("Test"),
                                       new[] {valueTypeDeclaration})
                     });
             var actual = ModelTransformations.Transform(input);

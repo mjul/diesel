@@ -25,10 +25,74 @@ namespace Test.Diesel.Parsing
         }
 
         [Test]
+        public void Identifier_Blank_ShouldNotParse()
+        {
+            var actual = Grammar.Identifier.TryParse("");
+            Assert.That(actual.WasSuccessful, Is.False);
+        }
+
+        [Test]
         public void Identifier_ValidStringAndNumber_ShouldParse()
         {
             var actual = Grammar.Identifier.Parse("name1");
             Assert.That(actual, Is.EqualTo("name1"));
+        }
+
+        [Test]
+        public void Keyword_ValidName_ShouldParse()
+        {
+            var actual = Grammar.Keyword().Parse(":foo");
+            Assert.That(actual.Name, Is.EqualTo("foo"));
+        }
+
+        [Test]
+        public void Keyword_SpecificNameOverloadSameName_ShouldParse()
+        {
+            var actual = Grammar.Keyword("foo").Parse(":foo");
+            Assert.That(actual.Name, Is.EqualTo("foo"));
+        }
+
+        [Test]
+        public void Keyword_SpecificNameOverloadOtherKeyword_ShouldNotParse()
+        {
+            var actual = Grammar.Keyword("foo").TryParse(":bar");
+            Assert.That(actual.WasSuccessful, Is.False);
+        }
+
+        [Test]
+        public void NamespaceIdentifier_BlankName_ShouldNotParse()
+        {
+            var actual = Grammar.NamespaceIdentifier.TryParse("");
+            Assert.False(actual.WasSuccessful);
+        }
+
+        [Test]
+        public void NamespaceIdentifier_SinglePartName_ShouldParse()
+        {
+            var actual = Grammar.NamespaceIdentifier.Parse("System");
+            Assert.That(actual.Name, Is.EqualTo("System"));
+        }
+
+        [Test]
+        public void NamespaceIdentifier_MultiPartName_ShouldParse()
+        {
+            var actual = Grammar.NamespaceIdentifier.Parse("System.Runtime.Serialization");
+            Assert.That(actual.Name, Is.EqualTo("System.Runtime.Serialization"));
+        }
+
+
+        [Test]
+        public void TypeName_ValidUnqualifiedName_ShouldParse()
+        {
+            var actual = Grammar.TypeName.Parse("Guid");
+            Assert.That(actual.Name, Is.EqualTo("Guid"));
+        }
+
+        [Test]
+        public void TypeName_ValidQualifiedName_ShouldParse()
+        {
+            var actual = Grammar.TypeName.Parse("System.Guid");
+            Assert.That(actual.Name, Is.EqualTo("System.Guid"));
         }
 
         [Test]
@@ -186,14 +250,14 @@ namespace Test.Diesel.Parsing
         public void Namespace_SinglePartName_ShouldParse()
         {
             var actual = Grammar.Namespace.Parse("(namespace Administration)");
-            Assert.That(actual.Name, Is.EqualTo("Administration"));
+            Assert.That(actual.Name.Name, Is.EqualTo("Administration"));
         }
 
         [Test]
         public void Namespace_MultiPartName_ShouldParse()
         {
             var actual = Grammar.Namespace.Parse("(namespace Administration.Client)");
-            Assert.That(actual.Name, Is.EqualTo("Administration.Client"));
+            Assert.That(actual.Name.Name, Is.EqualTo("Administration.Client"));
         }
 
         [Test]
@@ -209,7 +273,7 @@ namespace Test.Diesel.Parsing
         {
             var actual = Grammar.Namespace.Parse("(namespace Administration.Client" +
                                                  "  (defvaluetype ClientId))");
-            Assert.That(actual.Name, Is.EqualTo("Administration.Client"));
+            Assert.That(actual.Name.Name, Is.EqualTo("Administration.Client"));
             var singleDeclaration = actual.Declarations.Single();
             Assert.That(singleDeclaration.Name, Is.EqualTo("ClientId"));
             Assert.That(singleDeclaration, Is.TypeOf<ValueTypeDeclaration>());
@@ -386,6 +450,16 @@ namespace Test.Diesel.Parsing
         {
             var actual = Grammar.TypeDeclaration.TryParse("(defdomainevent EmployeeImported (Guid Id, int EmployeeNumber, String Name))");
             Assert.True(actual.WasSuccessful);
+        }
+
+        [Test]
+        public void ConventionDeclarations_Valid_ShouldParse()
+        {
+            var actual = Grammar.ConventionsDeclaration.Parse(
+                    "(defconventions :domainevents {:inherits [SomeNamespace.IDomainEvent]})");
+            Assert.That(actual, Is.Not.Null);
+            Assert.That(actual.DomainEventConventions, Is.Not.Null);
+            Assert.That(actual.DomainEventConventions, Is.Not.Null);
         }
 
 

@@ -4,10 +4,10 @@ namespace Diesel.Parsing
 {
     public class Namespace : ITreeNode
     {
-        public string Name { get; private set; }
+        public NamespaceIdentifier Name { get; private set; }
         public IEnumerable<TypeDeclaration> Declarations;
 
-        public Namespace(string name, IEnumerable<TypeDeclaration> declarations)
+        public Namespace(NamespaceIdentifier name, IEnumerable<TypeDeclaration> declarations)
         {
             Name = name;
             Declarations = declarations;

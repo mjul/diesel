@@ -29,7 +29,7 @@ namespace Diesel.CodeGeneration
 
         private static void Add(CodeCompileUnit codeCompileUnit, Namespace declaration)
         {
-            var ns = new CodeNamespace(declaration.Name);
+            var ns = new CodeNamespace(declaration.Name.Name);
             ns.Imports.Add(new CodeNamespaceImport("System"));
             codeCompileUnit.Namespaces.Add(ns);
             foreach (var typeDeclaration in declaration.Declarations)

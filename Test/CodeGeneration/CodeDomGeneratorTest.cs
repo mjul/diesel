@@ -129,7 +129,7 @@ namespace Test.Diesel.CodeGeneration
 
         private AbstractSyntaxTree CreateAbstractSyntaxTreeWith(TypeDeclaration typeDeclaration)
         {
-            var ns = typeof (CodeDomGeneratorTest).Namespace + ".Generated";
+            var ns = new NamespaceIdentifier(typeof (CodeDomGeneratorTest).Namespace + ".Generated");
             return new AbstractSyntaxTree(new[] { new Namespace(ns, new[] { typeDeclaration}) });
         }
 
@@ -204,8 +204,8 @@ namespace Test.Diesel.CodeGeneration
         {
             var ast = new AbstractSyntaxTree(new[]
                 {
-                    new Namespace("Employees.Commands", new[] {CreateImportEmployeeCommandDeclaration()}),
-                    new Namespace("Employees.Model", new[] {CreateEmployeeNumberValueTypeDeclaration()}),
+                    new Namespace(new NamespaceIdentifier("Employees.Commands"), new[] {CreateImportEmployeeCommandDeclaration()}),
+                    new Namespace(new NamespaceIdentifier("Employees.Model"), new[] {CreateEmployeeNumberValueTypeDeclaration()}),
                 });
 
             var dom = CodeDomGenerator.Compile(ast);
@@ -226,7 +226,7 @@ namespace Test.Diesel.CodeGeneration
         private static void AssertNamespaceCompiledCodeShouldContain(IEnumerable<TypeDeclaration> declarations, 
             params string[] expectedTypeDeclarations)
         {
-            var ns = typeof (CodeDomGeneratorTest).Namespace + ".Generated";
+            var ns = new NamespaceIdentifier(typeof (CodeDomGeneratorTest).Namespace + ".Generated");
             var model = new AbstractSyntaxTree(new[] {new Namespace(ns, declarations)});
             var actual = CodeDomGenerator.Compile(model);
             Assert.That(actual, Is.Not.Null);
