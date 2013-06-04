@@ -130,7 +130,7 @@ namespace Test.Diesel.CodeGeneration
         private AbstractSyntaxTree CreateAbstractSyntaxTreeWith(TypeDeclaration typeDeclaration)
         {
             var ns = new NamespaceIdentifier(typeof (CodeDomGeneratorTest).Namespace + ".Generated");
-            return new AbstractSyntaxTree(new[] { new Namespace(ns, new[] { typeDeclaration}) });
+            return new AbstractSyntaxTree(null, new[] { new Namespace(ns, new[] { typeDeclaration}) });
         }
 
         [Test]
@@ -202,7 +202,7 @@ namespace Test.Diesel.CodeGeneration
         [Test]
         public void AbstractSyntaxTree_ValidDeclarationWithMultipleDeclarations_ShouldCompile()
         {
-            var ast = new AbstractSyntaxTree(new[]
+            var ast = new AbstractSyntaxTree(null, new[]
                 {
                     new Namespace(new NamespaceIdentifier("Employees.Commands"), new[] {CreateImportEmployeeCommandDeclaration()}),
                     new Namespace(new NamespaceIdentifier("Employees.Model"), new[] {CreateEmployeeNumberValueTypeDeclaration()}),
@@ -227,13 +227,13 @@ namespace Test.Diesel.CodeGeneration
             params string[] expectedTypeDeclarations)
         {
             var ns = new NamespaceIdentifier(typeof (CodeDomGeneratorTest).Namespace + ".Generated");
-            var model = new AbstractSyntaxTree(new[] {new Namespace(ns, declarations)});
+            var model = new AbstractSyntaxTree(null, new[] { new Namespace(ns, declarations) });
             var actual = CodeDomGenerator.Compile(model);
             Assert.That(actual, Is.Not.Null);
             
             var source = CompileToSource(actual);
             
-            var expectedNamespaceDeclaration = String.Format("namespace {0}", ns);
+            var expectedNamespaceDeclaration = String.Format("namespace {0}", ns.Name);
             Assert.That(source, Is.StringContaining(expectedNamespaceDeclaration));
             
             foreach (var expected in expectedTypeDeclarations)

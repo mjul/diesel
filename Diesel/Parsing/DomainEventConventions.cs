@@ -2,7 +2,7 @@
 
 namespace Diesel.Parsing
 {
-    public class DomainEventConventions
+    public class DomainEventConventions : ITreeNode
     {
         public IEnumerable<TypeName> BaseTypes { get; private set; }
 
@@ -10,5 +10,7 @@ namespace Diesel.Parsing
         {
             BaseTypes = baseTypes;
         }
+
+        public IEnumerable<ITreeNode> Children { get { return BaseTypes; } }
     }
 }

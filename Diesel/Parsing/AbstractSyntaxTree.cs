@@ -4,16 +4,23 @@ namespace Diesel.Parsing
 {
     public class AbstractSyntaxTree : ITreeNode
     {
+        public ConventionsDeclaration Conventions { get; private set; }
         public IEnumerable<Namespace> Namespaces { get; private set; }
 
-        public AbstractSyntaxTree(IEnumerable<Namespace> namespaces)
+        public AbstractSyntaxTree(ConventionsDeclaration conventions, IEnumerable<Namespace> namespaces)
         {
+            Conventions = conventions;
             Namespaces = namespaces;
         }
 
         public IEnumerable<ITreeNode> Children
         {
-            get { return Namespaces; }
+            get
+            {
+                yield return Conventions;
+                foreach (var ns in Namespaces)
+                    yield return ns;
+            }
         }
     }
 }

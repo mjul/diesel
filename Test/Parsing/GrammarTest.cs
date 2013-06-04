@@ -380,17 +380,6 @@ namespace Test.Diesel.Parsing
         }
 
         [Test]
-        public void AbstractSyntaxTree_MultipleNamespaces_ShouldParseNamespaces()
-        {
-            var actual =
-                Grammar.AbstractSyntaxTree.Parse(
-                    "(namespace Foo (defvaluetype FooId)) "+
-                    "(namespace Bar (defcommand Say (string message)))");
-            Assert.That(actual, Is.Not.Null);
-            Assert.That(actual.Namespaces.Count(), Is.EqualTo(2));
-        }
-
-        [Test]
         public void ApplicationServiceDeclaration_NoCommands_ShouldNotParse()
         {
             var result = Grammar.ApplicationServiceDeclaration.TryParse("(defapplicationservice ImportService)");
@@ -456,13 +445,37 @@ namespace Test.Diesel.Parsing
         public void ConventionDeclarations_Valid_ShouldParse()
         {
             var actual = Grammar.ConventionsDeclaration.Parse(
-                    "(defconventions :domainevents {:inherits [SomeNamespace.IDomainEvent]})");
+                    "(defconventions :domainevents {:inherit [SomeNamespace.IDomainEvent]})");
             Assert.That(actual, Is.Not.Null);
             Assert.That(actual.DomainEventConventions, Is.Not.Null);
             Assert.That(actual.DomainEventConventions, Is.Not.Null);
         }
 
 
+        [Test]
+        public void AbstractSyntaxTree_MultipleNamespaces_ShouldParseNamespaces()
+        {
+            var actual =
+                Grammar.AbstractSyntaxTree.Parse(
+                    "(namespace Foo (defvaluetype FooId)) " +
+                    "(namespace Bar (defcommand Say (string message)))");
+            Assert.That(actual, Is.Not.Null);
+            Assert.That(actual.Namespaces.Count(), Is.EqualTo(2));
+        }
+
+        [Test]
+        public void AbstractSyntaxTree_WithConventions_ShouldParseConventions()
+        {
+            var actual =
+                Grammar.AbstractSyntaxTree.Parse(
+                    "(defconventions :domainevents {:inherit [SomeName.IDomainEvent]})" +
+                    "(namespace Bar (defcommand Say (string message)))");
+            Assert.That(actual, Is.Not.Null);
+            Assert.That(actual.Conventions, Is.Not.Null);
+            Assert.That(actual.Namespaces.Count(), Is.EqualTo(1));
+        }
+
+        
         [Test]
         public void Everything_ValidAstFollowedByInvalidSource_ShouldNotParse()
         {

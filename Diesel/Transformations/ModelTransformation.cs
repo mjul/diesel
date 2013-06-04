@@ -7,7 +7,12 @@ namespace Diesel.Transformations
     {
         public virtual AbstractSyntaxTree Transform(AbstractSyntaxTree ast)
         {
-            return new AbstractSyntaxTree(ast.Namespaces.Select(Transform));
+            return new AbstractSyntaxTree(Transform(ast.Conventions), ast.Namespaces.Select(Transform));
+        }
+
+        private ConventionsDeclaration Transform(ConventionsDeclaration conventions)
+        {
+            return conventions;
         }
 
         public virtual Namespace Transform(Namespace ns)

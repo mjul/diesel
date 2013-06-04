@@ -45,7 +45,7 @@ namespace Test.Diesel.Transformations
 
         private static ITypeDeclaration ApplyDefaultsOnSingleDeclarationNamespace(TypeDeclaration valueTypeDeclaration)
         {
-            var input = new AbstractSyntaxTree(
+            var input = new AbstractSyntaxTree(null,
                 new[]
                     {
                         new Namespace(new NamespaceIdentifier("Test"),

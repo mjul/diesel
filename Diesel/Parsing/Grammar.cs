@@ -221,7 +221,7 @@ namespace Diesel.Parsing
             = (from declaration in Symbol("defconventions").Token()
                from name in Keyword("domainevents").Token()
                from lcurly in LeftCurlyBrace.Token()
-               from inherits in Keyword("inherits").Token()
+               from inherits in Keyword("inherit").Token()
                from lbracket in LeftSquareBracket.Token()
                from baseTypes in TypeName.Token().Many()
                from rbracket in RightSquareBracket.Token()
@@ -232,8 +232,9 @@ namespace Diesel.Parsing
                 .Named("ConventionsDeclaration");
 
         public static readonly Parser<AbstractSyntaxTree> AbstractSyntaxTree
-            = (from namespaces in Namespace.Token().Many().Token()
-               select new AbstractSyntaxTree(namespaces));
+            = (from conventions in ConventionsDeclaration.Optional()
+               from namespaces in Namespace.Token().Many().Token() 
+               select new AbstractSyntaxTree(conventions.GetOrDefault(), namespaces));
 
         /// <summary>
         /// Top-level production for parsing everything in the source string.
