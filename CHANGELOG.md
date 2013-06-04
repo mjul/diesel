@@ -1,4 +1,4 @@
-# Version 1.5
+# Version 1.5 (June 4th, 2013)
 * Parser requires entire source file to be valid (before it unintentionally allowed anything to follow the AST).
 * Added DataContractSerializer serializability for commands (`defcommand`).
 
