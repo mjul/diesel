@@ -66,35 +66,40 @@ namespace Diesel.CodeGeneration
                     IsClass = !isValueType
                 };
 
-            var attributesByProperty = properties.ToDictionary(pd => pd, pd => new List<CodeAttributeDeclaration>());
             if (isDataContract)
             {
                 result.CustomAttributes.Add(CreateAttribute(typeof(DataContractAttribute)));
-                var dataMemberAttributeByProperty = Enumerable.Zip(
-                        properties,
-                        Enumerable.Range(1, properties.Length),
-                        (p, i) => new
-                            {
-                                Property = p,
-                                Attribute = new [] {CreateDataMemberAttribute(i)}.ToList()
-                            })
-                                                              .ToDictionary(pi => pi.Property, pi => pi.Attribute);
-                attributesByProperty = dataMemberAttributeByProperty;
             }
-
             result.CustomAttributes.Add(CreateAttribute(typeof (SerializableAttribute)));
+            var readOnlyProperties = ReadOnlyProperties(properties, isDataContract).ToList();
+
             result.BaseTypes.AddRange(CreateImplementsIEquatableOf(name));
-            result.Members.AddRange(CreateConstructorAssigningBackingFieldsFor(properties));
-            result.Members.AddRange(CreateReadOnlyProperties(properties, p => attributesByProperty[p]));
+            result.Members.AddRange(CreateConstructorAssigningBackingFieldsFor(readOnlyProperties));
+            result.Members.AddRange(CreateReadOnlyProperties(readOnlyProperties));
             result.Members.AddRange(CreateEqualityOperatorOverloading(name, isValueType));
             result.Members.AddRange(CreateGetHashCode(properties));
             result.Members.AddRange(CreateEqualsOverloadingUsingEqualityOperator(name, isValueType, properties));
             return result;
         }
 
+        private static IEnumerable<ReadOnlyProperty> ReadOnlyProperties(PropertyDeclaration[] declarations, bool isDataContract)
+        {
+            var noAttributes = new CodeAttributeDeclaration[] {};
+            return Enumerable.Zip(
+                declarations,
+                Enumerable.Range(1, declarations.Length),
+                (p, dataMemberOrder) => new ReadOnlyProperty(p.Name, p.Type,
+                                               new BackingField(BackingFieldName(p.Name), p.Type,
+                                                                isDataContract
+                                                                    ? new[] {CreateDataMemberAttribute(dataMemberOrder, p.Name)}
+                                                                    : noAttributes),
+                                               noAttributes
+                              ));
+        }
+
 
         private static CodeTypeMember[] CreateConstructorAssigningBackingFieldsFor(
-            IEnumerable<PropertyDeclaration> properties)
+            IEnumerable<ReadOnlyProperty> properties)
         {
             var constructor = new CodeConstructor()
                 {
@@ -102,10 +107,9 @@ namespace Diesel.CodeGeneration
                 };
             foreach (var property in properties)
             {
-                var backingField = BackingFieldName(property.Name);
                 var parameterName = CamelCase(property.Name);
                 constructor.Parameters.Add(new CodeParameterDeclarationExpression(property.Type, parameterName));
-                constructor.Statements.Add(CreateFieldAssignment(backingField, parameterName));
+                constructor.Statements.Add(CreateFieldAssignment(property.BackingField.Name, parameterName));
             }
             return new CodeTypeMember[] {constructor};
         }
@@ -236,11 +240,15 @@ namespace Diesel.CodeGeneration
         }
 
         
-        private static CodeAttributeDeclaration CreateDataMemberAttribute(int order)
+        private static CodeAttributeDeclaration CreateDataMemberAttribute(int order, string name)
         {
             return new CodeAttributeDeclaration(
                 new CodeTypeReference(typeof(DataMemberAttribute)),
-                new[] { new CodeAttributeArgument("Order", new CodePrimitiveExpression(order)) });
+                new[]
+                    {
+                        new CodeAttributeArgument("Name", new CodePrimitiveExpression(name)),
+                        new CodeAttributeArgument("Order", new CodePrimitiveExpression(order))
+                    });
         }
 
 
@@ -285,36 +293,37 @@ namespace Diesel.CodeGeneration
         /// <summary>
         /// Create a read-only property using a backing field with standard name.
         /// </summary>
-        private static CodeTypeMember[] CreateReadOnlyProperty(string name, Type valueType, IEnumerable<CodeAttributeDeclaration> customAttributes)
+        private static CodeTypeMember[] CreateReadOnlyProperty(ReadOnlyProperty property)
         {
-            var backingFieldName = BackingFieldName(name);
-            var backingField = new CodeMemberField(valueType, backingFieldName);
+            var backingField = CreateField(property.BackingField);
             var propertyField = new CodeMemberProperty()
             {
-                Name = name,
-                Type = new CodeTypeReference(valueType),
+                Name = property.Name,
+                Type = new CodeTypeReference(property.Type),
                 Attributes = MemberAttributes.Public | MemberAttributes.Final,
-                CustomAttributes = new CodeAttributeDeclarationCollection(customAttributes.ToArray()),
+                CustomAttributes = new CodeAttributeDeclarationCollection(property.Attributes.ToArray()),
                 GetStatements = 
                         { 
                             new CodeMethodReturnStatement( 
                                 new CodeFieldReferenceExpression(
-                                    new CodeThisReferenceExpression(), backingFieldName)) 
+                                    new CodeThisReferenceExpression(), backingField.Name)) 
                         },
             };
             return new CodeTypeMember[] { backingField, propertyField };
         }
 
-        private static CodeTypeMember[] CreateReadOnlyProperties(IEnumerable<PropertyDeclaration> propertyDeclarations)
+        private static CodeTypeMember CreateField(BackingField field)
         {
-            return CreateReadOnlyProperties(propertyDeclarations, p => new List<CodeAttributeDeclaration>());
+            return new CodeMemberField(field.Type, field.Name)
+                {
+                    CustomAttributes = new CodeAttributeDeclarationCollection(field.Attributes.ToArray())
+                };
         }
 
-        private static CodeTypeMember[] CreateReadOnlyProperties(IEnumerable<PropertyDeclaration> propertyDeclarations, Func<PropertyDeclaration, IEnumerable<CodeAttributeDeclaration>> generateAttributesFunction)
+        private static CodeTypeMember[] CreateReadOnlyProperties(IEnumerable<ReadOnlyProperty> propertyDeclarations)
         {
-            return propertyDeclarations.SelectMany(p => CreateReadOnlyProperty(p.Name, p.Type, generateAttributesFunction(p))).ToArray();
+            return propertyDeclarations.SelectMany(CreateReadOnlyProperty).ToArray();
         }
-
 
         private static CodeMemberMethod[] CreateSetMethodForProperty(string name, Type valueType)
         {

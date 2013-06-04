@@ -79,21 +79,28 @@ namespace Test.Diesel
             Assert.That(deserialized, Is.EqualTo(instance));
         }
 
-
         [Test]
-        public void Properties_Attributes_ShouldHaveOrderedDataMemberAttributes()
+        public void Instance_WhenSerializedWithDataContractFormatter_ShouldBeSerializable()
         {
-            var getterProperties = typeof (Generated.ImportEmployee).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty);
-            Assert.That(GetDataMemberAttributeOrderValue(getterProperties, "CommandId"), Is.EqualTo(1));
-            Assert.That(GetDataMemberAttributeOrderValue(getterProperties, "EmployeeNumber"), Is.EqualTo(2));
-            Assert.That(GetDataMemberAttributeOrderValue(getterProperties, "FirstName"), Is.EqualTo(3));
-            Assert.That(GetDataMemberAttributeOrderValue(getterProperties, "LastName"), Is.EqualTo(4));
-            Assert.That(GetDataMemberAttributeOrderValue(getterProperties, "SourceId"), Is.EqualTo(5));
+            var instance = new ImportEmployee(CommandId, EmployeeNumber, FirstName, Lastname, SourceId);
+            var deserialized = SerializationTesting.SerializeDeserializeWithDataContractSerializer(instance);
+            Assert.That(deserialized, Is.EqualTo(instance));
         }
 
-        private static object GetDataMemberAttributeOrderValue(PropertyInfo[] getProperties, string employeenumber)
+        [Test]
+        public void BackingField_Attributes_ShouldHaveOrderedDataMemberAttributes()
         {
-            var employeeNumber = getProperties.Single(p => p.Name == employeenumber);
+            var backingFields = typeof (Generated.ImportEmployee).GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.GetField);
+            Assert.That(GetDataMemberAttributeOrderValue(backingFields, "_commandId"), Is.EqualTo(1));
+            Assert.That(GetDataMemberAttributeOrderValue(backingFields, "_employeeNumber"), Is.EqualTo(2));
+            Assert.That(GetDataMemberAttributeOrderValue(backingFields, "_firstName"), Is.EqualTo(3));
+            Assert.That(GetDataMemberAttributeOrderValue(backingFields, "_lastName"), Is.EqualTo(4));
+            Assert.That(GetDataMemberAttributeOrderValue(backingFields, "_sourceId"), Is.EqualTo(5));
+        }
+
+        private static object GetDataMemberAttributeOrderValue(FieldInfo[] fields, string fieldName)
+        {
+            var employeeNumber = fields.Single(p => p.Name == fieldName);
             var dataMemberAttribute = employeeNumber.CustomAttributes
                                                     .Single(a => a.AttributeType == typeof (DataMemberAttribute));
             return dataMemberAttribute.NamedArguments.Single(a => a.MemberName == "Order").TypedValue.Value;

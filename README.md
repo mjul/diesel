@@ -18,7 +18,7 @@ Create a model in the DSL language:
         (defvaluetype FirstName string)
         (defvaluetype LastName string)
         (defapplicationService ImportService
-            (defcommand ImportEmployeeCommand (int EmployeeNumber, string FirstName, string LastName))))
+            (defcommand ImportEmployee (int EmployeeNumber, string FirstName, string LastName))))
 ```
 
 Use the Visual Studio T4 template to automatically generate the code (see below) or compile it the model source 
@@ -124,6 +124,9 @@ equality operator overloads like this:
 
 This defines a class representing the Command, the properties are assigned via a constructor
 and equals and equality operators are implemented with value semantics.
+
+Commands are DTOs (Data Transfer Objects), so they are also decorated with attributes
+to allow them to be serializable with the BinarySerializer and the DataContractSerializer.
 
 ### Example
 

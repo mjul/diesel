@@ -205,14 +205,19 @@ namespace Test.Diesel.Generated {
     [System.SerializableAttribute()]
     public partial class ImportEmployee : System.IEquatable<ImportEmployee> {
         
+        [System.Runtime.Serialization.DataMemberAttribute(Name="CommandId", Order=1)]
         private System.Guid _commandId;
         
+        [System.Runtime.Serialization.DataMemberAttribute(Name="EmployeeNumber", Order=2)]
         private int _employeeNumber;
         
+        [System.Runtime.Serialization.DataMemberAttribute(Name="FirstName", Order=3)]
         private string _firstName;
         
+        [System.Runtime.Serialization.DataMemberAttribute(Name="LastName", Order=4)]
         private string _lastName;
         
+        [System.Runtime.Serialization.DataMemberAttribute(Name="SourceId", Order=5)]
         private System.Nullable<int> _sourceId;
         
         public ImportEmployee(System.Guid commandId, int employeeNumber, string firstName, string lastName, System.Nullable<int> sourceId) {
@@ -223,35 +228,30 @@ namespace Test.Diesel.Generated {
             this._sourceId = sourceId;
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute(Order=1)]
         public System.Guid CommandId {
             get {
                 return this._commandId;
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute(Order=2)]
         public int EmployeeNumber {
             get {
                 return this._employeeNumber;
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute(Order=3)]
         public string FirstName {
             get {
                 return this._firstName;
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute(Order=4)]
         public string LastName {
             get {
                 return this._lastName;
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute(Order=5)]
         public System.Nullable<int> SourceId {
             get {
                 return this._sourceId;
@@ -299,10 +299,13 @@ namespace Test.Diesel.Generated {
     [System.SerializableAttribute()]
     public partial class ImportConsultant : System.IEquatable<ImportConsultant> {
         
+        [System.Runtime.Serialization.DataMemberAttribute(Name="FirstName", Order=1)]
         private string _firstName;
         
+        [System.Runtime.Serialization.DataMemberAttribute(Name="LastName", Order=2)]
         private string _lastName;
         
+        [System.Runtime.Serialization.DataMemberAttribute(Name="Company", Order=3)]
         private string _company;
         
         public ImportConsultant(string firstName, string lastName, string company) {
@@ -311,21 +314,18 @@ namespace Test.Diesel.Generated {
             this._company = company;
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute(Order=1)]
         public string FirstName {
             get {
                 return this._firstName;
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute(Order=2)]
         public string LastName {
             get {
                 return this._lastName;
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute(Order=3)]
         public string Company {
             get {
                 return this._company;

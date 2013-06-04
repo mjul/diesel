@@ -69,9 +69,9 @@ namespace Test.Diesel.CodeGeneration
         {
             var source = CompileToSource(CompileImportEmployeeCommand());
             
-            Assert.That(source, Is.StringMatching(@"DataMemberAttribute\(Order=1\)]\s+public\s+int\s+EmployeeNumber"));
-            Assert.That(source, Is.StringMatching(@"DataMemberAttribute\(Order=2\)]\s+public\s+string\s+FirstName"));
-            Assert.That(source, Is.StringMatching(@"DataMemberAttribute\(Order=3\)]\s+public\s+string\s+LastName"));
+            Assert.That(source, Is.StringMatching(@"DataMemberAttribute\(Name=""EmployeeNumber"", Order=1\)]\s+private\s+int\s+_employeeNumber"));
+            Assert.That(source, Is.StringMatching(@"DataMemberAttribute\(Name=""FirstName"", Order=2\)]\s+private\s+string\s+_firstName"));
+            Assert.That(source, Is.StringMatching(@"DataMemberAttribute\(Name=""LastName"", Order=3\)]\s+private\s+string\s+_lastName"));
         }
 
         [Test]

@@ -2,7 +2,9 @@
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization.Formatters.Soap;
+using System.Xml;
 using System.Xml.Serialization;
+using Test.Diesel.Generated;
 
 namespace Test.Diesel.TestHelpers
 {
@@ -34,6 +36,16 @@ namespace Test.Diesel.TestHelpers
             formatter.Serialize(ms, graph);
             ms.Position = 0;
             var deserialized = (T)formatter.Deserialize(ms);
+            return deserialized;
+        }
+
+        public static T SerializeDeserializeWithDataContractSerializer<T>(T data)
+        {
+            var serializer = new DataContractSerializer(typeof (T));
+            var stringWriter = new StringWriter();
+            serializer.WriteObject(new XmlTextWriter(stringWriter), data);
+            var serialized = stringWriter.ToString();
+            var deserialized = (T)serializer.ReadObject(new XmlTextReader(new StringReader(serialized)));
             return deserialized;
         }
     }
