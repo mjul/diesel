@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.Linq;
 using Diesel;
 using Diesel.CodeGeneration;
 using Diesel.Parsing;
@@ -20,7 +21,7 @@ namespace Test.Diesel.CodeGeneration
             var actual = CodeDomGenerator.Compile(model);
             Assert.That(actual, Is.Not.Null);
             var source = CompileToSource(actual);
-            Assert.That(source, Is.StringContaining("struct EmployeeNumber"));
+            Assert.That(source, Is.StringContaining("public partial struct EmployeeNumber"));
             Console.WriteLine(source);
         }
 
@@ -91,6 +92,37 @@ namespace Test.Diesel.CodeGeneration
                                                                     new PropertyDeclaration("LastName", typeof (String))
                                                                 });
             var model = CreateAbstractSyntaxTreeWith(commandDeclaration);
+            return CodeDomGenerator.Compile(model);
+        }
+
+
+        [Test]
+        public void DomainEventDeclaration_ValidDeclaration_ShouldParse()
+        {
+            var source = CompileToSource(CompileEmployeeImportedEvent());
+            Assert.That(source, Is.StringContaining(@"class EmployeeImported"));
+        }
+
+        [Test]
+        public void DomainEventDeclaration_ValidDeclaration_ShouldProduceSealedClass()
+        {
+            var source = CompileToSource(CompileEmployeeImportedEvent());
+            Assert.That(source, Is.StringContaining(@"sealed partial class EmployeeImported"));
+        }
+
+
+        private CodeCompileUnit CompileEmployeeImportedEvent()
+        {
+            var declaration = new DomainEventDeclaration("EmployeeImported",
+                                                         new[]
+                                                             {
+                                                                 new PropertyDeclaration("Id", typeof (Guid)),
+                                                                 new PropertyDeclaration("EmployeeNumber",
+                                                                                         typeof (Int32)),
+                                                                 new PropertyDeclaration("FirstName", typeof (String)),
+                                                                 new PropertyDeclaration("LastName", typeof (String))
+                                                             });
+            var model = CreateAbstractSyntaxTreeWith(declaration);
             return CodeDomGenerator.Compile(model);
         }
 

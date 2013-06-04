@@ -9,7 +9,7 @@ namespace Diesel.CodeGeneration
         public static CodeTypeDeclaration CreateDomainEventDeclaration(DomainEventDeclaration declaration)
         {
             const bool isValueType = false;
-            return CreateTypeWithValueSemantics(isValueType, declaration.Name, declaration.Properties.ToArray(), true);
+            return CreateTypeWithValueSemantics(isValueType, declaration.Name, declaration.Properties.ToArray(), true, true);
         } 
     }
 }

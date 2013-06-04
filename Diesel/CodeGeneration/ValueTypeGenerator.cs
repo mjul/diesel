@@ -13,7 +13,7 @@ namespace Diesel.CodeGeneration
         public static CodeTypeDeclaration CreateValueTypeDeclaration(ValueTypeDeclaration declaration)
         {
             const bool isValueType = true;
-            var result = CreateTypeWithValueSemantics(isValueType, declaration.Name, declaration.Properties.ToArray(), false);
+            var result = CreateTypeWithValueSemantics(isValueType, declaration.Name, declaration.Properties.ToArray(), false, isValueType);
             if (declaration.Properties.Count() == 1)
             {
                 var displayTemplate = String.Format("{{{0}}}", declaration.Properties.Single().Name);

@@ -27,6 +27,13 @@ namespace Test.Diesel
 
             AssertIncludesDefvaluetypeExamples(sourceCode);
             AssertIncludesDefcommandExamples(sourceCode);
+            AssertIncludesDefdomaineventExamples(sourceCode);
+        }
+
+        private void AssertIncludesDefdomaineventExamples(string sourceCode)
+        {
+            Assert.That(sourceCode, Is.StringContaining("namespace TestCases.Defdomainevent"));
+            Assert.That(sourceCode, Is.StringContaining("sealed partial class PaymentReceived"));
         }
 
         private static void AssertIncludesDefvaluetypeExamples(string sourceCode)

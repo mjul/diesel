@@ -2,12 +2,12 @@
 
 Diesel provides a declarative language for generating code for your .NET projects.
 
-* __Value Types__ - generate strong types for value types, e.g. EmployeeNumber instead of int. 
+* __Value Types__ - strong types for value types, e.g. EmployeeNumber instead of int. 
 * __Commands__ - generates classes for the Command DTOs.
 * __Domain Events__ - generates classes for the Domain Event DTOs.
 * __Application Services__ - generate an interface for all the commands accepted by the service.
 
-Planned features include declarations for Value Objects, Aggregate Roots, Domain Events and Projections.
+Planned features include declarations for Value Objects, Aggregate Roots and Projections.
 
 ## Example
 

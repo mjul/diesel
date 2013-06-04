@@ -3,6 +3,7 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using Diesel.Parsing;
@@ -63,14 +64,21 @@ namespace Diesel.CodeGeneration
 
 
         protected static CodeTypeDeclaration CreateTypeWithValueSemantics(bool isValueType, string name, 
-            PropertyDeclaration[] properties, bool isDataContract)
+            PropertyDeclaration[] properties, bool isDataContract, bool isSealed)
         {
             var result = new CodeTypeDeclaration(name)
                 {
                     IsStruct = isValueType,
                     IsPartial = true,
-                    IsClass = !isValueType
+                    IsClass = !isValueType,
+                    TypeAttributes = TypeAttributes.Public
                 };
+
+            if (isSealed)
+            {
+                result.TypeAttributes |= TypeAttributes.Sealed;
+            }
+
 
             if (isDataContract)
             {
