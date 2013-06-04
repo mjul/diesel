@@ -325,7 +325,6 @@ namespace Test.Diesel.Parsing
             Assert.That(actual.Namespaces.Count(), Is.EqualTo(2));
         }
 
-
         [Test]
         public void ApplicationServiceDeclaration_NoCommands_ShouldNotParse()
         {
@@ -355,6 +354,20 @@ namespace Test.Diesel.Parsing
             Assert.That(commands[1].Name, Is.EqualTo("ImportClient"));
         }
 
+        [Test]
+        public void Everything_ValidAstFollowedByInvalidSource_ShouldNotParse()
+        {
+            var actual = Grammar.Everything.TryParse("(namespace Foo (defvaluetype FooId)) )");
+            Assert.False(actual.WasSuccessful);
+        }
+
+
+        [Test]
+        public void Everything_ValidAst_ShouldParse()
+        {
+            var actual = Grammar.Everything.TryParse("(namespace Foo (defvaluetype FooId))");
+            Assert.True(actual.WasSuccessful);
+        }
 
     }
 }

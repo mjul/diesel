@@ -49,5 +49,11 @@ namespace Test.Diesel
             Assert.That(sourceCode, Is.StringContaining("class PrintGuid"));
         }
 
+        [Test]
+        public void Compile_InvalidModelSource_ShouldGenerateSourceCode()
+        {
+            const string modelSource = "(namespace Foo (defvaluetype SpuriousParen)) (";
+            Assert.Throws<Sprache.ParseException>(() => DieselCompiler.Compile(modelSource));
+        }
     }
 }

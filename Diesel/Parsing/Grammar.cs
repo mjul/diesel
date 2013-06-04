@@ -162,5 +162,11 @@ namespace Diesel.Parsing
             = (from namespaces in Namespace.Token().Many().Token()
                select new AbstractSyntaxTree(namespaces));
 
+        /// <summary>
+        /// Top-level production for parsing everything in the source string.
+        /// </summary>
+        public static readonly Parser<AbstractSyntaxTree> Everything
+            = AbstractSyntaxTree.Token().End();
+
     }
 }

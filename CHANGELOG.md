@@ -1,3 +1,8 @@
+# Version 1.5
+* Parser requires entire source file to be valid (before it unintentionally allowed anything to follow the AST).
+* 
+
+
 # Version 1.4 (June 3rd, 2013)
 * Support for nullable types in properties introduced (e.g. `defcommand` and `defvaluetype`).
 * Support for System types DateTime and Guid in added to properties in `defcommand` and `defvaluetype`.
