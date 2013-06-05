@@ -33,6 +33,18 @@ namespace Test.Diesel
         }
 
         [Test]
+        public void Type_WithConventionInheritIDomainEvent_ShouldImplementIDomainEventInterface()
+        {
+            Assert.That(typeof (IDomainEvent).IsAssignableFrom(typeof (EmployeeImported)));
+        }
+
+        [Test]
+        public void Type_ShouldImplementIEquatableInterface()
+        {
+            Assert.That(typeof(IEquatable<EmployeeImported>).IsAssignableFrom(typeof(EmployeeImported)));
+        }
+
+        [Test]
         public void EqualsGetHashCodeAndEqualityOperators()
         {
             var a = new EmployeeImported(Id, EmployeeNumber, FirstName, Lastname, SourceId);

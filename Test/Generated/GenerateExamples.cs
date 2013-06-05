@@ -196,7 +196,7 @@ namespace Test.Diesel.Generated {
     
     [System.Runtime.Serialization.DataContractAttribute(Name="EmployeeImported")]
     [System.SerializableAttribute()]
-    public sealed partial class EmployeeImported : System.IEquatable<EmployeeImported> {
+    public sealed partial class EmployeeImported : System.IEquatable<EmployeeImported>, Test.Diesel.IDomainEvent {
         
         [System.Runtime.Serialization.DataMemberAttribute(Name="Id", Order=1)]
         private System.Guid _id;

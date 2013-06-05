@@ -15,5 +15,20 @@ namespace Diesel.Parsing
         {
             get { yield return DomainEventConventions; }
         }
+
+        public ConventionsDeclaration ApplyOverridesFrom(ConventionsDeclaration other)
+        {
+            if (other != null)
+            {
+                var newDomainEventConventions = 
+                    (DomainEventConventions ?? new DomainEventConventions(new TypeName[] {}))
+                    .ApplyOverridesFrom(other.DomainEventConventions);
+                return new ConventionsDeclaration(newDomainEventConventions);
+            }
+            else
+            {
+                return this;
+            }
+        }
     }
 }

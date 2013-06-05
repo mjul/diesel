@@ -1,4 +1,6 @@
-﻿(namespace Test.Diesel.Generated 
+﻿(defconventions :domainevents {:inherit [Test.Diesel.IDomainEvent]})
+
+(namespace Test.Diesel.Generated 
 	(defvaluetype EmployeeNumber)
 	(defvaluetype EmailAddress string)
 	(defvaluetype EmployeeName (string FirstName, string LastName))

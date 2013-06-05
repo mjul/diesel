@@ -110,8 +110,25 @@ namespace Test.Diesel.CodeGeneration
             Assert.That(source, Is.StringContaining(@"sealed partial class EmployeeImported"));
         }
 
+        [Test]
+        public void DomainEventDeclaration_WithConventionInheritIDomainEvent_ShouldProduceClassInheritingIDomainEvent()
+        {
+            var declaration = CreateEmployeeImportedEventDeclaration();
+            var conventions = new ConventionsDeclaration(
+                new DomainEventConventions(new[] {new TypeName("Test.Diesel.IDomainEvent")}));
+            var model = CreateAbstractSyntaxTreeWith(conventions, declaration);
+            var source = CompileToSource(CodeDomGenerator.Compile(model));
+            Assert.That(source, Is.StringMatching(@"class EmployeeImported :.* Test.Diesel.IDomainEvent \{"));
+        }
 
         private CodeCompileUnit CompileEmployeeImportedEvent()
+        {
+            var declaration = CreateEmployeeImportedEventDeclaration();
+            var model = CreateAbstractSyntaxTreeWith(declaration);
+            return CodeDomGenerator.Compile(model);
+        }
+
+        private static DomainEventDeclaration CreateEmployeeImportedEventDeclaration()
         {
             var declaration = new DomainEventDeclaration("EmployeeImported",
                                                          new[]
@@ -122,16 +139,21 @@ namespace Test.Diesel.CodeGeneration
                                                                  new PropertyDeclaration("FirstName", typeof (String)),
                                                                  new PropertyDeclaration("LastName", typeof (String))
                                                              });
-            var model = CreateAbstractSyntaxTreeWith(declaration);
-            return CodeDomGenerator.Compile(model);
+            return declaration;
         }
 
 
         private AbstractSyntaxTree CreateAbstractSyntaxTreeWith(TypeDeclaration typeDeclaration)
         {
-            var ns = new NamespaceIdentifier(typeof (CodeDomGeneratorTest).Namespace + ".Generated");
-            return new AbstractSyntaxTree(null, new[] { new Namespace(ns, new[] { typeDeclaration}) });
+            return CreateAbstractSyntaxTreeWith(null, typeDeclaration);
         }
+
+        private AbstractSyntaxTree CreateAbstractSyntaxTreeWith(ConventionsDeclaration conventions, TypeDeclaration typeDeclaration)
+        {
+            var ns = new NamespaceIdentifier(typeof(CodeDomGeneratorTest).Namespace + ".Generated");
+            return new AbstractSyntaxTree(conventions, new[] { new Namespace(ns, new[] { typeDeclaration }) });
+        }
+
 
         [Test]
         public void Namespace_ValidDeclarationWithValueTypeDeclaration_ShouldCompile()

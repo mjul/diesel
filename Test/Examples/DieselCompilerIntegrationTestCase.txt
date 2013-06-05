@@ -1,4 +1,4 @@
-﻿(defconventions :domainevents {:inherit [SomeNamespace.IDomainEvent]})
+﻿(defconventions :domainevents {:inherit [Test.Diesel.IDomainEvent]})
 
 (namespace Employees
 	(defvaluetype EmployeeNumber int)

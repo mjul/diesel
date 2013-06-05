@@ -12,53 +12,65 @@ namespace Diesel.CodeGeneration
 {
     public class CodeDomGenerator
     {
+        private static ConventionsDeclaration DefaultConventions
+        {
+            get { return new ConventionsDeclaration(new DomainEventConventions(new TypeName[] {})); }
+        }
+
         public static CodeCompileUnit Compile(AbstractSyntaxTree ast)
         {
             var unit = new CodeCompileUnit();
-            Add(unit, ast);
+            var conventions = DefaultConventions;
+            Add(unit, conventions, ast);
             return unit;
         }
 
-        private static void Add(CodeCompileUnit codeCompileUnit, AbstractSyntaxTree ast)
+        private static void Add(CodeCompileUnit codeCompileUnit, ConventionsDeclaration conventions, AbstractSyntaxTree ast)
         {
+            var userConventions = conventions;
+            if (ast.Conventions != null)
+            {
+                userConventions = conventions.ApplyOverridesFrom(ast.Conventions);
+            }
             foreach (var ns in ast.Namespaces)
             {
-                Add(codeCompileUnit, ns);                
+                Add(codeCompileUnit, userConventions, ns);                
             }
         }
 
-        private static void Add(CodeCompileUnit codeCompileUnit, Namespace declaration)
+
+        private static void Add(CodeCompileUnit codeCompileUnit, ConventionsDeclaration conventions, Namespace declaration)
         {
             var ns = new CodeNamespace(declaration.Name.Name);
             ns.Imports.Add(new CodeNamespaceImport("System"));
             codeCompileUnit.Namespaces.Add(ns);
             foreach (var typeDeclaration in declaration.Declarations)
             {
-                Add(ns, (dynamic)typeDeclaration);
+                Add(ns, conventions, (dynamic)typeDeclaration);
             }
         }
 
-        private static void Add(CodeNamespace ns, CommandDeclaration declaration)
+        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, CommandDeclaration declaration)
         {
             ns.Types.Add(CommandGenerator.CreateCommandDeclaration(declaration));
         }
 
-        private static void Add(CodeNamespace ns, DomainEventDeclaration declaration)
+        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, DomainEventDeclaration declaration)
         {
-            ns.Types.Add(DomainEventGenerator.CreateDomainEventDeclaration(declaration));
+            ns.Types.Add(DomainEventGenerator.CreateDomainEventDeclaration(declaration, conventions.DomainEventConventions));
         }
 
-        private static void Add(CodeNamespace ns, ValueTypeDeclaration declaration)
+        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, ValueTypeDeclaration declaration)
         {
             ns.Types.Add(ValueTypeGenerator.CreateValueTypeDeclaration(declaration));
         }
 
-        private static void Add(CodeNamespace ns, ApplicationServiceDeclaration declaration)
+        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, ApplicationServiceDeclaration declaration)
         {
             ns.Types.Add(ApplicationServiceGenerator.CreateApplicationServiceInterface(declaration));
             foreach (var command in declaration.Commands)
             {
-                Add(ns, command);
+                Add(ns, conventions, command);
             }
         }
 

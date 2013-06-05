@@ -34,6 +34,7 @@ namespace Test.Diesel
         {
             Assert.That(sourceCode, Is.StringContaining("namespace TestCases.Defdomainevent"));
             Assert.That(sourceCode, Is.StringContaining("sealed partial class PaymentReceived"));
+            Assert.That(sourceCode, Is.StringMatching("class PaymentReceived :.*Test.Diesel.IDomainEvent"));
         }
 
         private static void AssertIncludesDefvaluetypeExamples(string sourceCode)

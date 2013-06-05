@@ -52,6 +52,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CodeExamples.resx</DependentUpon>
     </Compile>
+    <Compile Include="CodeGeneration\ConventionsDeclarationTest.cs" />
+    <Compile Include="CodeGeneration\DomainEventConventionsDeclarationTest.cs" />
     <Compile Include="DieselCompilerIntegrationTest.cs" />
     <Compile Include="GeneratedCommandTest.cs" />
     <Compile Include="GeneratedDomainEventTest.cs" />
@@ -63,6 +65,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>GenerateExamples.tt</DependentUpon>
     </Compile>
+    <Compile Include="IDomainEvent.cs" />
     <Compile Include="Parsing\GrammarTest.cs" />
     <Compile Include="CodeGeneration\CodeDomGeneratorTest.cs" />
     <Compile Include="TestHelpers\SerializationTesting.cs" />
