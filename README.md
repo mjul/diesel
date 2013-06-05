@@ -44,7 +44,6 @@ Now use it
            
     // Properties exposing these are automatically added to the class:
     var firstName = command.FirstName;
-
      
 ```
 
@@ -168,7 +167,7 @@ You can use this to add base types to the generated Domain Events.
 For example, to have all Domain Events derive from the `GreatApp.IDomainEvent` interface, 
 just add this declaration:
 
-    (defconventions :domainevents {:inherit [Test.Diesel.IDomainEvent]})
+    (defconventions :domainevents {:inherit [GreatApp.IDomainEvent]})
 
 
 
@@ -203,7 +202,22 @@ interface for the service:
 
     (namespace <name> <typedeclarations*>)
 
-A model consists of one or more namespace declarations.
+A model consists of one or more namespace declarations. Namespaces work like in .NET, controlling 
+the .NET namespace of the types declared inside.
+
+## Example
+
+```
+    (namespace Employees
+        (defvaluetype EmployeeNumber)
+        (defapplicationService ImportService
+            (defcommand ImportEmployee (int EmployeeNumber, string FirstName, string LastName))
+        (defdomainevent EmployeeImported (Guid Id, int EmployeeNumber, string FirstName, string LastName)))
+```
+
+This declares types `Employees.EmployeeNumber`, `Employees.IImportService`, `Employees.ImportEmployee`, 
+and `Employees.EmployeeImported`.
+
 
 # Defining Conventions for Code-Generation
 
