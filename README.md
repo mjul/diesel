@@ -159,6 +159,19 @@ to allow them to be serializable with the BinarySerializer and the DataContractS
 This generates a class with properties `Id`, `EmployeeNumber`, `FirstName` and `LastName` and `SourceId`.
 
 
+## Adding Base Classes or Interfaces to Domain Events
+
+The code generator reads conventions from the optional `defconventions` declaration
+at the top of the Diesel source file.
+
+You can use this to add base types to the generated Domain Events.
+For example, to have all Domain Events derive from the `GreatApp.IDomainEvent` interface, 
+just add this declaration:
+
+    (defconventions :domainevents {:inherit [Test.Diesel.IDomainEvent]})
+
+
+
 # Defining Application Services
 
     (defapplicationservice <name> <commands+>)
@@ -186,12 +199,25 @@ interface for the service:
     }
 ```
 
-
 # Defining Namespaces
 
     (namespace <name> <typedeclarations*>)
 
 A model consists of one or more namespace declarations.
+
+# Defining Conventions for Code-Generation
+
+    (defconventions :domainevents {:inherit <list-of-base-types>})
+
+The code-generation conventions can be controlled through the `defconventions` declaration.
+It must be placed first in the source file.
+For now, it only controls the list of interfaces and base classes for the Domain Events.
+
+## Example
+
+    (defconventions :domainevents {:inherit [Test.Diesel.IDomainEvent]})
+
+This adds the `Test.Diesel.IDomainEvent` as a base on all generated Domain Events.
 
 
 # Using the T4 Template
