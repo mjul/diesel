@@ -1,9 +1,9 @@
 ﻿namespace Diesel.Parsing.CSharp
 {
-    public class NamespaceName : Terminal
+    public class Identifier : Terminal
     {
         public string Name { get; private set; }
-        public NamespaceName(string name)
+        public Identifier(string name)
         {
             Name = name;
         }

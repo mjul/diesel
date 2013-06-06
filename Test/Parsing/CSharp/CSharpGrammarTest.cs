@@ -13,14 +13,14 @@ namespace Test.Diesel.Parsing.CSharp
         public void Identifier_ValidSingleLetter_ShouldParse()
         {
             var actual = CSharpGrammar.Identifier.Parse("x");
-            Assert.That(actual, Is.EqualTo("x"));
+            Assert.That(actual.Name, Is.EqualTo("x"));
         }
 
         [Test]
         public void Identifier_ValidString_ShouldParse()
         {
             var actual = CSharpGrammar.Identifier.Parse("name");
-            Assert.That(actual, Is.EqualTo("name"));
+            Assert.That(actual.Name, Is.EqualTo("name"));
         }
 
         [Test]
@@ -34,7 +34,7 @@ namespace Test.Diesel.Parsing.CSharp
         public void Identifier_ValidStringAndNumber_ShouldParse()
         {
             var actual = CSharpGrammar.Identifier.Parse("name1");
-            Assert.That(actual, Is.EqualTo("name1"));
+            Assert.That(actual.Name, Is.EqualTo("name1"));
         }
 
 

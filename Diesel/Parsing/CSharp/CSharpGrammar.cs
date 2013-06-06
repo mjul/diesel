@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Sprache;
 
 namespace Diesel.Parsing.CSharp
@@ -12,17 +13,19 @@ namespace Diesel.Parsing.CSharp
         /// <summary>
         /// Recognize valid .NET identifiers (for now just a subset, letters and digits).
         /// </summary>
-        public static Parser<string> Identifier =
+        public static Parser<Identifier> Identifier =
             (from first in TokenGrammar.Letter
              from rest in TokenGrammar.LetterOrDigit.Many().Text()
-             select first + rest)
+             select new Identifier(first + rest))
                 .Named("Identifier");
 
         public static readonly Parser<NamespaceName> NamespaceName
             = Identifier.DelimitedBy(TokenGrammar.Period)
-                        .Select(names => new NamespaceName(String.Join(".", names)))
+                        .Select(identifiers => new NamespaceName(String.Join(".", identifiers.Select(i => i.Name))))
                         .Named("NamespaceName");
 
+
+        // TODO: rewrite to C# namespace + identifier production
 
         /// <summary>
         /// This parses a useful subset of .NET Type names (qualified names, not nested types).
@@ -30,7 +33,7 @@ namespace Diesel.Parsing.CSharp
         public static Parser<TypeName> TypeName
             = Identifier
                 .DelimitedBy(TokenGrammar.Period)
-                .Select(names => new TypeName(String.Join(".", names)))
+                .Select(identifiers => new TypeName(String.Join(".", identifiers.Select(i => i.Name))))
                 .Named("TypeName");
 
 

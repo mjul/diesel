@@ -53,6 +53,7 @@
     <Compile Include="Parsing\CSharp\ArrayType.cs" />
     <Compile Include="Parsing\ConventionsDeclaration.cs" />
     <Compile Include="Parsing\CSharp\CSharpGrammar.cs" />
+    <Compile Include="Parsing\CSharp\Identifier.cs" />
     <Compile Include="Parsing\DomainEventConventions.cs" />
     <Compile Include="Parsing\DomainEventDeclaration.cs" />
     <Compile Include="Parsing\ITreeNode.cs" />

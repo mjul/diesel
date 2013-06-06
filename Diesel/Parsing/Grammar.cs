@@ -47,7 +47,7 @@ namespace Diesel.Parsing
         private static Parser<Type> KnownTypeName(string name, Type type)
         {
             return (from id in CSharpGrammar.Identifier
-                    where id == name
+                    where id.Name == name
                     select type);
         }
 
@@ -87,7 +87,7 @@ namespace Diesel.Parsing
         public static Parser<PropertyDeclaration> PropertyDeclaration
             = (from type in SystemValueTypeAllowNullable.Named("Property type").Token()
                from name in CSharpGrammar.Identifier.Named("Property name").Token()
-               select new PropertyDeclaration(name, type))
+               select new PropertyDeclaration(name.Name, type))
                 .Named("PropertyDeclartion");
 
         private static Parser<IEnumerable<TElement>> SequenceOf<TElement,TDelimiter>(Parser<TElement> elementParser, Parser<TDelimiter> delimiterParser)
@@ -110,7 +110,7 @@ namespace Diesel.Parsing
                from name in CSharpGrammar.Identifier.Token()
                from optionalTypeDeclaration in SystemValueTypeAllowNullable.Optional().Token()
                let property = new[] {new PropertyDeclaration(null, optionalTypeDeclaration.GetOrDefault())}
-               select new ValueTypeDeclaration(name, property))
+               select new ValueTypeDeclaration(name.Name, property))
                 .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
                 .Named("SimpleValueTypeDeclaration");
 
@@ -118,7 +118,7 @@ namespace Diesel.Parsing
             = (from declaration in Symbol("defvaluetype").Token()
                from name in CSharpGrammar.Identifier.Token()
                from properties in PropertyDeclarations.Token()
-               select new ValueTypeDeclaration(name, properties))
+               select new ValueTypeDeclaration(name.Name, properties))
                 .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
                 .Named("ValueTypeDeclarationWithPropertyList");
 
@@ -132,7 +132,7 @@ namespace Diesel.Parsing
             = (from declaration in Symbol("defcommand").Token()
                from name in CSharpGrammar.Identifier.Token()
                from optionalPropertyDeclarations in PropertyDeclarations.Optional()
-               select new CommandDeclaration(name, optionalPropertyDeclarations.GetOrElse(new PropertyDeclaration[] {})))
+               select new CommandDeclaration(name.Name, optionalPropertyDeclarations.GetOrElse(new PropertyDeclaration[] { })))
                 .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
                 .Named("CommandDeclaration");
 
@@ -141,7 +141,7 @@ namespace Diesel.Parsing
             = (from declaration in Symbol("defdomainevent").Token()
                from name in CSharpGrammar.Identifier.Token()
                from propertyDeclarations in PropertyDeclarations.Token()
-               select new DomainEventDeclaration(name, propertyDeclarations))
+               select new DomainEventDeclaration(name.Name, propertyDeclarations))
                 .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
                 .Named("DomainEventDeclaration");
 
@@ -150,7 +150,7 @@ namespace Diesel.Parsing
             = (from declaration in Symbol("defapplicationservice").Token()
                from name in CSharpGrammar.Identifier.Token()
                from commandDeclarations in CommandDeclaration.Token().AtLeastOnce()
-               select new ApplicationServiceDeclaration(name, commandDeclarations))
+               select new ApplicationServiceDeclaration(name.Name, commandDeclarations))
                 .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
                 .Named("ApplicationServiceDeclaration");
 
