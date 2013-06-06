@@ -1,7 +1,8 @@
 ﻿using Diesel.Parsing;
+using Diesel.Parsing.CSharp;
 using NUnit.Framework;
 
-namespace Test.Diesel.Parsing
+namespace Test.Diesel.Parsing.CSharp
 {
     [TestFixture]
     public class ArrayTypeTest

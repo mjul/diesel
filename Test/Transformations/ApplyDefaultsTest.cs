@@ -2,6 +2,7 @@
 using System.Linq;
 using Diesel;
 using Diesel.Parsing;
+using Diesel.Parsing.CSharp;
 using Diesel.Transformations;
 using NUnit.Framework;
 
@@ -48,7 +49,7 @@ namespace Test.Diesel.Transformations
             var input = new AbstractSyntaxTree(null,
                 new[]
                     {
-                        new Namespace(new NamespaceIdentifier("Test"),
+                        new Namespace(new NamespaceName("Test"),
                                       new[] {valueTypeDeclaration})
                     });
             var actual = ModelTransformations.Transform(input);

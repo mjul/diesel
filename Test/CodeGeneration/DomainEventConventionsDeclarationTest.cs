@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Diesel.Parsing;
+using Diesel.Parsing.CSharp;
 using NUnit.Framework;
 
 namespace Test.Diesel.CodeGeneration

@@ -1,4 +1,4 @@
-﻿namespace Diesel.Parsing
+﻿namespace Diesel.Parsing.CSharp
 {
     public class TypeName : Terminal
     {

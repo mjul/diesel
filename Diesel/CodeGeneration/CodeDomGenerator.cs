@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using Diesel.Parsing;
+using Diesel.Parsing.CSharp;
 
 namespace Diesel.CodeGeneration
 {

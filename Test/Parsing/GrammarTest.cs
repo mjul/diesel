@@ -2,6 +2,7 @@
 using System.Linq;
 using Diesel;
 using Diesel.Parsing;
+using Diesel.Parsing.CSharp;
 using NUnit.Framework;
 using Sprache;
 
@@ -10,33 +11,6 @@ namespace Test.Diesel.Parsing
     [TestFixture]
     public class GrammarTest
     {
-        [Test]
-        public void Identifier_ValidSingleLetter_ShouldParse()
-        {
-            var actual = Grammar.Identifier.Parse("x");
-            Assert.That(actual, Is.EqualTo("x"));
-        }
-
-        [Test]
-        public void Identifier_ValidString_ShouldParse()
-        {
-            var actual = Grammar.Identifier.Parse("name");
-            Assert.That(actual, Is.EqualTo("name"));
-        }
-
-        [Test]
-        public void Identifier_Blank_ShouldNotParse()
-        {
-            var actual = Grammar.Identifier.TryParse("");
-            Assert.That(actual.WasSuccessful, Is.False);
-        }
-
-        [Test]
-        public void Identifier_ValidStringAndNumber_ShouldParse()
-        {
-            var actual = Grammar.Identifier.Parse("name1");
-            Assert.That(actual, Is.EqualTo("name1"));
-        }
 
         [Test]
         public void Keyword_ValidName_ShouldParse()
@@ -59,41 +33,6 @@ namespace Test.Diesel.Parsing
             Assert.That(actual.WasSuccessful, Is.False);
         }
 
-        [Test]
-        public void NamespaceIdentifier_BlankName_ShouldNotParse()
-        {
-            var actual = Grammar.NamespaceIdentifier.TryParse("");
-            Assert.False(actual.WasSuccessful);
-        }
-
-        [Test]
-        public void NamespaceIdentifier_SinglePartName_ShouldParse()
-        {
-            var actual = Grammar.NamespaceIdentifier.Parse("System");
-            Assert.That(actual.Name, Is.EqualTo("System"));
-        }
-
-        [Test]
-        public void NamespaceIdentifier_MultiPartName_ShouldParse()
-        {
-            var actual = Grammar.NamespaceIdentifier.Parse("System.Runtime.Serialization");
-            Assert.That(actual.Name, Is.EqualTo("System.Runtime.Serialization"));
-        }
-
-
-        [Test]
-        public void TypeName_ValidUnqualifiedName_ShouldParse()
-        {
-            var actual = Grammar.TypeName.Parse("Guid");
-            Assert.That(actual.Name, Is.EqualTo("Guid"));
-        }
-
-        [Test]
-        public void TypeName_ValidQualifiedName_ShouldParse()
-        {
-            var actual = Grammar.TypeName.Parse("System.Guid");
-            Assert.That(actual.Name, Is.EqualTo("System.Guid"));
-        }
 
         [Test]
         public void SimpleType_SimpleType_ShouldParse()
@@ -136,7 +75,7 @@ namespace Test.Diesel.Parsing
 
         private static void AssertNullableOfSimpleTypeParsesAs<TExpected>(string input)
         {
-            var actual = Grammar.NullableOf(Grammar.SimpleType).Parse(input);
+            var actual = CSharpGrammar.NullableOf(Grammar.SimpleType).Parse(input);
             Assert.That(actual, Is.EqualTo(typeof(TExpected)));
         }
 
@@ -351,8 +290,7 @@ namespace Test.Diesel.Parsing
             var actual = Grammar.PropertyDeclaration.Parse("Guid CommandId");
             Assert.That(actual.Type, Is.EqualTo(typeof(Guid)));
         }
-
-
+        
         [Test]
         public void CommandDeclaration_SingleProperty_ShouldParseProperty()
         {

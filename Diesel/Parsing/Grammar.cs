@@ -1,31 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Diesel.Parsing.CSharp;
 using Sprache;
 
 namespace Diesel.Parsing
 {
     public static class Grammar
     {
-        
-        private static Parser<Char> Char(char c, string name) 
-        {
-            return Parse.Char(c).Named(name);
-        }
-
-        private static readonly Parser<Char> LeftParen = Char('(', "LeftParen");
-        private static readonly Parser<Char> RightParen = Char(')', "RightParen");
-        private static readonly Parser<Char> Letter = Parse.Letter;
-        private static readonly Parser<Char> LetterOrDigit = Parse.LetterOrDigit;
-        private static readonly Parser<Char> Comma = Char(',', "Comma");
-        private static readonly Parser<Char> Period = Char('.', "Period");
-        private static readonly Parser<Char> QuestionMark = Char('?', "Question Mark");
-        private static readonly Parser<Char> Colon = Char(':', "Colon");
-
-        private static readonly Parser<Char> LeftCurlyBrace = Char('{', "LeftCurlyBrace");
-        private static readonly Parser<Char> RightCurlyBrace = Char('}', "RightCurlyBrace");
-        private static readonly Parser<Char> LeftSquareBracket = Char('[', "LeftSquareBracket");
-        private static readonly Parser<Char> RightSquareBracket = Char(']', "RightSquareBracket");
 
         /// <summary>
         /// A symbol is a naked string.
@@ -44,9 +26,9 @@ namespace Diesel.Parsing
         public static Parser<Keyword> Keyword()
         {
             return
-                (from colon in Colon
-                 from initial in Letter.Once().Text()
-                 from rest in LetterOrDigit.Many().Text()
+                (from colon in TokenGrammar.Colon
+                 from initial in TokenGrammar.Letter.Once().Text()
+                 from rest in TokenGrammar.LetterOrDigit.Many().Text()
                  select new Keyword(String.Format("{0}{1}", initial, rest)))
                     .Named("Keyword");
         }
@@ -60,37 +42,14 @@ namespace Diesel.Parsing
         }
 
         /// <summary>
-        /// Recognize valid .NET identifiers (for now just a subset, letters and digits).
-        /// </summary>
-        public static Parser<string> Identifier =
-            (from first in Letter
-             from rest in LetterOrDigit.Many().Text()
-             select first + rest)
-                .Named("Identifier");
-
-        /// <summary>
         /// Recognize names and their corresponding known type, e.g. "Int32" and typeof(Int32).
         /// </summary>
         private static Parser<Type> KnownTypeName(string name, Type type)
         {
-            return (from id in Identifier
+            return (from id in CSharpGrammar.Identifier
                     where id == name
                     select type);
         }
-
-        public static readonly Parser<NamespaceIdentifier> NamespaceIdentifier
-            = Identifier.DelimitedBy(Period)
-                .Select(names => new NamespaceIdentifier(String.Join(".", names)))
-                .Named("NamespaceIdentifier");
-
-        /// <summary>
-        /// This parses a useful subset of .NET Type names (qualified names, not nested types).
-        /// </summary>
-        public static Parser<TypeName> TypeName
-            = Identifier
-                .DelimitedBy(Period)
-                .Select(names => new TypeName(String.Join(".", names)))
-                .Named("TypeName");
 
 
         // In constrast to the C# grammar, we count string a simple type since it has value semantics
@@ -110,15 +69,9 @@ namespace Diesel.Parsing
                 .Named("SimpleType");
 
         
-        public static Parser<Type> NullableOf(Parser<Type> underlying)
-        {
-            return (from underlyingType in underlying
-                    from nullableIndicator in QuestionMark
-                    select Type.GetType(String.Format("System.Nullable`1[{0}]", underlyingType.FullName), true));
-        }
 
         public static Parser<Type> SimpleTypeAllowNullable =
-            NullableOf(SimpleType)
+            CSharpGrammar.NullableOf(SimpleType)
             .Or(SimpleType);
 
         private static readonly Parser<Type> SystemValueType =
@@ -127,23 +80,13 @@ namespace Diesel.Parsing
                 .Or(SimpleType);
 
         public static Parser<Type> SystemValueTypeAllowNullable
-            = NullableOf(SystemValueType)
+            = CSharpGrammar.NullableOf(SystemValueType)
                 .Or(SystemValueType);
 
-        public static Parser<TypeName> NonArrayType
-            = TypeName;
-        
-        // Just uni-dimensional arrays for now, not full C# syntax rank specifiers
-        public static Parser<ArrayType> ArrayType 
-            = (from type in NonArrayType
-               from rankSpecificer in (from open in LeftSquareBracket.Token()
-                                       from close in RightSquareBracket.Token()
-                                       select "[]")
-               select new ArrayType(type, new[] {1}));
 
         public static Parser<PropertyDeclaration> PropertyDeclaration
             = (from type in SystemValueTypeAllowNullable.Named("Property type").Token()
-               from name in Identifier.Named("Property name").Token()
+               from name in CSharpGrammar.Identifier.Named("Property name").Token()
                select new PropertyDeclaration(name, type))
                 .Named("PropertyDeclartion");
 
@@ -153,30 +96,30 @@ namespace Diesel.Parsing
                         .Many()
                         .DelimitedBy(delimiterParser)
                         .Token()
-                        .Contained(LeftParen, RightParen)
+                        .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
                     select element.SelectMany(x => x));
         }
 
         private static readonly Parser<IEnumerable<PropertyDeclaration>> PropertyDeclarations
-            = SequenceOf(PropertyDeclaration, Comma)
+            = SequenceOf(PropertyDeclaration, TokenGrammar.Comma)
                 .Named("PropertyDeclarations");
 
 
         private static readonly Parser<ValueTypeDeclaration> SimpleValueTypeDeclaration
             = (from declaration in Symbol("defvaluetype").Token()
-               from name in Identifier.Token()
+               from name in CSharpGrammar.Identifier.Token()
                from optionalTypeDeclaration in SystemValueTypeAllowNullable.Optional().Token()
                let property = new[] {new PropertyDeclaration(null, optionalTypeDeclaration.GetOrDefault())}
                select new ValueTypeDeclaration(name, property))
-                .Contained(LeftParen, RightParen)
+                .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
                 .Named("SimpleValueTypeDeclaration");
 
         private static readonly Parser<ValueTypeDeclaration> ValueTypeDeclarationWithPropertyList
             = (from declaration in Symbol("defvaluetype").Token()
-               from name in Identifier.Token()
+               from name in CSharpGrammar.Identifier.Token()
                from properties in PropertyDeclarations.Token()
                select new ValueTypeDeclaration(name, properties))
-                .Contained(LeftParen, RightParen)
+                .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
                 .Named("ValueTypeDeclarationWithPropertyList");
 
         public static readonly Parser<ValueTypeDeclaration> ValueTypeDeclaration
@@ -187,28 +130,29 @@ namespace Diesel.Parsing
 
         public static readonly Parser<CommandDeclaration> CommandDeclaration
             = (from declaration in Symbol("defcommand").Token()
-               from name in Identifier.Token()
+               from name in CSharpGrammar.Identifier.Token()
                from optionalPropertyDeclarations in PropertyDeclarations.Optional()
                select new CommandDeclaration(name, optionalPropertyDeclarations.GetOrElse(new PropertyDeclaration[] {})))
-                .Contained(LeftParen, RightParen)
+                .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
                 .Named("CommandDeclaration");
 
 
         public static readonly Parser<DomainEventDeclaration> DomainEventDeclaration
             = (from declaration in Symbol("defdomainevent").Token()
-               from name in Identifier.Token()
+               from name in CSharpGrammar.Identifier.Token()
                from propertyDeclarations in PropertyDeclarations.Token()
                select new DomainEventDeclaration(name, propertyDeclarations))
-                .Contained(LeftParen, RightParen)
+                .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
                 .Named("DomainEventDeclaration");
 
 
         public static readonly Parser<ApplicationServiceDeclaration> ApplicationServiceDeclaration
             = (from declaration in Symbol("defapplicationservice").Token()
-               from name in Identifier.Token()
+               from name in CSharpGrammar.Identifier.Token()
                from commandDeclarations in CommandDeclaration.Token().AtLeastOnce()
                select new ApplicationServiceDeclaration(name, commandDeclarations))
-                .Contained(LeftParen, RightParen);
+                .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
+                .Named("ApplicationServiceDeclaration");
 
         public static readonly Parser<TypeDeclaration> TypeDeclaration
             = ValueTypeDeclaration
@@ -218,28 +162,28 @@ namespace Diesel.Parsing
 
         public static readonly Parser<Namespace> Namespace
             = (from declaration in Symbol("namespace").Token()
-               from name in NamespaceIdentifier.Named("namespace name").Token()
+               from name in CSharpGrammar.NamespaceName.Named("namespace name").Token()
                from typeDeclarations in TypeDeclaration
                    .Token()
                    .AtLeastOnce()
                    .Optional()
                let declarationList = typeDeclarations.GetOrElse(new List<TypeDeclaration>())
                select new Namespace(name, declarationList))
-                .Contained(LeftParen, RightParen);
+                .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen);
 
         // This can be expanded to generalized nested key-value maps later
         public static readonly Parser<ConventionsDeclaration> ConventionsDeclaration
             = (from declaration in Symbol("defconventions").Token()
                from name in Keyword("domainevents").Token()
-               from lcurly in LeftCurlyBrace.Token()
+               from lcurly in TokenGrammar.LeftCurlyBrace.Token()
                from inherits in Keyword("inherit").Token()
-               from lbracket in LeftSquareBracket.Token()
-               from baseTypes in TypeName.Token().Many()
-               from rbracket in RightSquareBracket.Token()
-               from rcurly in RightCurlyBrace.Token()
+               from lbracket in TokenGrammar.LeftSquareBracket.Token()
+               from baseTypes in CSharpGrammar.TypeName.Token().Many()
+               from rbracket in TokenGrammar.RightSquareBracket.Token()
+               from rcurly in TokenGrammar.RightCurlyBrace.Token()
                let domainEventConventions = new DomainEventConventions(baseTypes)
                select new ConventionsDeclaration(domainEventConventions))
-                .Contained(LeftParen, RightParen)
+                .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
                 .Named("ConventionsDeclaration");
 
         public static readonly Parser<AbstractSyntaxTree> AbstractSyntaxTree
@@ -252,6 +196,5 @@ namespace Diesel.Parsing
         /// </summary>
         public static readonly Parser<AbstractSyntaxTree> Everything
             = AbstractSyntaxTree.Token().End();
-
     }
 }

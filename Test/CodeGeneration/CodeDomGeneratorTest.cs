@@ -5,6 +5,7 @@ using System.Linq;
 using Diesel;
 using Diesel.CodeGeneration;
 using Diesel.Parsing;
+using Diesel.Parsing.CSharp;
 using NUnit.Framework;
 
 namespace Test.Diesel.CodeGeneration
@@ -150,7 +151,7 @@ namespace Test.Diesel.CodeGeneration
 
         private AbstractSyntaxTree CreateAbstractSyntaxTreeWith(ConventionsDeclaration conventions, TypeDeclaration typeDeclaration)
         {
-            var ns = new NamespaceIdentifier(typeof(CodeDomGeneratorTest).Namespace + ".Generated");
+            var ns = new NamespaceName(typeof(CodeDomGeneratorTest).Namespace + ".Generated");
             return new AbstractSyntaxTree(conventions, new[] { new Namespace(ns, new[] { typeDeclaration }) });
         }
 
@@ -226,8 +227,8 @@ namespace Test.Diesel.CodeGeneration
         {
             var ast = new AbstractSyntaxTree(null, new[]
                 {
-                    new Namespace(new NamespaceIdentifier("Employees.Commands"), new[] {CreateImportEmployeeCommandDeclaration()}),
-                    new Namespace(new NamespaceIdentifier("Employees.Model"), new[] {CreateEmployeeNumberValueTypeDeclaration()}),
+                    new Namespace(new NamespaceName("Employees.Commands"), new[] {CreateImportEmployeeCommandDeclaration()}),
+                    new Namespace(new NamespaceName("Employees.Model"), new[] {CreateEmployeeNumberValueTypeDeclaration()}),
                 });
 
             var dom = CodeDomGenerator.Compile(ast);
@@ -248,7 +249,7 @@ namespace Test.Diesel.CodeGeneration
         private static void AssertNamespaceCompiledCodeShouldContain(IEnumerable<TypeDeclaration> declarations, 
             params string[] expectedTypeDeclarations)
         {
-            var ns = new NamespaceIdentifier(typeof (CodeDomGeneratorTest).Namespace + ".Generated");
+            var ns = new NamespaceName(typeof (CodeDomGeneratorTest).Namespace + ".Generated");
             var model = new AbstractSyntaxTree(null, new[] { new Namespace(ns, declarations) });
             var actual = CodeDomGenerator.Compile(model);
             Assert.That(actual, Is.Not.Null);

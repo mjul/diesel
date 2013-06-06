@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
+using Diesel.Parsing.CSharp;
 
 namespace Diesel.Parsing
 {
     public class Namespace : ITreeNode
     {
-        public NamespaceIdentifier Name { get; private set; }
+        public NamespaceName Name { get; private set; }
         public IEnumerable<TypeDeclaration> Declarations;
 
-        public Namespace(NamespaceIdentifier name, IEnumerable<TypeDeclaration> declarations)
+        public Namespace(NamespaceName name, IEnumerable<TypeDeclaration> declarations)
         {
             Name = name;
             Declarations = declarations;

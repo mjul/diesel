@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Diesel.Parsing
+namespace Diesel.Parsing.CSharp
 {
     public class ArrayType : Terminal
     {
