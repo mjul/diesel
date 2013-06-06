@@ -50,6 +50,7 @@
     <Compile Include="CodeGeneration\ValueTypeGenerator.cs" />
     <Compile Include="Parsing\AbstractSyntaxTree.cs" />
     <Compile Include="Parsing\ApplicationServiceDeclaration.cs" />
+    <Compile Include="Parsing\ArrayType.cs" />
     <Compile Include="Parsing\ConventionsDeclaration.cs" />
     <Compile Include="Parsing\DomainEventConventions.cs" />
     <Compile Include="Parsing\DomainEventDeclaration.cs" />

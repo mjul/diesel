@@ -130,6 +130,17 @@ namespace Diesel.Parsing
             = NullableOf(SystemValueType)
                 .Or(SystemValueType);
 
+        public static Parser<TypeName> NonArrayType
+            = TypeName;
+        
+        // Just uni-dimensional arrays for now, not full C# syntax rank specifiers
+        public static Parser<ArrayType> ArrayType 
+            = (from type in NonArrayType
+               from rankSpecificer in (from open in LeftSquareBracket.Token()
+                                       from close in RightSquareBracket.Token()
+                                       select "[]")
+               select new ArrayType(type, new[] {1}));
+
         public static Parser<PropertyDeclaration> PropertyDeclaration
             = (from type in SystemValueTypeAllowNullable.Named("Property type").Token()
                from name in Identifier.Named("Property name").Token()
