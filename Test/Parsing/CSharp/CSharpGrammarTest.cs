@@ -24,6 +24,21 @@ namespace Test.Diesel.Parsing.CSharp
         }
 
         [Test]
+        public void Identifier_StartsWithUnderscore_ShouldParse()
+        {
+            var actual = CSharpGrammar.Identifier.Parse("_name");
+            Assert.That(actual.Name, Is.EqualTo("_name"));
+        }
+
+        [Test]
+        public void Identifier_IncludesUnderscore_ShouldParse()
+        {
+            var actual = CSharpGrammar.Identifier.Parse("first_name");
+            Assert.That(actual.Name, Is.EqualTo("first_name"));
+        }
+
+
+        [Test]
         public void Identifier_Blank_ShouldNotParse()
         {
             var actual = CSharpGrammar.Identifier.TryParse("");

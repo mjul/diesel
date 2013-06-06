@@ -11,11 +11,13 @@ namespace Diesel.Parsing.CSharp
     public class CSharpGrammar
     {
         /// <summary>
-        /// Recognize valid .NET identifiers (for now just a subset, letters and digits).
+        /// Recognize valid .NET identifiers.
+        /// Just a subset: letters, digits and underscore allowed. 
+        /// No @keywords and no C# keyword rejection.
         /// </summary>
         public static Parser<Identifier> Identifier =
-            (from first in TokenGrammar.Letter
-             from rest in TokenGrammar.LetterOrDigit.Many().Text()
+            (from first in TokenGrammar.Letter.Or(TokenGrammar.Underscore)
+             from rest in TokenGrammar.LetterOrDigit.Or(TokenGrammar.Underscore).Many().Text()
              select new Identifier(first + rest))
                 .Named("Identifier");
 
@@ -23,7 +25,6 @@ namespace Diesel.Parsing.CSharp
             = Identifier.DelimitedBy(TokenGrammar.Period)
                         .Select(identifiers => new NamespaceName(String.Join(".", identifiers.Select(i => i.Name))))
                         .Named("NamespaceName");
-
 
         // TODO: rewrite to C# namespace + identifier production
 

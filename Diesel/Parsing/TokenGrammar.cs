@@ -18,11 +18,12 @@ namespace Diesel.Parsing
         public static readonly Parser<Char> Period = Char('.', "Period");
         public static readonly Parser<Char> QuestionMark = Char('?', "Question Mark");
         public static readonly Parser<Char> Colon = Char(':', "Colon");
+        public static readonly Parser<Char> Underscore = Char('_', "Underscore");
 
         public static readonly Parser<Char> LeftCurlyBrace = Char('{', "LeftCurlyBrace");
         public static readonly Parser<Char> RightCurlyBrace = Char('}', "RightCurlyBrace");
         public static readonly Parser<Char> LeftSquareBracket = Char('[', "LeftSquareBracket");
         public static readonly Parser<Char> RightSquareBracket = Char(']', "RightSquareBracket");
- 
+
     }
 }
