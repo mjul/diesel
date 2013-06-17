@@ -19,7 +19,7 @@ namespace Test.Diesel.Transformations
             var actualDeclaration =
                 (ValueTypeDeclaration) ApplyDefaultsOnSingleDeclarationNamespace(valueTypeDeclaration);
             Assert.That(actualDeclaration.Name, Is.EqualTo(valueTypeDeclaration.Name));
-            Assert.That(actualDeclaration.Properties.Single().Type, Is.EqualTo(typeof (Int32)));
+            Assert.That(actualDeclaration.Properties.Single().Type, Is.EqualTo(new SimpleType(typeof (Int32))));
         }
 
         [Test]
@@ -36,12 +36,12 @@ namespace Test.Diesel.Transformations
         public void ApplyDefaults_ValueTypeDeclarationWithType_ShouldNotModifyNameOrType()
         {
             var valueTypeDeclaration = new ValueTypeDeclaration("Name",
-                                                                new[] {new PropertyDeclaration("FullName", typeof (string))});
+                                                                new[] {new PropertyDeclaration("FullName", new StringReferenceType())});
             var actualDeclaration =
                 (ValueTypeDeclaration) ApplyDefaultsOnSingleDeclarationNamespace(valueTypeDeclaration);
             var actualProperty = actualDeclaration.Properties.Single();
             Assert.That(actualProperty.Name, Is.EqualTo("FullName"));
-            Assert.That(actualProperty.Type, Is.EqualTo(typeof (string)));
+            Assert.That(actualProperty.Type, Is.EqualTo(new StringReferenceType()));
         }
 
         private static ITypeDeclaration ApplyDefaultsOnSingleDeclarationNamespace(TypeDeclaration valueTypeDeclaration)

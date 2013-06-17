@@ -112,9 +112,9 @@ namespace Test.Diesel.Parsing
         [Test]
         public void ValueTypeDeclaration_NameAndExplicitType_ShouldSetType()
         {
-            var actual = Grammar.ValueTypeDeclaration.Parse("(defvaluetype GradePointAverage Decimal)");
+            var actual = Grammar.ValueTypeDeclaration.Parse("(defvaluetype GradePointAverage decimal)");
             var actualProperty = actual.Properties.Single();
-            Assert.That(actualProperty.Type, Is.EqualTo(typeof(decimal)));
+            Assert.That(actualProperty.Type, Is.EqualTo(AstSimpleType<Decimal>()));
         }
 
         [Test]
@@ -122,7 +122,34 @@ namespace Test.Diesel.Parsing
         {
             var actual = Grammar.ValueTypeDeclaration.Parse("(defvaluetype Optional int?)");
             var actualProperty = actual.Properties.Single();
-            Assert.That(actualProperty.Type, Is.EqualTo(typeof(int?)));
+            Assert.That(actualProperty.Type, Is.EqualTo(AstNullableOf<int>()));
+        }
+
+        private NullableType AstNullableOf<T>()
+        {
+            return new NullableType(new SimpleType(typeof(T)));
+        }
+
+        private static SimpleType AstSimpleType<T>()
+        {
+            return new SimpleType(typeof(T));
+        }
+
+
+        private static SimpleType AstArrayOf<T>()
+        {
+            throw new NotImplementedException();
+            //return new ArrayType(new SimpleType(typeof (T)), new {1});
+        }
+
+        private static TypeNameTypeNode AstGuidType()
+        {
+            return new TypeNameTypeNode(new TypeName(typeof(Guid).Name));
+        }
+
+        private static StringReferenceType AstStringType()
+        {
+            return new StringReferenceType();
         }
 
         [Test]
@@ -130,7 +157,7 @@ namespace Test.Diesel.Parsing
         {
             var actual = Grammar.ValueTypeDeclaration.Parse("(defvaluetype AggregateRootId Guid)");
             var actualProperty = actual.Properties.Single();
-            Assert.That(actualProperty.Type, Is.EqualTo(typeof(Guid)));
+            Assert.That(actualProperty.Type, Is.EqualTo(AstGuidType()));
         }
 
         [Test]
@@ -147,7 +174,7 @@ namespace Test.Diesel.Parsing
             var actual = Grammar.ValueTypeDeclaration.Parse("(defvaluetype BookSize (int Pages))");
             var actualProperty = actual.Properties.Single();
             Assert.That(actualProperty.Name, Is.EqualTo("Pages"));
-            Assert.That(actualProperty.Type, Is.EqualTo(typeof(int)));
+            Assert.That(actualProperty.Type, Is.EqualTo(AstSimpleType<int>()));
         }
 
         [Test]
@@ -156,9 +183,9 @@ namespace Test.Diesel.Parsing
             var actual = Grammar.ValueTypeDeclaration.Parse("(defvaluetype BookSize (int Pages, int Chapters))");
             var actualProperties = actual.Properties.ToList();
             Assert.That(actualProperties[0].Name, Is.EqualTo("Pages"));
-            Assert.That(actualProperties[0].Type, Is.EqualTo(typeof(int)));
+            Assert.That(actualProperties[0].Type, Is.EqualTo(AstSimpleType<int>()));
             Assert.That(actualProperties[1].Name, Is.EqualTo("Chapters"));
-            Assert.That(actualProperties[1].Type, Is.EqualTo(typeof(int)));
+            Assert.That(actualProperties[1].Type, Is.EqualTo(AstSimpleType<int>()));
         }
 
         [Test]
@@ -166,7 +193,7 @@ namespace Test.Diesel.Parsing
         {
             var actual = Grammar.ValueTypeDeclaration.Parse("(defvaluetype BookSize (int Pages, int? Chapters))");
             var actualProperties = actual.Properties.ToList();
-            Assert.That(actualProperties[1].Type, Is.EqualTo(typeof(int?)));
+            Assert.That(actualProperties[1].Type, Is.EqualTo(AstNullableOf<int>()));
         }
 
         [Test]
@@ -251,35 +278,35 @@ namespace Test.Diesel.Parsing
         {
             var actual = Grammar.PropertyDeclaration.Parse("int EmployeeNumber");
             Assert.That(actual.Name, Is.EqualTo("EmployeeNumber"));
-            Assert.That(actual.Type, Is.EqualTo(typeof(int)));
+            Assert.That(actual.Type, Is.EqualTo(new SimpleType(typeof(int))));
         }
 
         [Test]
         public void PropertyDeclaration_NullableType_ShouldSetType()
         {
             var actual = Grammar.PropertyDeclaration.Parse("int? Optional");
-            Assert.That(actual.Type, Is.EqualTo(typeof(int?)));
+            Assert.That(actual.Type, Is.EqualTo(AstNullableOf<int>()));
         }
 
         [Test]
         public void PropertyDeclaration_PrimitiveArrayType_ShouldSetType()
         {
             var actual = Grammar.PropertyDeclaration.Parse("int[] Roles");
-            Assert.That(actual.Type, Is.EqualTo(typeof(int[])));
+            Assert.That(actual.Type, Is.EqualTo(AstArrayOf<int>()));
         }
 
         [Test]
         public void PropertyDeclaration_UnqualifiedSystemTypeDateTime_ShouldSetType()
         {
             var actual = Grammar.PropertyDeclaration.Parse("DateTime OccurredOn");
-            Assert.That(actual.Type, Is.EqualTo(typeof(DateTime)));
+            Assert.That(actual.Type, Is.EqualTo(new TypeNameTypeNode(new TypeName("DateTime"))));
         }
 
         [Test]
         public void PropertyDeclaration_UnqualifiedSystemTypeGuid_ShouldSetType()
         {
             var actual = Grammar.PropertyDeclaration.Parse("Guid CommandId");
-            Assert.That(actual.Type, Is.EqualTo(typeof(Guid)));
+            Assert.That(actual.Type, Is.EqualTo(new TypeNameTypeNode(new TypeName("Guid"))));
         }
 
         [Test]
@@ -289,17 +316,18 @@ namespace Test.Diesel.Parsing
             Assert.That(actual.Properties, Is.Not.Null);
             var property = actual.Properties.Single();
             Assert.That(property.Name, Is.EqualTo("EmployeeNumber"));
-            Assert.That(property.Type, Is.EqualTo(typeof(int)));
+            Assert.That(property.Type, Is.EqualTo(AstSimpleType<int>()));
         }
+
 
         [Test]
         public void CommandDeclaration_MultipleProperties_ShouldParseProperties()
         {
             var actual = Grammar.CommandDeclaration.Parse("(defcommand ImportEmployee (int EmployeeNumber, string FirstName, string LastName))");
             var properties = actual.Properties.ToList();
-            AssertPropertyEquals(properties[0], "EmployeeNumber", typeof (int));
-            AssertPropertyEquals(properties[1], "FirstName", typeof(string));
-            AssertPropertyEquals(properties[2], "LastName", typeof(string));
+            AssertPropertyEquals(properties[0], "EmployeeNumber", AstSimpleType<int>());
+            AssertPropertyEquals(properties[1], "FirstName", AstStringType());
+            AssertPropertyEquals(properties[2], "LastName", AstStringType());
         }
 
         [Test]
@@ -307,12 +335,12 @@ namespace Test.Diesel.Parsing
         {
             var actual = Grammar.CommandDeclaration.Parse("(defcommand ImportEmployeeRoles (int EmployeeNumber, int[] RoleIds))");
             var properties = actual.Properties.ToList();
-            AssertPropertyEquals(properties[0], "EmployeeNumber", typeof(int));
-            AssertPropertyEquals(properties[1], "RoleIds", typeof(int[]));
+            AssertPropertyEquals(properties[0], "EmployeeNumber", AstSimpleType<int>());
+            AssertPropertyEquals(properties[1], "RoleIds", AstArrayOf<int>());
         }
 
 
-        private void AssertPropertyEquals(PropertyDeclaration actual, string expectedName, Type expectedType)
+        private void AssertPropertyEquals(PropertyDeclaration actual, string expectedName, TypeNode expectedType)
         {
             Assert.That(actual.Name, Is.EqualTo(expectedName));
             Assert.That(actual.Type, Is.EqualTo(expectedType));
@@ -352,10 +380,10 @@ namespace Test.Diesel.Parsing
         {
             var actual = Grammar.DomainEventDeclaration.Parse("(defdomainevent EmployeeImported (Guid Id, int EmployeeNumber, string FirstName, string LastName))");
             var properties = actual.Properties.ToList();
-            AssertPropertyEquals(properties[0], "Id", typeof(Guid));
-            AssertPropertyEquals(properties[1], "EmployeeNumber", typeof(int));
-            AssertPropertyEquals(properties[2], "FirstName", typeof(string));
-            AssertPropertyEquals(properties[3], "LastName", typeof(string));
+            AssertPropertyEquals(properties[0], "Id", AstGuidType());
+            AssertPropertyEquals(properties[1], "EmployeeNumber", AstSimpleType<int>());
+            AssertPropertyEquals(properties[2], "FirstName", AstStringType());
+            AssertPropertyEquals(properties[3], "LastName", AstStringType());
         }
 
 

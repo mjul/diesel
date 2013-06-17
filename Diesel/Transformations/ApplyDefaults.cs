@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Linq;
 using Diesel.Parsing;
+using Diesel.Parsing.CSharp;
 
 namespace Diesel.Transformations
 {
     public class ApplyDefaults : ModelTransformation
     {
-        private static readonly Type DefaultPropertyType = typeof (Int32);
+        private static readonly SimpleType DefaultPropertyType = new SimpleType(typeof(Int32));
         private const string DefaultPropertyName = "Value";
 
         public override ValueTypeDeclaration Transform(ValueTypeDeclaration valueTypeDeclaration)

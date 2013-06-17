@@ -86,7 +86,7 @@ namespace Diesel.Parsing
 
 
         public static Parser<PropertyDeclaration> PropertyDeclaration
-            = (from type in SystemValueTypeAllowNullable.Named("Property type").Token()
+            = (from type in _cSharpGrammar.TypeNode().Named("Property type").Token()
                from name in _cSharpGrammar.Identifier().Named("Property name").Token()
                select new PropertyDeclaration(name.Name, type))
                 .Named("PropertyDeclartion");
@@ -109,7 +109,7 @@ namespace Diesel.Parsing
         private static readonly Parser<ValueTypeDeclaration> SimpleValueTypeDeclaration
             = (from declaration in Symbol("defvaluetype").Token()
                from name in _cSharpGrammar.Identifier().Token()
-               from optionalTypeDeclaration in SystemValueTypeAllowNullable.Optional().Token()
+               from optionalTypeDeclaration in _cSharpGrammar.TypeNode().Optional().Token()
                let property = new[] {new PropertyDeclaration(null, optionalTypeDeclaration.GetOrDefault())}
                select new ValueTypeDeclaration(name.Name, property))
                 .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)

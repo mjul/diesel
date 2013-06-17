@@ -94,22 +94,25 @@ namespace Test.Diesel.Parsing.CSharp
         [Test]
         public  void ArrayType_UnidimensionalQualifiedName_ShouldParse()
         {
-            var actual = SystemUnderTest.ArrayType(SystemUnderTest.TypeName()).Parse("System.Int32[]");
-            Assert.That(actual.Name, Is.EqualTo("System.Int32[]"));
+            var actual = SystemUnderTest.ArrayType().Parse("System.Int32[]");
+            Assert.That(actual.Type, Is.EqualTo(new TypeNameTypeNode(new TypeName("System.Int32"))));
+            Assert.That(actual.RankSpecifiers, Is.EqualTo(new RankSpecifiers(new[] { new RankSpecifier(1)})));
         }
 
         [Test]
         public void ArrayType_UnidimensionalMultiPartQualifiedName_ShouldParse()
         {
-            var actual = SystemUnderTest.ArrayType(SystemUnderTest.TypeName()).Parse("Test.Namespaces.Number[]");
-            Assert.That(actual.Name, Is.EqualTo("Test.Namespaces.Number[]"));
+            var actual = SystemUnderTest.ArrayType().Parse("Test.Namespaces.Number[]");
+            Assert.That(actual.Type, Is.EqualTo(new TypeNameTypeNode(new TypeName("Test.Namespaces.Number"))));
+            Assert.That(actual.RankSpecifiers, Is.EqualTo(new RankSpecifiers(new[] { new RankSpecifier(1)})));
         }
 
         [Test]
-        public void ArrayType_UnidimensionalSimpleName_ShouldParse()
+        public void ArrayType_UnidimensionalUnqualifiedName_ShouldParse()
         {
-            var actual = SystemUnderTest.ArrayType(SystemUnderTest.TypeName()).Parse("Guid[]");
-            Assert.That(actual.Name, Is.EqualTo("Guid[]"));
+            var actual = SystemUnderTest.ArrayType().Parse("Guid[]");
+            Assert.That(actual.Type, Is.EqualTo(new TypeNameTypeNode(new TypeName("Guid"))));
+            Assert.That(actual.RankSpecifiers, Is.EqualTo(new RankSpecifiers(new[] { new RankSpecifier(1) })));
         }
 
         [Test]
@@ -254,17 +257,75 @@ namespace Test.Diesel.Parsing.CSharp
             Assert.That(actual, Is.EqualTo(new StringReferenceType()));
         }
 
+
         [Test]
-        public void ReferenceType_String_ShouldParse()
+        public void ClassType_TypeName_ShouldParse()
+        {
+            var actual = SystemUnderTest.ClassType().Parse("Test.Diesel.Parsing.CSharp.CSharpGrammarTest");
+            Assert.That(actual, Is.EqualTo(new TypeNameTypeNode(new TypeName("Test.Diesel.Parsing.CSharp.CSharpGrammarTest"))));
+        }
+
+        [Test, Ignore("Not implemented")]
+        public void ClassType_Object_ShouldParse()
+        {
+        }
+
+        [Test, Ignore("Not implemented")]
+        public void ClassType_Dynamic_ShouldParse()
+        {
+        }
+
+        [Test]
+        public void ClassType_String_ShouldParse()
+        {
+            var actual = SystemUnderTest.ClassType().Parse("string");
+            Assert.That(actual, Is.EqualTo(new StringReferenceType()));
+        }
+
+
+        [Test]
+        public void ReferenceType_ClassTypeString_ShouldParse()
         {
             var actual = SystemUnderTest.ReferenceType().Parse("string");
             Assert.That(actual, Is.EqualTo(new StringReferenceType()));
         }
 
         [Test]
-        public void ReferenceType_TypeName_ShouldParse()
+        public void ReferenceType_ClassTypeTypeName_ShouldParse()
         {
             var actual = SystemUnderTest.ReferenceType().Parse("Diesel.Test.Parsing.CSharpGrammarTest");
+            Assert.That(actual, Is.EqualTo(new TypeNameTypeNode(new TypeName("Diesel.Test.Parsing.CSharpGrammarTest"))));
+        }
+
+        [Test]
+        public void ReferenceType_ArrayType_ShouldParse()
+        {
+            var actual = SystemUnderTest.ReferenceType().Parse("int[]");
+            Assert.That(actual,
+                        Is.EqualTo(new ArrayType(new SimpleType(typeof (int)),
+                                                 new RankSpecifiers(new[] {new RankSpecifier(1)}))));
+        }
+
+
+
+        [Test]
+        public void TypeNode_ValueType_ShouldParse()
+        {
+            var actual = SystemUnderTest.TypeNode().Parse("int");
+            Assert.That(actual, Is.EqualTo(new SimpleType(typeof(int))));
+        }
+
+        [Test]
+        public void TypeNode_ReferenceType_ShouldParse()
+        {
+            var actual = SystemUnderTest.TypeNode().Parse("string");
+            Assert.That(actual, Is.EqualTo(new StringReferenceType()));
+        }
+
+        [Test]
+        public void TypeNode_TypeName_ShouldParse()
+        {
+            var actual = SystemUnderTest.TypeNode().Parse("Diesel.Test.Parsing.CSharpGrammarTest");
             Assert.That(actual, Is.EqualTo(new TypeNameTypeNode(new TypeName("Diesel.Test.Parsing.CSharpGrammarTest"))));
         }
     }

@@ -18,7 +18,7 @@ namespace Test.Diesel.CodeGeneration
         {
             var model = CreateAbstractSyntaxTreeWith(
                 new ValueTypeDeclaration("EmployeeNumber",
-                                         new[] {new PropertyDeclaration("Value", typeof (int))}));
+                                         new[] {new PropertyDeclaration("Value", new SimpleType(typeof (int)))}));
             var actual = CodeDomGenerator.Compile(model);
             Assert.That(actual, Is.Not.Null);
             var source = CompileToSource(actual);
@@ -33,8 +33,8 @@ namespace Test.Diesel.CodeGeneration
                 new ValueTypeDeclaration("Point",
                                          new[]
                                              {
-                                                 new PropertyDeclaration("X", typeof (int)),
-                                                 new PropertyDeclaration("Y", typeof (int))
+                                                 new PropertyDeclaration("X", new SimpleType(typeof (int))),
+                                                 new PropertyDeclaration("Y", new SimpleType(typeof (int)))
                                              }));
             var actual = CodeDomGenerator.Compile(model);
             Assert.That(actual, Is.Not.Null);
@@ -49,7 +49,7 @@ namespace Test.Diesel.CodeGeneration
         {
             var model = CreateAbstractSyntaxTreeWith(
                 new ValueTypeDeclaration("EmployeeNumber",
-                                         new[] { new PropertyDeclaration("Value", typeof(int)) }));
+                                         new[] { new PropertyDeclaration("Value", new SimpleType(typeof (int))) }));
             var actual = CodeDomGenerator.Compile(model);
             var source = CompileToSource(actual);
             Assert.That(source, Is.Not.StringContaining("DataContractAttribute"));
@@ -88,9 +88,9 @@ namespace Test.Diesel.CodeGeneration
             var commandDeclaration = new CommandDeclaration("ImportEmployeeCommand",
                                                             new[]
                                                                 {
-                                                                    new PropertyDeclaration("EmployeeNumber", typeof (int)),
-                                                                    new PropertyDeclaration("FirstName", typeof (String)),
-                                                                    new PropertyDeclaration("LastName", typeof (String))
+                                                                    new PropertyDeclaration("EmployeeNumber", new SimpleType(typeof (int))),
+                                                                    new PropertyDeclaration("FirstName", new StringReferenceType()),
+                                                                    new PropertyDeclaration("LastName", new StringReferenceType())
                                                                 });
             var model = CreateAbstractSyntaxTreeWith(commandDeclaration);
             return CodeDomGenerator.Compile(model);
@@ -134,11 +134,10 @@ namespace Test.Diesel.CodeGeneration
             var declaration = new DomainEventDeclaration("EmployeeImported",
                                                          new[]
                                                              {
-                                                                 new PropertyDeclaration("Id", typeof (Guid)),
-                                                                 new PropertyDeclaration("EmployeeNumber",
-                                                                                         typeof (Int32)),
-                                                                 new PropertyDeclaration("FirstName", typeof (String)),
-                                                                 new PropertyDeclaration("LastName", typeof (String))
+                                                                 new PropertyDeclaration("Id", new TypeNameTypeNode(new TypeName(typeof (Guid).FullName))),
+                                                                 new PropertyDeclaration("EmployeeNumber", new SimpleType(typeof (Int32))),
+                                                                 new PropertyDeclaration("FirstName", new StringReferenceType()),
+                                                                 new PropertyDeclaration("LastName", new StringReferenceType())
                                                              });
             return declaration;
         }
@@ -162,7 +161,7 @@ namespace Test.Diesel.CodeGeneration
             var declarations = new[]
                 {
                     new ValueTypeDeclaration("EmployeeNumber",
-                                             new[] {new PropertyDeclaration("Value", typeof(int))})
+                                             new[] {new PropertyDeclaration("Value", new SimpleType(typeof (Int32)))})
                 };
             AssertNamespaceCompiledCodeShouldContain(declarations, "struct EmployeeNumber");
         }
@@ -207,7 +206,7 @@ namespace Test.Diesel.CodeGeneration
         {
             return new ValueTypeDeclaration("EmployeeNumber", new[]
                 {
-                    new PropertyDeclaration("Value", typeof (int))
+                    new PropertyDeclaration("Value", new SimpleType(typeof (Int32)))
                 });
         }
 
@@ -215,9 +214,9 @@ namespace Test.Diesel.CodeGeneration
         {
             return new CommandDeclaration("ImportEmployeeCommand", new[]
                 {
-                    new PropertyDeclaration("EmployeeNumber", typeof (int)),
-                    new PropertyDeclaration("FirstName", typeof (String)),
-                    new PropertyDeclaration("LastName", typeof (String))
+                    new PropertyDeclaration("EmployeeNumber", new SimpleType(typeof (Int32))),
+                    new PropertyDeclaration("FirstName", new StringReferenceType()),
+                    new PropertyDeclaration("LastName", new StringReferenceType())
                 });
         }
 

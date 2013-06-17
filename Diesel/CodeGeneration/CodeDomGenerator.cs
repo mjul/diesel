@@ -116,8 +116,8 @@ namespace Diesel.CodeGeneration
             return Enumerable.Zip(
                 declarations,
                 Enumerable.Range(1, declarations.Length),
-                (p, dataMemberOrder) => new ReadOnlyProperty(p.Name, p.Type,
-                                               new BackingField(BackingFieldName(p.Name), p.Type,
+                (p, dataMemberOrder) => new ReadOnlyProperty(p.Name, SystemTypeFor(p.Type),
+                                               new BackingField(BackingFieldName(p.Name), SystemTypeFor(p.Type),
                                                                 isDataContract
                                                                     ? new[] {CreateDataMemberAttribute(dataMemberOrder, p.Name)}
                                                                     : noAttributes),
@@ -293,7 +293,7 @@ namespace Diesel.CodeGeneration
             // Hash code just needs to be the same if the objects are Equal, 
             // not different if they are not Equal
             var hashCodeExpressions = properties
-                .Where(p => p.Type.IsValueType)
+                .Where(p => SystemTypeFor(p.Type).IsValueType)
                 .Select(p =>
                     new CodeMethodInvokeExpression(
                         new CodePropertyReferenceExpression(
@@ -309,6 +309,11 @@ namespace Diesel.CodeGeneration
                     new CodeBinaryOperatorExpression(a, CodeBinaryOperatorType.Add, b));
 
             return CreateGetHashCode(hashCodeCalculationExpression);
+        }
+
+        private static Type SystemTypeFor(TypeNode type)
+        {
+            return new SystemTypeMapper().SystemTypeFor(type);
         }
 
 

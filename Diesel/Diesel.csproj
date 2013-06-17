@@ -47,6 +47,7 @@
     <Compile Include="CodeGeneration\CommandGenerator.cs" />
     <Compile Include="CodeGeneration\DomainEventGenerator.cs" />
     <Compile Include="CodeGeneration\ReadOnlyProperty.cs" />
+    <Compile Include="CodeGeneration\SystemTypeMapper.cs" />
     <Compile Include="CodeGeneration\ValueTypeGenerator.cs" />
     <Compile Include="Parsing\AbstractSyntaxTree.cs" />
     <Compile Include="Parsing\ApplicationServiceDeclaration.cs" />
@@ -55,6 +56,8 @@
     <Compile Include="Parsing\CSharp\CSharpGrammar.cs" />
     <Compile Include="Parsing\CSharp\Identifier.cs" />
     <Compile Include="Parsing\CSharp\NullableType.cs" />
+    <Compile Include="Parsing\CSharp\RankSpecifier.cs" />
+    <Compile Include="Parsing\CSharp\RankSpecifiers.cs" />
     <Compile Include="Parsing\CSharp\ReferenceType.cs" />
     <Compile Include="Parsing\CSharp\SimpleType.cs" />
     <Compile Include="Parsing\CSharp\StringReferenceType.cs" />

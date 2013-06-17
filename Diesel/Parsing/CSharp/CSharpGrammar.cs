@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using Sprache;
@@ -76,14 +77,14 @@ namespace Diesel.Parsing.CSharp
         }
 
         // Just uni-dimensional arrays for now, not full C# syntax rank specifiers
-        public Parser<ArrayType> ArrayType(Parser<TypeName> nonArrayTypeParser)
+        public Parser<ArrayType> ArrayType()
         {
-            return (from type in nonArrayTypeParser
+            return (from type in TypeNodeExceptArrayTypes()
                     from rankSpecificer in
                         (from open in TokenGrammar.LeftSquareBracket.Token()
                          from close in TokenGrammar.RightSquareBracket.Token()
                          select "[]")
-                    select new ArrayType(type, new[] {1}));
+                    select new ArrayType(type, new RankSpecifiers(new[] { new RankSpecifier(1)})));
         }
 
         public Parser<StructType> StructType()
@@ -115,32 +116,68 @@ namespace Diesel.Parsing.CSharp
         }
 
 
-        public Parser<TypeNode> TypeNode(bool includeNullableTypes)
+        public Parser<TypeNode> TypeNode(bool includeNullableTypes, bool includeArrayTypes)
         {
             return ValueTypeNode(includeNullableTypes)
-                //.Or(ReferenceType)
+                .Or(ReferenceType(includeArrayTypes))
                 //.Or(TypeParameter)
                 ;
         }
 
         public Parser<TypeNode> TypeNode()
         {
-            return TypeNode(true);
+            return TypeNode(true, true);
+        }
+
+        private Parser<TypeNode> TypeNodeExceptNullableTypes()
+        {
+            return TypeNode(false, true);
+        }
+
+
+        private Parser<TypeNode> TypeNodeExceptArrayTypes()
+        {
+            return TypeNode(true, false);
         }
 
 
         public Parser<NullableType> NullableType()
         {
-            return (from underlyingType in TypeNode(false)
+            return (from underlyingType in TypeNodeExceptNullableTypes()
                     from nullableIndicator in TokenGrammar.QuestionMark
                     where !(underlyingType is NullableType)
                     select new NullableType(underlyingType));
         }
 
+
+        public Parser<TypeNameTypeNode> TypeNameTypeNode()
+        {
+            return (from t in TypeName()
+                    select new TypeNameTypeNode(t));
+        }
+
         public Parser<TypeNode> ReferenceType()
         {
+            return ReferenceType(true);
+        }
+
+        private Parser<TypeNode> ReferenceType(bool includeArrayTypes)
+        {
+            var parser = 
+                // interface-type not implemented
+                // delegate-type not implemented 
+                ClassType()
+                .Or(TypeNameTypeNode());
+            return includeArrayTypes
+                       ? ArrayType().Or(parser)
+                       : parser;
+        }
+
+
+        public Parser<TypeNode> ClassType()
+        {
             return StringType()
-                .Or<TypeNode>(TypeName().Select(t => new TypeNameTypeNode(t)));
+                .Or<TypeNode>(TypeNameTypeNode());
         }
 
         public Parser<StringReferenceType> StringType()

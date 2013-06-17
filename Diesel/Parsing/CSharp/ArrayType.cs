@@ -1,23 +1,59 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Diesel.Parsing.CSharp
 {
-    public class ArrayType : Terminal
+    public class ArrayType : ReferenceType, IEquatable<ArrayType>
     {
-        public string Name { get; private set; }
+        public TypeNode Type { get; private set; }
+        public RankSpecifiers RankSpecifiers { get; set; }
 
-        public ArrayType(TypeName typeName, IEnumerable<int> dimensionalities)
+        public ArrayType(TypeNode nonArrayType, RankSpecifiers rankSpecifiers)
         {
-            Name = String.Format("{0}{1}",
-                                 typeName.Name,
-                                 String.Join("", dimensionalities.Select(DimSeparators)));
+            Type = nonArrayType;
+            RankSpecifiers = rankSpecifiers;
         }
 
-        private static string DimSeparators(int i)
+        public override IEnumerable<ITreeNode> Children
         {
-            return String.Format("[{0}]", String.Join("", Enumerable.Repeat(",", i-1)));
+            get 
+            { 
+                yield return Type;
+                yield return RankSpecifiers;
+            }
+        }
+
+        public bool Equals(ArrayType other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Equals(Type, other.Type) && Equals(RankSpecifiers, other.RankSpecifiers);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((ArrayType) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((Type != null ? Type.GetHashCode() : 0)*397) ^ (RankSpecifiers != null ? RankSpecifiers.GetHashCode() : 0);
+            }
+        }
+
+        public static bool operator ==(ArrayType left, ArrayType right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(ArrayType left, ArrayType right)
+        {
+            return !Equals(left, right);
         }
     }
 }
