@@ -62,22 +62,6 @@ namespace Test.Diesel.Parsing
             Assert.Throws<ParseException>(() => Grammar.SimpleType.Parse("ArgumentException"));
         }
 
-        [Test]
-        public void NullableOf_ForSimpleType_ShouldParse()
-        {
-            AssertNullableOfSimpleTypeParsesAs<Int32?>("Int32?");
-            AssertNullableOfSimpleTypeParsesAs<Int32?>("int?");
-            AssertNullableOfSimpleTypeParsesAs<Int64?>("Int64?");
-            AssertNullableOfSimpleTypeParsesAs<Int64?>("long?");
-            AssertNullableOfSimpleTypeParsesAs<Decimal?>("decimal?");
-            AssertNullableOfSimpleTypeParsesAs<Double?>("double?");
-        }
-
-        private static void AssertNullableOfSimpleTypeParsesAs<TExpected>(string input)
-        {
-            var actual = CSharpGrammar.NullableOf(Grammar.SimpleType).Parse(input);
-            Assert.That(actual, Is.EqualTo(typeof(TExpected)));
-        }
 
         [Test]
         public void SimpleOrNullableType_ForSimpleType_ShouldParse()
@@ -278,6 +262,13 @@ namespace Test.Diesel.Parsing
         }
 
         [Test]
+        public void PropertyDeclaration_PrimitiveArrayType_ShouldSetType()
+        {
+            var actual = Grammar.PropertyDeclaration.Parse("int[] Roles");
+            Assert.That(actual.Type, Is.EqualTo(typeof(int[])));
+        }
+
+        [Test]
         public void PropertyDeclaration_UnqualifiedSystemTypeDateTime_ShouldSetType()
         {
             var actual = Grammar.PropertyDeclaration.Parse("DateTime OccurredOn");
@@ -290,7 +281,7 @@ namespace Test.Diesel.Parsing
             var actual = Grammar.PropertyDeclaration.Parse("Guid CommandId");
             Assert.That(actual.Type, Is.EqualTo(typeof(Guid)));
         }
-        
+
         [Test]
         public void CommandDeclaration_SingleProperty_ShouldParseProperty()
         {
@@ -310,6 +301,16 @@ namespace Test.Diesel.Parsing
             AssertPropertyEquals(properties[1], "FirstName", typeof(string));
             AssertPropertyEquals(properties[2], "LastName", typeof(string));
         }
+
+        [Test]
+        public void CommandDeclaration_PropertyWithArrayType_ShouldParseProperties()
+        {
+            var actual = Grammar.CommandDeclaration.Parse("(defcommand ImportEmployeeRoles (int EmployeeNumber, int[] RoleIds))");
+            var properties = actual.Properties.ToList();
+            AssertPropertyEquals(properties[0], "EmployeeNumber", typeof(int));
+            AssertPropertyEquals(properties[1], "RoleIds", typeof(int[]));
+        }
+
 
         private void AssertPropertyEquals(PropertyDeclaration actual, string expectedName, Type expectedType)
         {

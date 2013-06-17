@@ -8,6 +8,7 @@ namespace Diesel.Parsing
 {
     public static class Grammar
     {
+        private static CSharpGrammar _cSharpGrammar = new CSharpGrammar();
 
         /// <summary>
         /// A symbol is a naked string.
@@ -46,7 +47,7 @@ namespace Diesel.Parsing
         /// </summary>
         private static Parser<Type> KnownTypeName(string name, Type type)
         {
-            return (from id in CSharpGrammar.Identifier
+            return (from id in (new CSharpGrammar()).Identifier()
                     where id.Name == name
                     select type);
         }
@@ -71,7 +72,7 @@ namespace Diesel.Parsing
         
 
         public static Parser<Type> SimpleTypeAllowNullable =
-            CSharpGrammar.NullableOf(SimpleType)
+            _cSharpGrammar.NullableOf(SimpleType)
             .Or(SimpleType);
 
         private static readonly Parser<Type> SystemValueType =
@@ -80,13 +81,13 @@ namespace Diesel.Parsing
                 .Or(SimpleType);
 
         public static Parser<Type> SystemValueTypeAllowNullable
-            = CSharpGrammar.NullableOf(SystemValueType)
+            = _cSharpGrammar.NullableOf(SystemValueType)
                 .Or(SystemValueType);
 
 
         public static Parser<PropertyDeclaration> PropertyDeclaration
             = (from type in SystemValueTypeAllowNullable.Named("Property type").Token()
-               from name in CSharpGrammar.Identifier.Named("Property name").Token()
+               from name in _cSharpGrammar.Identifier().Named("Property name").Token()
                select new PropertyDeclaration(name.Name, type))
                 .Named("PropertyDeclartion");
 
@@ -107,7 +108,7 @@ namespace Diesel.Parsing
 
         private static readonly Parser<ValueTypeDeclaration> SimpleValueTypeDeclaration
             = (from declaration in Symbol("defvaluetype").Token()
-               from name in CSharpGrammar.Identifier.Token()
+               from name in _cSharpGrammar.Identifier().Token()
                from optionalTypeDeclaration in SystemValueTypeAllowNullable.Optional().Token()
                let property = new[] {new PropertyDeclaration(null, optionalTypeDeclaration.GetOrDefault())}
                select new ValueTypeDeclaration(name.Name, property))
@@ -116,7 +117,7 @@ namespace Diesel.Parsing
 
         private static readonly Parser<ValueTypeDeclaration> ValueTypeDeclarationWithPropertyList
             = (from declaration in Symbol("defvaluetype").Token()
-               from name in CSharpGrammar.Identifier.Token()
+               from name in _cSharpGrammar.Identifier().Token()
                from properties in PropertyDeclarations.Token()
                select new ValueTypeDeclaration(name.Name, properties))
                 .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
@@ -130,7 +131,7 @@ namespace Diesel.Parsing
 
         public static readonly Parser<CommandDeclaration> CommandDeclaration
             = (from declaration in Symbol("defcommand").Token()
-               from name in CSharpGrammar.Identifier.Token()
+               from name in _cSharpGrammar.Identifier().Token()
                from optionalPropertyDeclarations in PropertyDeclarations.Optional()
                select new CommandDeclaration(name.Name, optionalPropertyDeclarations.GetOrElse(new PropertyDeclaration[] { })))
                 .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
@@ -139,7 +140,7 @@ namespace Diesel.Parsing
 
         public static readonly Parser<DomainEventDeclaration> DomainEventDeclaration
             = (from declaration in Symbol("defdomainevent").Token()
-               from name in CSharpGrammar.Identifier.Token()
+               from name in _cSharpGrammar.Identifier().Token()
                from propertyDeclarations in PropertyDeclarations.Token()
                select new DomainEventDeclaration(name.Name, propertyDeclarations))
                 .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
@@ -148,7 +149,7 @@ namespace Diesel.Parsing
 
         public static readonly Parser<ApplicationServiceDeclaration> ApplicationServiceDeclaration
             = (from declaration in Symbol("defapplicationservice").Token()
-               from name in CSharpGrammar.Identifier.Token()
+               from name in _cSharpGrammar.Identifier().Token()
                from commandDeclarations in CommandDeclaration.Token().AtLeastOnce()
                select new ApplicationServiceDeclaration(name.Name, commandDeclarations))
                 .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
@@ -162,7 +163,7 @@ namespace Diesel.Parsing
 
         public static readonly Parser<Namespace> Namespace
             = (from declaration in Symbol("namespace").Token()
-               from name in CSharpGrammar.NamespaceName.Named("namespace name").Token()
+               from name in _cSharpGrammar.NamespaceName().Named("namespace name").Token()
                from typeDeclarations in TypeDeclaration
                    .Token()
                    .AtLeastOnce()
@@ -178,7 +179,7 @@ namespace Diesel.Parsing
                from lcurly in TokenGrammar.LeftCurlyBrace.Token()
                from inherits in Keyword("inherit").Token()
                from lbracket in TokenGrammar.LeftSquareBracket.Token()
-               from baseTypes in CSharpGrammar.TypeName.Token().Many()
+               from baseTypes in _cSharpGrammar.TypeName().Token().Many()
                from rbracket in TokenGrammar.RightSquareBracket.Token()
                from rcurly in TokenGrammar.RightCurlyBrace.Token()
                let domainEventConventions = new DomainEventConventions(baseTypes)

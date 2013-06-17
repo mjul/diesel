@@ -68,6 +68,7 @@
     <Compile Include="IDomainEvent.cs" />
     <Compile Include="Parsing\CSharp\ArrayTypeTest.cs" />
     <Compile Include="Parsing\CSharp\CSharpGrammarTest.cs" />
+    <Compile Include="Parsing\CSharp\SimpleTypeTest.cs" />
     <Compile Include="Parsing\GrammarTest.cs" />
     <Compile Include="CodeGeneration\CodeDomGeneratorTest.cs" />
     <Compile Include="TestHelpers\SerializationTesting.cs" />

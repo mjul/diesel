@@ -54,6 +54,11 @@
     <Compile Include="Parsing\ConventionsDeclaration.cs" />
     <Compile Include="Parsing\CSharp\CSharpGrammar.cs" />
     <Compile Include="Parsing\CSharp\Identifier.cs" />
+    <Compile Include="Parsing\CSharp\NullableType.cs" />
+    <Compile Include="Parsing\CSharp\SimpleType.cs" />
+    <Compile Include="Parsing\CSharp\StructType.cs" />
+    <Compile Include="Parsing\CSharp\TypeNode.cs" />
+    <Compile Include="Parsing\CSharp\ValueTypeNode.cs" />
     <Compile Include="Parsing\DomainEventConventions.cs" />
     <Compile Include="Parsing\DomainEventDeclaration.cs" />
     <Compile Include="Parsing\ITreeNode.cs" />

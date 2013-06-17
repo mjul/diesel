@@ -10,6 +10,11 @@ namespace Diesel.Parsing
             return Parse.Char(c).Named(name);
         }
 
+        public static Parser<String> String(string value)
+        {
+            return Parse.String(value).Text().Named(value);
+        }
+
         public static readonly Parser<Char> LeftParen = Char('(', "LeftParen");
         public static readonly Parser<Char> RightParen = Char(')', "RightParen");
         public static readonly Parser<Char> Letter = Parse.Letter;
@@ -25,5 +30,6 @@ namespace Diesel.Parsing
         public static readonly Parser<Char> LeftSquareBracket = Char('[', "LeftSquareBracket");
         public static readonly Parser<Char> RightSquareBracket = Char(']', "RightSquareBracket");
 
+ 
     }
 }
