@@ -246,6 +246,27 @@ namespace Test.Diesel.Parsing.CSharp
             Assert.That(actual, Is.EqualTo(new NullableType(new SimpleType(typeof (int)))));
         }
 
+
+        [Test]
+        public void StringType_String_ShouldParse()
+        {
+            var actual = SystemUnderTest.StringType().Parse("string");
+            Assert.That(actual, Is.EqualTo(new StringReferenceType()));
+        }
+
+        [Test]
+        public void ReferenceType_String_ShouldParse()
+        {
+            var actual = SystemUnderTest.ReferenceType().Parse("string");
+            Assert.That(actual, Is.EqualTo(new StringReferenceType()));
+        }
+
+        [Test]
+        public void ReferenceType_TypeName_ShouldParse()
+        {
+            var actual = SystemUnderTest.ReferenceType().Parse("Diesel.Test.Parsing.CSharpGrammarTest");
+            Assert.That(actual, Is.EqualTo(new TypeNameTypeNode(new TypeName("Diesel.Test.Parsing.CSharpGrammarTest"))));
+        }
     }
 
 }

@@ -137,5 +137,16 @@ namespace Diesel.Parsing.CSharp
                     select new NullableType(underlyingType));
         }
 
+        public Parser<TypeNode> ReferenceType()
+        {
+            return StringType()
+                .Or<TypeNode>(TypeName().Select(t => new TypeNameTypeNode(t)));
+        }
+
+        public Parser<StringReferenceType> StringType()
+        {
+            return (from keyword in TokenGrammar.String("string")
+                    select new StringReferenceType());
+        }
     }
 }
