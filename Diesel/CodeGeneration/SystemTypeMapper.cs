@@ -15,5 +15,23 @@ namespace Diesel.CodeGeneration
         {
             return node.Type;
         }
+
+        private Type MapToSystemType(StringReferenceType node)
+        {
+            return typeof (string);
+        }
+
+        private Type MapToSystemType(TypeNameTypeNode node)
+        {
+            var typeName = node.TypeName;
+            if (typeName.Name == "Guid") return typeof (Guid);
+            if (typeName.Name == "DateTime") return typeof (DateTime);
+            var knownType = Type.GetType(node.TypeName.Name, false);
+            if (knownType != null) return knownType;
+            throw new ArgumentOutOfRangeException("node", node.TypeName.Name, "Unknown type name.");
+        }
+
+        // TODO: add all TypeNode subtypes
+
     }
 }

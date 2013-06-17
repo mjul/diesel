@@ -58,7 +58,7 @@ namespace Test.Diesel
         }
 
         [Test]
-        public void Compile_InvalidModelSource_ShouldGenerateSourceCode()
+        public void Compile_InvalidModelSource_ShouldFail()
         {
             const string modelSource = "(namespace Foo (defvaluetype SpuriousParen)) (";
             Assert.Throws<Sprache.ParseException>(() => DieselCompiler.Compile(modelSource));
