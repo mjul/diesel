@@ -27,14 +27,16 @@
 	(defvaluetype Amount decimal)
 	(defvaluetype LineItemNumber (int Value))
 	(defvaluetype Name (string FirstName, string LastName))
-	(defvaluetype SourceMetadata (string Source, int? SourceId)))
+	(defvaluetype SourceMetadata (string Source, int? SourceId))
+	(defvaluetype RoleCollection (string[] Roles)))
 
 (namespace TestCases.Defcommand
 	(defcommand PrintString (string Name))
 	(defcommand PrintNullable (int? Value))
 	(defcommand PrintMultiple (string First, string Last))
 	(defcommand PrintDateTime (DateTime OccurredOn))
-	(defcommand PrintGuid (Guid SourceId)))
+	(defcommand PrintGuid (Guid SourceId))
+	(defcommand PrintArrays (string[] Names, int[] Numbers, Guid[] Guids, DateTime[] Timestamps)))
 
 (namespace TestCases.Defdomainevent
 	(defdomainevent PaymentReceived (Guid Id, Decimal Amount, String Currency)))
