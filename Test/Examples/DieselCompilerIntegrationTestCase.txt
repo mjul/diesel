@@ -13,15 +13,13 @@
 	(defcommand PrintInt (int Value))
 	(defcommand PrintNullable (float? Value))
 	(defcommand PrintArraySimple (int[] Value))
-	(defcommand PrintArraySimple2D (int[,] Value))
-	(defcommand PrintArraySimpleMulti (int[][,] Value))
 	(defcommand PrintNullableSimple (decimal? Value))
 	(defcommand PrintString (string Value))
 	(defcommand PrintNamedTypeQualifiedDateTime (System.DateTime Value))
 	(defcommand PrintNamedTypeQualifiedGuid (System.Guid Value))
 	(defcommand PrintNamedTypeUnqualifiedGuid (Guid Value))
 	(defcommand PrintNamedTypeUnqualifiedDecimal (Decimal Value))
-	(defcommand PrintMulti (string Text, int? NullableNumber, int[,] TwoDimArray, decimal Decimal, DateTime When)))
+	(defcommand PrintMulti (string Text, int? NullableNumber, string[] SingleDimArray, decimal Decimal, DateTime When)))
 
 
 (namespace TestCases.Defvaluetype

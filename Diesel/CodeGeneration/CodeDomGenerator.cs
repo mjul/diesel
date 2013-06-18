@@ -195,12 +195,7 @@ namespace Diesel.CodeGeneration
             };
 
             var compareExpressions = from property in properties
-                                     select new CodeBinaryOperatorExpression(
-                                         new CodePropertyReferenceExpression(
-                                             new CodeThisReferenceExpression(), property.Name),
-                                         CodeBinaryOperatorType.ValueEquality,
-                                         new CodePropertyReferenceExpression(
-                                             new CodeVariableReferenceExpression("other"), property.Name));
+                                     select EqualityMethodsGenerator.ComparePropertyValueEqualityExpression(property, "other");
 
             var nullGuardSeed = isValueType
                                     ? (CodeExpression) new CodePrimitiveExpression(true)
@@ -231,6 +226,8 @@ namespace Diesel.CodeGeneration
             return new CodeTypeMember[] { equalsTyped, equalsObject };
         }
 
+
+        
         private static CodeMethodInvokeExpression CreateTypeIsAssignableFrom(string typeName, CodeExpression instanceExpression)
         {
             // typeof(typeName).IsAssignableFrom(instanceExpression.GetType())

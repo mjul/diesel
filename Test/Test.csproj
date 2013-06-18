@@ -54,12 +54,14 @@
     </Compile>
     <Compile Include="CodeGeneration\ConventionsDeclarationTest.cs" />
     <Compile Include="CodeGeneration\DomainEventConventionsDeclarationTest.cs" />
+    <Compile Include="CodeGeneration\EqualityMethodsGeneratorTest.cs" />
     <Compile Include="CodeGeneration\SystemTypeMapperTest.cs" />
     <Compile Include="DieselCompilerIntegrationTest.cs" />
     <Compile Include="GeneratedCommandTest.cs" />
     <Compile Include="GeneratedDomainEventTest.cs" />
     <Compile Include="GeneratedValueTypeMultiplePropertiesTest.cs" />
     <Compile Include="GeneratedValueTypeTest.cs" />
+    <Compile Include="GeneratedValueTypeWithArrayTest.cs" />
     <Compile Include="GeneratedValueTypeWithNullableProperty.cs" />
     <Compile Include="Generated\GenerateExamples.cs">
       <AutoGen>True</AutoGen>

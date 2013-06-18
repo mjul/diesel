@@ -194,6 +194,108 @@ namespace Test.Diesel.Generated {
         }
     }
     
+    [System.SerializableAttribute()]
+    public partial struct EmployeeRatings : System.IEquatable<EmployeeRatings> {
+        
+        private int _employeeNumber;
+        
+        private int[] _ratings;
+        
+        public EmployeeRatings(int employeeNumber, int[] ratings) {
+            this._employeeNumber = employeeNumber;
+            this._ratings = ratings;
+        }
+        
+        public int EmployeeNumber {
+            get {
+                return this._employeeNumber;
+            }
+        }
+        
+        public int[] Ratings {
+            get {
+                return this._ratings;
+            }
+        }
+        
+        public static bool operator ==(EmployeeRatings left, EmployeeRatings right) {
+            return left.Equals(right);
+        }
+        
+        public static bool operator !=(EmployeeRatings left, EmployeeRatings right) {
+            return (false == left.Equals(right));
+        }
+        
+        public override int GetHashCode() {
+            return (0 + this.EmployeeNumber.GetHashCode());
+        }
+        
+        public bool Equals(EmployeeRatings other) {
+            return ((true 
+                        && (this.EmployeeNumber == other.EmployeeNumber)) 
+                        && ((this.Ratings.Length == other.Ratings.Length) 
+                        && System.Linq.Enumerable.All(System.Linq.Enumerable.Zip(this.Ratings, other.Ratings, (a, b) => Object.Equals(a,b)), areEqual => areEqual)));
+        }
+        
+        public override bool Equals(object obj) {
+            if (object.ReferenceEquals(null, obj)) {
+                return false;
+            }
+            return (typeof(EmployeeRatings).IsAssignableFrom(obj.GetType()) && this.Equals(((EmployeeRatings)(obj))));
+        }
+    }
+    
+    [System.SerializableAttribute()]
+    public partial struct EmployeeRoles : System.IEquatable<EmployeeRoles> {
+        
+        private int _employeeNumber;
+        
+        private string[] _roles;
+        
+        public EmployeeRoles(int employeeNumber, string[] roles) {
+            this._employeeNumber = employeeNumber;
+            this._roles = roles;
+        }
+        
+        public int EmployeeNumber {
+            get {
+                return this._employeeNumber;
+            }
+        }
+        
+        public string[] Roles {
+            get {
+                return this._roles;
+            }
+        }
+        
+        public static bool operator ==(EmployeeRoles left, EmployeeRoles right) {
+            return left.Equals(right);
+        }
+        
+        public static bool operator !=(EmployeeRoles left, EmployeeRoles right) {
+            return (false == left.Equals(right));
+        }
+        
+        public override int GetHashCode() {
+            return (0 + this.EmployeeNumber.GetHashCode());
+        }
+        
+        public bool Equals(EmployeeRoles other) {
+            return ((true 
+                        && (this.EmployeeNumber == other.EmployeeNumber)) 
+                        && ((this.Roles.Length == other.Roles.Length) 
+                        && System.Linq.Enumerable.All(System.Linq.Enumerable.Zip(this.Roles, other.Roles, (a, b) => Object.Equals(a,b)), areEqual => areEqual)));
+        }
+        
+        public override bool Equals(object obj) {
+            if (object.ReferenceEquals(null, obj)) {
+                return false;
+            }
+            return (typeof(EmployeeRoles).IsAssignableFrom(obj.GetType()) && this.Equals(((EmployeeRoles)(obj))));
+        }
+    }
+    
     [System.Runtime.Serialization.DataContractAttribute(Name="EmployeeImported")]
     [System.SerializableAttribute()]
     public sealed partial class EmployeeImported : System.IEquatable<EmployeeImported>, Test.Diesel.IDomainEvent {
@@ -273,7 +375,7 @@ namespace Test.Diesel.Generated {
         
         public bool Equals(EmployeeImported other) {
             return ((((((false == object.ReferenceEquals(null, other)) 
-                        && (this.Id == other.Id)) 
+                        && object.Equals(this.Id, other.Id)) 
                         && (this.EmployeeNumber == other.EmployeeNumber)) 
                         && (this.FirstName == other.FirstName)) 
                         && (this.LastName == other.LastName)) 
@@ -374,7 +476,7 @@ namespace Test.Diesel.Generated {
         
         public bool Equals(ImportEmployee other) {
             return ((((((false == object.ReferenceEquals(null, other)) 
-                        && (this.CommandId == other.CommandId)) 
+                        && object.Equals(this.CommandId, other.CommandId)) 
                         && (this.EmployeeNumber == other.EmployeeNumber)) 
                         && (this.FirstName == other.FirstName)) 
                         && (this.LastName == other.LastName)) 
