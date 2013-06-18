@@ -223,6 +223,15 @@ namespace Test.Diesel.Parsing.CSharp
             AssertNullableTypeParsesAs("int?", new SimpleType(typeof(int)));
         }
 
+
+        [Test]
+        public void NullableType_NonValueTypeString_ShouldNotParse()
+        {
+            var actual = SystemUnderTest.NullableType().TryParse("string?");
+            Assert.That(actual.WasSuccessful, Is.False);
+        }
+
+
         private void AssertNullableTypeParsesAs(string input, TypeNode expectedUnderlying)
         {
             var actual = SystemUnderTest.NullableType().Parse(input);

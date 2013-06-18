@@ -33,8 +33,6 @@ namespace Diesel.Parsing.CSharp
                 .Named("NamespaceName");
         }
 
-        // TODO: rewrite to C# namespace + identifier production
-
         /// <summary>
         /// This parses a useful subset of .NET Type names (qualified names, not nested types).
         /// </summary>
@@ -79,7 +77,7 @@ namespace Diesel.Parsing.CSharp
         // Just uni-dimensional arrays for now, not full C# syntax rank specifiers
         public Parser<ArrayType> ArrayType()
         {
-            return (from type in TypeNodeExceptArrayTypes()
+            return (from type in NonArrayType()
                     from rankSpecificer in
                         (from open in TokenGrammar.LeftSquareBracket.Token()
                          from close in TokenGrammar.RightSquareBracket.Token()
@@ -108,13 +106,22 @@ namespace Diesel.Parsing.CSharp
             return ValueTypeNode(true);
         }
 
-        public Parser<ValueTypeNode> ValueTypeNode(bool includeNullableTypes)
+        private Parser<ValueTypeNode> ValueTypeNode(bool includeNullableTypes)
         {
             return StructType(includeNullableTypes)
                 // TODO: .Or(EnumType)
                 ;
         }
 
+
+        /// <summary>
+        /// A bit more restricted than the C# version we allow nullables only of explicit value types.
+        /// C# would also allow generic types with the right type constraints to fit.
+        /// </summary>
+        private Parser<ValueTypeNode> NonNullableValueType()
+        {
+            return ValueTypeNode(false);
+        }
 
         public Parser<TypeNode> TypeNode(bool includeNullableTypes, bool includeArrayTypes)
         {
@@ -129,21 +136,15 @@ namespace Diesel.Parsing.CSharp
             return TypeNode(true, true);
         }
 
-        private Parser<TypeNode> TypeNodeExceptNullableTypes()
-        {
-            return TypeNode(false, true);
-        }
 
-
-        private Parser<TypeNode> TypeNodeExceptArrayTypes()
+        private Parser<TypeNode> NonArrayType()
         {
             return TypeNode(true, false);
         }
 
-
         public Parser<NullableType> NullableType()
         {
-            return (from underlyingType in TypeNodeExceptNullableTypes()
+            return (from underlyingType in NonNullableValueType()
                     from nullableIndicator in TokenGrammar.QuestionMark
                     where !(underlyingType is NullableType)
                     select new NullableType(underlyingType));
