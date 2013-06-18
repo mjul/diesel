@@ -249,6 +249,14 @@ namespace Test.Diesel.Parsing
         }
 
         [Test]
+        public void PropertyDeclaration_ArrayTypeOfValueType2D_ShouldSetType()
+        {
+            var actual = Grammar.PropertyDeclaration.Parse("int[,] Map");
+            Assert.That(actual.Type, Is.EqualTo(new ArrayType(new SimpleType(typeof(int)),
+                new RankSpecifiers(new[]{new RankSpecifier(2)}))));
+        }
+
+        [Test]
         public void PropertyDeclaration_ArrayTypeOfReferenceType_ShouldSetType()
         {
             var actual = Grammar.PropertyDeclaration.Parse("string[] Names");
@@ -277,6 +285,9 @@ namespace Test.Diesel.Parsing
             var actual = Grammar.PropertyDeclaration.Parse("Guid CommandId");
             Assert.That(actual.Type, Is.EqualTo(new TypeNameTypeNode(new TypeName("Guid"))));
         }
+
+
+
 
         [Test]
         public void CommandDeclaration_SingleProperty_ShouldParseProperty()

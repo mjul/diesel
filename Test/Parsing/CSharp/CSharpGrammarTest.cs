@@ -125,6 +125,59 @@ namespace Test.Diesel.Parsing.CSharp
         }
 
         [Test]
+        public void ArrayType_ArrayOfValueType2D_ShouldParse()
+        {
+            var actual = SystemUnderTest.ArrayType().Parse("int[,]");
+            Assert.That(actual, Is.EqualTo(new ArrayType(new SimpleType(typeof(int)), new RankSpecifiers(new[] { new RankSpecifier(2) }))));
+        }
+
+        [Test]
+        public void ArrayType_ArrayOfValueType1D2D3D_ShouldParse()
+        {
+            var actual = SystemUnderTest.ArrayType().Parse("int[][,][,,]");
+            Assert.That(actual, Is.EqualTo(new ArrayType(new SimpleType(typeof (int)), new RankSpecifiers(new[]
+                {
+                    new RankSpecifier(1),
+                    new RankSpecifier(2),
+                    new RankSpecifier(3)
+                }))));
+        }
+
+        [Test]
+        public void RankSpecifier_1D_ShouldParse()
+        {
+            var actual = SystemUnderTest.RankSpecifier().Parse("[]");
+            Assert.That(actual, Is.EqualTo(new RankSpecifier(1)));
+        }
+
+        [Test]
+        public void RankSpecifier_2D_ShouldParse()
+        {
+            var actual = SystemUnderTest.RankSpecifier().Parse("[,]");
+            Assert.That(actual, Is.EqualTo(new RankSpecifier(2)));
+        }
+
+        [Test]
+        public void RankSpecifier_3D_ShouldParse()
+        {
+            var actual = SystemUnderTest.RankSpecifier().Parse("[,,]");
+            Assert.That(actual, Is.EqualTo(new RankSpecifier(3)));
+        }
+
+        [Test]
+        public void RankSpecifiers_1D2D3D_ShouldParse()
+        {
+            var actual = SystemUnderTest.RankSpecifiers().Parse("[][,][,,]");
+            Assert.That(actual, Is.EqualTo(
+                new RankSpecifiers(new[]
+                    {
+                        new RankSpecifier(1),
+                        new RankSpecifier(2),
+                        new RankSpecifier(3)
+                    })));
+        }
+
+        [Test]
         public void SimpleType_Bool_ShouldParse()
         {
             AssertSimpleTypeParsesAs("bool", typeof (bool));
@@ -337,6 +390,13 @@ namespace Test.Diesel.Parsing.CSharp
         {
             var actual = SystemUnderTest.TypeNode().Parse("int[]");
             Assert.That(actual, Is.EqualTo(new ArrayType(new SimpleType(typeof(int)), new RankSpecifiers(new[] { new RankSpecifier(1) }))));
+        }
+
+        [Test]
+        public void TypeNode_ReferenceTypeArrayOfValueType2D_ShouldParse()
+        {
+            var actual = SystemUnderTest.TypeNode().Parse("int[,]");
+            Assert.That(actual, Is.EqualTo(new ArrayType(new SimpleType(typeof(int)), new RankSpecifiers(new[] { new RankSpecifier(2) }))));
         }
         
         [Test]

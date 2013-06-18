@@ -91,16 +91,29 @@ namespace Diesel.Parsing.CSharp
                     select System.Type.GetType(String.Format("System.Nullable`1[{0}]", underlyingType.FullName), true));
         }
 
-        // Just uni-dimensional arrays for now, not full C# syntax rank specifiers
+        /// <summary>
+        /// Parse the C# array-type production.
+        /// </summary>
         public Parser<ArrayType> ArrayType()
         {
-            return (from type in NonArrayType()
-                    from rankSpecificer in
-                        (from open in TokenGrammar.LeftSquareBracket.Token()
-                         from close in TokenGrammar.RightSquareBracket.Token()
-                         select "[]")
-                    select new ArrayType(type, new RankSpecifiers(new[] { new RankSpecifier(1)})));
+            return from type in NonArrayType()
+                   from rankSpecificers in RankSpecifiers()
+                   select new ArrayType(type, rankSpecificers);
         }
+
+        public Parser<RankSpecifiers> RankSpecifiers()
+        {
+            return from ranks in RankSpecifier().Token().AtLeastOnce()
+                   select new RankSpecifiers(ranks);
+        }
+
+        public Parser<RankSpecifier> RankSpecifier()
+        {
+            return from open in TokenGrammar.LeftSquareBracket.Token()
+                   from commas in TokenGrammar.Comma.Token().Many()
+                   from close in TokenGrammar.RightSquareBracket.Token()
+                   select new RankSpecifier(commas.Count() + 1);
+        } 
 
         public Parser<StructType> StructType()
         {
