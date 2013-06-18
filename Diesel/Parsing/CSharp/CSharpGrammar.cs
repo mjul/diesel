@@ -12,16 +12,33 @@ namespace Diesel.Parsing.CSharp
     /// </summary>
     public class CSharpGrammar
     {
+        public readonly string[] CSharpKeywords =
+            {
+                "abstract", "as", "base", "bool", "break", "byte", "case", "catch",
+                "char", "checked", "class", "const", "continue", "decimal", "default",
+                "delegate", "do", "double", "else", "enum", "event", "explicit",
+                "extern", "false", "finally", "fixed", "float", "for", "foreach",
+                "goto", "if", "implicit", "in", "int", "interface", "internal", "is",
+                "lock", "long", "namespace", "new", "null", "object", "operator",
+                "out", "override", "params", "private", "protected", "public",
+                "readonly", "ref", "return", "sbyte", "sealed", "short", "sizeof",
+                "stackalloc", "static", "string", "struct", "switch", "this", "throw",
+                "true", "try", "typeof", "uint", "ulong", "unchecked", "unsafe",
+                "ushort", "using", "virtual", "void", "volatile", "while"
+            };
+
+
         /// <summary>
         /// Recognize valid .NET identifiers.
-        /// Just a subset: letters, digits and underscore allowed. 
-        /// No @keywords and no C# keyword rejection.
+        /// Not the full C# syntax with @keywords.
         /// </summary>
         public Parser<Identifier> Identifier()
         {
             return (from first in TokenGrammar.Letter.Or(TokenGrammar.Underscore)
                     from rest in TokenGrammar.LetterOrDigit.Or(TokenGrammar.Underscore).Many().Text()
-                    select new Identifier(first + rest))
+                    let identifier = first + rest
+                    where !CSharpKeywords.Contains(identifier)
+                    select new Identifier(identifier))
                 .Named("Identifier");
         }
 
@@ -186,5 +203,6 @@ namespace Diesel.Parsing.CSharp
             return (from keyword in TokenGrammar.String("string")
                     select new StringReferenceType());
         }
+
     }
 }

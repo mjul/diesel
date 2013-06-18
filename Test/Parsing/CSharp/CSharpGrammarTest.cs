@@ -55,6 +55,15 @@ namespace Test.Diesel.Parsing.CSharp
             Assert.That(actual.Name, Is.EqualTo("name1"));
         }
 
+        [Test]
+        public void Identifier_CSharpKeywords_ShouldNotParse()
+        {
+            foreach (var keyword in SystemUnderTest.CSharpKeywords)
+            {
+                var actual = SystemUnderTest.Identifier().TryParse(keyword);
+                Assert.That(actual.WasSuccessful, Is.False, "Keyword {0} should not pass as Identifier", keyword);
+            }
+        }
 
         [Test]
         public void NamespaceIdentifier_BlankName_ShouldNotParse()
@@ -325,18 +334,33 @@ namespace Test.Diesel.Parsing.CSharp
         }
 
         [Test]
-        public void TypeNode_ReferenceType_ShouldParse()
+        public void TypeNode_ReferenceTypeString_ShouldParse()
         {
             var actual = SystemUnderTest.TypeNode().Parse("string");
             Assert.That(actual, Is.EqualTo(new StringReferenceType()));
         }
 
         [Test]
+        public void TypeNode_ReferenceTypeArrayOfValueType_ShouldParse()
+        {
+            var actual = SystemUnderTest.TypeNode().Parse("int[]");
+            Assert.That(actual, Is.EqualTo(new ArrayType(new SimpleType(typeof(int)), new RankSpecifiers(new[] { new RankSpecifier(1) }))));
+        }
+        
+        [Test]
+        public void TypeNode_ReferenceTypeArrayOfReferenceType_ShouldParse()
+        {
+            var actual = SystemUnderTest.TypeNode().Parse("string[]");
+            Assert.That(actual, Is.EqualTo(new ArrayType(new StringReferenceType(), new RankSpecifiers(new[] { new RankSpecifier(1) }))));
+        }
+
+
+        [Test]
         public void TypeNode_TypeName_ShouldParse()
         {
+            
             var actual = SystemUnderTest.TypeNode().Parse("Diesel.Test.Parsing.CSharpGrammarTest");
             Assert.That(actual, Is.EqualTo(new TypeNameTypeNode(new TypeName("Diesel.Test.Parsing.CSharpGrammarTest"))));
         }
     }
-
 }
