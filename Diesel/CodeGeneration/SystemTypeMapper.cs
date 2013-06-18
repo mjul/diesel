@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Diesel.Parsing.CSharp;
 
 namespace Diesel.CodeGeneration
@@ -21,17 +22,35 @@ namespace Diesel.CodeGeneration
             return typeof (string);
         }
 
-        private Type MapToSystemType(TypeNameTypeNode node)
+        private Type MapToSystemType(NullableType node)
         {
-            var typeName = node.TypeName;
-            if (typeName.Name == "Guid") return typeof (Guid);
-            if (typeName.Name == "DateTime") return typeof (DateTime);
-            var knownType = Type.GetType(node.TypeName.Name, false);
-            if (knownType != null) return knownType;
-            throw new ArgumentOutOfRangeException("node", node.TypeName.Name, "Unknown type name.");
+            Type underlying = MapToSystemType((dynamic) node.Underlying);
+            return Type.GetType(String.Format("System.Nullable`1[{0}]", underlying.FullName));
         }
 
-        // TODO: add all TypeNode subtypes
 
+        private Type MapToSystemType(ArrayType node)
+        {
+            Type underlying = MapToSystemType((dynamic)node.Type);
+            var rankSpecifiers = (from rank in node.RankSpecifiers.Ranks.Reverse()
+                                  from rankSpec in String.Format("[{0}]",
+                                                                 String.Join("", Enumerable.Repeat(',', rank.Dimensions - 1)))
+                                  select rankSpec);
+            return Type.GetType(String.Format("{0}{1}", 
+                                    underlying.FullName, 
+                                    String.Concat(rankSpecifiers)));
+        }
+
+
+        // TODO: we should probably not support these, rather fix the code gen to emit the name directly
+        private Type MapToSystemType(TypeNameTypeNode node)
+        {
+            var knownType = Type.GetType(node.TypeName.Name, false);
+            if (knownType != null) return knownType;
+            var asQualifiedSystemType = String.Format("System.{0}", node.TypeName.Name);
+            var knownSystemType = Type.GetType(asQualifiedSystemType, false);
+            if (knownSystemType != null) return knownSystemType;
+            throw new ArgumentOutOfRangeException("node", node.TypeName.Name, "Unknown type name.");
+        }
     }
 }
