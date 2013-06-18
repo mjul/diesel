@@ -35,59 +35,6 @@ namespace Test.Diesel.Parsing
 
 
         [Test]
-        public void SimpleType_SimpleType_ShouldParse()
-        {
-            AssertSimpleTypeParsesAs<decimal>("Decimal");
-        }
-
-        [Test]
-        public void SimpleType_SyntacticSugarNames_ShouldParse()
-        {
-            AssertSimpleTypeParsesAs<Int32>("int");
-            AssertSimpleTypeParsesAs<Int64>("long");
-            AssertSimpleTypeParsesAs<Decimal>("decimal");
-            AssertSimpleTypeParsesAs<Double>("double");
-        }
-
-        private static void AssertSimpleTypeParsesAs<T>(string input)
-        {
-            var actual = Grammar.SimpleType.Parse(input);
-            Assert.That(actual, Is.EqualTo(typeof(T)));
-        }
-
-
-        [Test]
-        public void SimpleType_ComplexType_ShouldNotParse()
-        {
-            Assert.Throws<ParseException>(() => Grammar.SimpleType.Parse("ArgumentException"));
-        }
-
-
-        [Test]
-        public void SimpleOrNullableType_ForSimpleType_ShouldParse()
-        {
-            AssertSimpleOrNullableTypeParsesAs<Int32>("Int32");
-        }
-
-        [Test]
-        public void SimpleOrNullableType_ForNullableType_ShouldParse()
-        {
-            AssertSimpleOrNullableTypeParsesAs<Int32?>("Int32?");
-            AssertSimpleOrNullableTypeParsesAs<Int32?>("int?");
-            AssertSimpleOrNullableTypeParsesAs<Int64?>("Int64?");
-            AssertSimpleOrNullableTypeParsesAs<Int64?>("long?");
-            AssertSimpleOrNullableTypeParsesAs<Decimal?>("decimal?");
-            AssertSimpleOrNullableTypeParsesAs<Double?>("double?");
-        }
-
-        private static void AssertSimpleOrNullableTypeParsesAs<T>(string input)
-        {
-            var actual = Grammar.SimpleTypeAllowNullable.Parse(input);
-            Assert.That(actual, Is.EqualTo(typeof(T)));
-        }
-
-
-        [Test]
         public void ValueTypeDeclaration_JustNameNoType_ShouldParseName()
         {
             var actual = Grammar.ValueTypeDeclaration.Parse("(defvaluetype EmployeeNumber)");
@@ -136,10 +83,16 @@ namespace Test.Diesel.Parsing
         }
 
 
-        private static SimpleType AstArrayOf<T>()
+        private static ArrayType AstArrayOfSimpleType<T>()
         {
-            throw new NotImplementedException();
-            //return new ArrayType(new SimpleType(typeof (T)), new {1});
+            return new ArrayType(new SimpleType(typeof (T)), 
+                new RankSpecifiers(new[] {new RankSpecifier(1)}));
+        }
+
+        private static ArrayType AstArrayOfString()
+        {
+            return new ArrayType(new StringReferenceType(), 
+                new RankSpecifiers(new[] { new RankSpecifier(1) }));
         }
 
         private static TypeNameTypeNode AstGuidType()
@@ -289,10 +242,26 @@ namespace Test.Diesel.Parsing
         }
 
         [Test]
-        public void PropertyDeclaration_PrimitiveArrayType_ShouldSetType()
+        public void PropertyDeclaration_ArrayTypeOfValueType_ShouldSetType()
         {
             var actual = Grammar.PropertyDeclaration.Parse("int[] Roles");
-            Assert.That(actual.Type, Is.EqualTo(AstArrayOf<int>()));
+            Assert.That(actual.Type, Is.EqualTo(AstArrayOfSimpleType<int>()));
+        }
+
+        [Test]
+        public void PropertyDeclaration_ArrayTypeOfReferenceType_ShouldSetType()
+        {
+            var actual = Grammar.PropertyDeclaration.Parse("string[] Names");
+            Assert.That(actual.Type, Is.EqualTo(AstArrayOfString()));
+        }
+
+        [Test]
+        public void PropertyDeclaration_ArrayTypeOfNamedType_ShouldSetType()
+        {
+            var actual = Grammar.PropertyDeclaration.Parse("MyDomain.Name[] Names");
+            Assert.That(actual.Type, Is.InstanceOf(typeof (ArrayType)));
+            var actualType = ((ArrayType) actual.Type).Type;
+            Assert.That(actualType, Is.EqualTo(new TypeNameTypeNode(new TypeName("MyDomain.Name"))));
         }
 
         [Test]
@@ -336,7 +305,7 @@ namespace Test.Diesel.Parsing
             var actual = Grammar.CommandDeclaration.Parse("(defcommand ImportEmployeeRoles (int EmployeeNumber, int[] RoleIds))");
             var properties = actual.Properties.ToList();
             AssertPropertyEquals(properties[0], "EmployeeNumber", AstSimpleType<int>());
-            AssertPropertyEquals(properties[1], "RoleIds", AstArrayOf<int>());
+            AssertPropertyEquals(properties[1], "RoleIds", AstArrayOfSimpleType<int>());
         }
 
 

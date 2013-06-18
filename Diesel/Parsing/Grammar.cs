@@ -42,52 +42,9 @@ namespace Diesel.Parsing
             return Keyword().Where(k => k.Name == name);
         }
 
-        /// <summary>
-        /// Recognize names and their corresponding known type, e.g. "Int32" and typeof(Int32).
-        /// </summary>
-        private static Parser<Type> KnownTypeName(string name, Type type)
-        {
-            return (from id in (new CSharpGrammar()).Identifier()
-                    where id.Name == name
-                    select type);
-        }
-
-
-        // In constrast to the C# grammar, we count string a simple type since it has value semantics
-        public static Parser<Type> SimpleType =
-            KnownTypeName("Int32", typeof (Int32))
-                .Or(KnownTypeName("String", typeof (String)))
-                .Or(KnownTypeName("Decimal", typeof (Decimal)))
-                .Or(KnownTypeName("Single", typeof (Single)))
-                .Or(KnownTypeName("Double", typeof (Double)))
-                .Or(KnownTypeName("Int64", typeof (Int64)))
-                .Or(KnownTypeName("int", typeof (Int32)))
-                .Or(KnownTypeName("string", typeof (String)))
-                .Or(KnownTypeName("decimal", typeof (Decimal)))
-                .Or(KnownTypeName("float", typeof (Single)))
-                .Or(KnownTypeName("double", typeof (Double)))
-                .Or(KnownTypeName("long", typeof (Int64)))
-                .Named("SimpleType");
-
-        
-
-        public static Parser<Type> SimpleTypeAllowNullable =
-            _cSharpGrammar.NullableOf(SimpleType)
-            .Or(SimpleType);
-
-        private static readonly Parser<Type> SystemValueType =
-            KnownTypeName("Guid", typeof (Guid))
-                .Or(KnownTypeName("DateTime", typeof (DateTime)))
-                .Or(SimpleType);
-
-        public static Parser<Type> SystemValueTypeAllowNullable
-            = _cSharpGrammar.NullableOf(SystemValueType)
-                .Or(SystemValueType);
-
-
         public static Parser<PropertyDeclaration> PropertyDeclaration
-            = (from type in _cSharpGrammar.TypeNode().Named("Property type").Token()
-               from name in _cSharpGrammar.Identifier().Named("Property name").Token()
+            = (from type in _cSharpGrammar.TypeNode().Token().Named("Property type")
+               from name in _cSharpGrammar.Identifier().Token().Named("Property name")
                select new PropertyDeclaration(name.Name, type))
                 .Named("PropertyDeclartion");
 

@@ -208,30 +208,23 @@ namespace Test.Diesel.Parsing.CSharp
             Assert.That(actual.Type, Is.EqualTo(expectedType));
         }
 
-
         [Test]
-        public void NullableOf_ForSimpleType_ShouldParse()
+        public void NullableType_SimpleTypes_ShouldParse()
         {
-            AssertNullableOfSimpleTypeParsesAs<Int32?>("Int32?");
-            AssertNullableOfSimpleTypeParsesAs<Int32?>("int?");
-            AssertNullableOfSimpleTypeParsesAs<Int64?>("Int64?");
-            AssertNullableOfSimpleTypeParsesAs<Int64?>("long?");
-            AssertNullableOfSimpleTypeParsesAs<Decimal?>("decimal?");
-            AssertNullableOfSimpleTypeParsesAs<Double?>("double?");
-        }
-
-        private static void AssertNullableOfSimpleTypeParsesAs<TExpected>(string input)
-        {
-            var actual = SystemUnderTest.NullableOf(Grammar.SimpleType).Parse(input);
-            Assert.That(actual, Is.EqualTo(typeof(TExpected)));
-        }
-
-        [Test]
-        public void NullableType_Int_ShouldParse()
-        {
+            AssertNullableTypeParsesAs("bool?", new SimpleType(typeof(bool)));
+            AssertNullableTypeParsesAs("decimal?", new SimpleType(typeof(decimal)));
+            AssertNullableTypeParsesAs("sbyte?", new SimpleType(typeof(sbyte)));
+            AssertNullableTypeParsesAs("byte?", new SimpleType(typeof(byte)));
+            AssertNullableTypeParsesAs("short?", new SimpleType(typeof(short)));
+            AssertNullableTypeParsesAs("ushort?", new SimpleType(typeof(ushort)));
             AssertNullableTypeParsesAs("int?", new SimpleType(typeof(int)));
+            AssertNullableTypeParsesAs("uint?", new SimpleType(typeof(uint)));
+            AssertNullableTypeParsesAs("long?", new SimpleType(typeof(long)));
+            AssertNullableTypeParsesAs("ulong?", new SimpleType(typeof(ulong)));
+            AssertNullableTypeParsesAs("char?", new SimpleType(typeof(char)));
+            AssertNullableTypeParsesAs("float?", new SimpleType(typeof(float)));
+            AssertNullableTypeParsesAs("double?", new SimpleType(typeof(double)));
         }
-
 
         [Test]
         public void NullableType_NonValueTypeString_ShouldNotParse()
@@ -239,7 +232,6 @@ namespace Test.Diesel.Parsing.CSharp
             var actual = SystemUnderTest.NullableType().TryParse("string?");
             Assert.That(actual.WasSuccessful, Is.False);
         }
-
 
         private void AssertNullableTypeParsesAs(string input, TypeNode expectedUnderlying)
         {

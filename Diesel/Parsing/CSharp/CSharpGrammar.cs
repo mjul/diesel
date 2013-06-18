@@ -142,9 +142,9 @@ namespace Diesel.Parsing.CSharp
 
         public Parser<TypeNode> TypeNode(bool includeNullableTypes, bool includeArrayTypes)
         {
-            return ValueTypeNode(includeNullableTypes)
-                .Or(ReferenceType(includeArrayTypes))
-                //.Or(TypeParameter)
+            return ReferenceType(includeArrayTypes)
+                .Or(ValueTypeNode(includeNullableTypes))
+                // TODO: .Or(TypeParameter)
                 ;
         }
 
