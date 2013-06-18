@@ -1,3 +1,7 @@
+# Version 1.7
+* Support for arrays in value types, commands and domain events.
+* Grammar for property specification now follows C# grammar more closely.
+
 # Version 1.6
 * `defdomainevent` added to generate domain event DTOs.
 * `defconventions` added to configure the code-generation. For now, just configurable base classes for Domain Events.
