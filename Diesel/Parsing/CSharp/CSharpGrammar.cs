@@ -84,13 +84,6 @@ namespace Diesel.Parsing.CSharp
                 .Or(KnownSimpleType("double", typeof (double)));
         }
 
-        public Parser<Type> NullableOf(Parser<Type> underlying)
-        {
-            return (from underlyingType in underlying
-                    from nullableIndicator in TokenGrammar.QuestionMark
-                    select System.Type.GetType(String.Format("System.Nullable`1[{0}]", underlyingType.FullName), true));
-        }
-
         /// <summary>
         /// Parse the C# array-type production.
         /// </summary>
