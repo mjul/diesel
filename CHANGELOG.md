@@ -1,3 +1,6 @@
+# Version 1.8
+* `defdto` added to generate DTOs (Data Transfer Objects).
+
 # Version 1.7
 * Support for arrays in value types, commands and domain events.
 * Grammar for property specification now follows C# grammar more closely.
