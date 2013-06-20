@@ -96,7 +96,6 @@ namespace Test.Diesel.CodeGeneration
             return CodeDomGenerator.Compile(model);
         }
 
-
         [Test]
         public void DomainEventDeclaration_ValidDeclaration_ShouldParse()
         {
@@ -142,6 +141,42 @@ namespace Test.Diesel.CodeGeneration
             return declaration;
         }
 
+
+
+        [Test]
+        public void DtoDeclaration_ValidDeclaration_ShouldProduceSealedClass()
+        {
+            var source = CompileToSource(CompileNameDto());
+            Assert.That(source, Is.StringContaining(@"sealed partial class Name"));
+        }
+
+        [Test]
+        public void DtoDeclaration_ValidDeclaration_ShouldAddDataMemberAttributes()
+        {
+            var source = CompileToSource(CompileNameDto());
+            Assert.That(source, Is.StringMatching(@"DataMemberAttribute\(Name=""First"", Order=1\)]\s+private\s+string\s+_first"));
+            Assert.That(source, Is.StringMatching(@"DataMemberAttribute\(Name=""Last"", Order=2\)]\s+private\s+string\s+_last"));
+        }
+
+        [Test]
+        public void DtoDeclaration_ValidDeclaration_ShouldAddDataContractAttribute()
+        {
+            var source = CompileToSource(CompileNameDto());
+            Assert.That(source, Is.StringContaining(@"DataContractAttribute(Name=""Name"")"));
+        }
+
+
+        private CodeCompileUnit CompileNameDto()
+        {
+            var declaration = new DtoDeclaration("Name",
+                                                 new[]
+                                                     {
+                                                         new PropertyDeclaration("First", new StringReferenceType()),
+                                                         new PropertyDeclaration("Last", new StringReferenceType())
+                                                     });
+            var model = CreateAbstractSyntaxTreeWith(declaration);
+            return CodeDomGenerator.Compile(model);
+        }
 
         private AbstractSyntaxTree CreateAbstractSyntaxTreeWith(TypeDeclaration typeDeclaration)
         {

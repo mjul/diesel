@@ -5,6 +5,7 @@ Diesel provides a declarative language for generating code for your .NET project
 * __Value Types__ - strong types for value types, e.g. EmployeeNumber instead of int. 
 * __Commands__ - generates classes for the Command DTOs.
 * __Domain Events__ - generates classes for the Domain Event DTOs.
+* __DTOs__ - generate other Data Transfer Objects.
 * __Application Services__ - generate an interface for all the commands accepted by the service.
 
 Planned features include declarations for Value Objects, Aggregate Roots and Projections.
@@ -17,6 +18,7 @@ Create a model in the Diesel DSL language:
     (namespace Employees
         (defvaluetype EmployeeNumber)
         (defvaluetype EmployeeName (string FirstName, string LastName))
+        (defdto Name (string FirstName, string LastName))
         (defapplicationService ImportService
             (defcommand ImportEmployee (int EmployeeNumber, string FirstName, string LastName))
         (defdomainevent EmployeeImported (Guid Id, int EmployeeNumber, string FirstName, string LastName)))
@@ -169,6 +171,25 @@ just add this declaration:
 
     (defconventions :domainevents {:inherit [GreatApp.IDomainEvent]})
 
+
+# Defining Data Transfer Objects (DTOs)
+
+    (defdto <typename> <properties>)
+
+This defines a class representing the DTO with the specified properties.
+It adds a constructor to set all properties.
+Equals and equality operators are implemented with value semantics.
+
+Being a DTO (Data Transfer Objects), the type is decorated with attributes
+to make it serializable with the BinarySerializer and the DataContractSerializer.
+
+The properties are specified in the C# constructor parameter syntax. 
+
+## Example
+
+    (defdto Name (string FirstName, string LastName))
+
+This generates a class `Name` with properties `FirstName` and `LastName`.
 
 
 # Defining Application Services

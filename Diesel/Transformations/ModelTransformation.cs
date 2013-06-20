@@ -36,6 +36,11 @@ namespace Diesel.Transformations
             return declaration;
         }
 
+        public virtual DtoDeclaration Transform(DtoDeclaration declaration)
+        {
+            return declaration;
+        }
+
         public virtual ApplicationServiceDeclaration Transform(ApplicationServiceDeclaration declaration)
         {
             return declaration;

@@ -204,27 +204,29 @@ namespace Test.Diesel.Parsing
                                                  "  (defvaluetype ClientId)" +
                                                  "  (defcommand ImportEmployee (int EmployeeNumber, string FirstName, string LastName))" +
                                                  "  (defdomainevent EmployeeImported (Guid Id, int EmployeeNumber, string FirstName, string LastName))" +
+                                                 "  (defdto EmployeeName (string First, string Last))" +
                                                  ")");
             Assert.That(actual, Is.Not.Null);
             Assert.That(actual.Declarations.Single(x => x.Name == "ClientId"), Is.Not.Null);
             Assert.That(actual.Declarations.Single(x => x.Name == "ImportEmployee"), Is.Not.Null);
+            Assert.That(actual.Declarations.Single(x => x.Name == "EmployeeImported"), Is.Not.Null);
+            Assert.That(actual.Declarations.Single(x => x.Name == "EmployeeName"), Is.Not.Null);
         }
 
 
         [Test]
         public void CommandDeclaration_ValidDeclaration_ShouldParseName()
         {
-            var actual = Grammar.CommandDeclaration.Parse("(defcommand ImportEmployee)");
+            var actual = Grammar.CommandDeclaration.Parse("(defcommand ImportEmployee (int EmployeeNumber))");
             Assert.That(actual.Name, Is.EqualTo("ImportEmployee"));
         }
 
         [Test]
-        public void CommandDeclaration_ValidDeclarationNoProperties_ShouldHaveNoProperties()
+        public void CommandDeclaration_ValidDeclarationSingleProperty_ShouldParseProperty()
         {
-            var actual = Grammar.CommandDeclaration.Parse("(defcommand ImportEmployee)");
-            Assert.That(actual.Properties, Is.Empty);
+            var actual = Grammar.CommandDeclaration.Parse("(defcommand ImportEmployee (int EmployeeNumber))");
+            Assert.That(actual.Properties.Count(), Is.EqualTo(1));
         }
-
 
         [Test]
         public void PropertyDeclaration_SingleProperty_ShouldSetNameAndType()
@@ -388,6 +390,14 @@ namespace Test.Diesel.Parsing
             Assert.True(actual.WasSuccessful);
         }
 
+
+        [Test]
+        public void TypeDeclaration_DtoDeclaration_ShouldBeAccepted()
+        {
+            var actual = Grammar.TypeDeclaration.TryParse("(defdto Name (string First, string Last))");
+            Assert.True(actual.WasSuccessful);
+        }
+
         [Test]
         public void ConventionDeclarations_Valid_ShouldParse()
         {
@@ -397,6 +407,25 @@ namespace Test.Diesel.Parsing
             Assert.That(actual.DomainEventConventions, Is.Not.Null);
             Assert.That(actual.DomainEventConventions, Is.Not.Null);
         }
+
+
+        [Test]
+        public void DtoDeclaration_ValidDeclaration_ShouldParseName()
+        {
+            var actual = Grammar.DtoDeclaration.Parse("(defdto EmployeeName (string First, string Last))");
+            Assert.That(actual.Name, Is.EqualTo("EmployeeName"));
+        }
+
+        [Test]
+        public void DtoDeclaration_ValidDeclaration_ShouldParseProperties()
+        {
+            var actual = Grammar.DtoDeclaration.Parse("(defdto EmployeeName (string First, string Last))");
+            Assert.That(actual.Properties.Count(), Is.EqualTo(2));
+            var actualNames = actual.Properties.Select(p => p.Name).ToArray();
+            Assert.That(actualNames, Is.EqualTo(new[] {"First", "Last"}));
+        }
+
+
 
 
         [Test]

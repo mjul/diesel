@@ -396,6 +396,65 @@ namespace Test.Diesel.Generated {
         }
     }
     
+    [System.Runtime.Serialization.DataContractAttribute(Name="Name")]
+    [System.SerializableAttribute()]
+    public sealed partial class Name : System.IEquatable<Name> {
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Name="First", Order=1)]
+        private string _first;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Name="Last", Order=2)]
+        private string _last;
+        
+        public Name(string first, string last) {
+            this._first = first;
+            this._last = last;
+        }
+        
+        public string First {
+            get {
+                return this._first;
+            }
+        }
+        
+        public string Last {
+            get {
+                return this._last;
+            }
+        }
+        
+        public static bool operator ==(Name left, Name right) {
+            if (object.ReferenceEquals(null, left)) {
+                return object.ReferenceEquals(null, right);
+            }
+            return left.Equals(right);
+        }
+        
+        public static bool operator !=(Name left, Name right) {
+            if (object.ReferenceEquals(null, left)) {
+                return (false == object.ReferenceEquals(null, right));
+            }
+            return (false == left.Equals(right));
+        }
+        
+        public override int GetHashCode() {
+            return 0;
+        }
+        
+        public bool Equals(Name other) {
+            return (((false == object.ReferenceEquals(null, other)) 
+                        && (this.First == other.First)) 
+                        && (this.Last == other.Last));
+        }
+        
+        public override bool Equals(object obj) {
+            if (object.ReferenceEquals(null, obj)) {
+                return false;
+            }
+            return (typeof(Name).IsAssignableFrom(obj.GetType()) && this.Equals(((Name)(obj))));
+        }
+    }
+    
     public partial interface IImportService {
         
         void Execute(ImportEmployee command);

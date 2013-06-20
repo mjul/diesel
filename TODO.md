@@ -35,7 +35,7 @@ on a value type, `(defvaluetype StudentName (string FirstName, string LastName))
 
 ## Validate model before generation
 
-### Validate allowed types in DTO types (Commands, Events).
+### Validate allowed types in DTO types (Commands, Events, DTOs).
 Commands and Domain events should only be able to have properties that are primitive types,
 arrays of these or other Data Transfer Objects.
 

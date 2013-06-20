@@ -66,6 +66,12 @@ namespace Diesel.CodeGeneration
             ns.Types.Add(ValueTypeGenerator.CreateValueTypeDeclaration(declaration));
         }
 
+        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, DtoDeclaration declaration)
+        {
+            ns.Types.Add(DtoGenerator.CreateCommandDeclaration(declaration));
+        }
+
+
         private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, ApplicationServiceDeclaration declaration)
         {
             ns.Types.Add(ApplicationServiceGenerator.CreateApplicationServiceInterface(declaration));

@@ -63,6 +63,18 @@ namespace Diesel.Parsing
                 .Named("PropertyDeclarations");
 
 
+        private static Parser<TResult> DefIdentifierPropertyDeclarations<TResult>(
+            string symbol, Func<Identifier, IEnumerable<PropertyDeclaration>, TResult> selectFunction)
+        {
+            return (from declaration in Symbol(symbol).Token()
+                    from name in _cSharpGrammar.Identifier().Token()
+                    from propertyDeclarations in PropertyDeclarations
+                    select selectFunction(name, propertyDeclarations))
+                .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
+                .Named(symbol);
+        }
+
+
         private static readonly Parser<ValueTypeDeclaration> SimpleValueTypeDeclaration
             = (from declaration in Symbol("defvaluetype").Token()
                from name in _cSharpGrammar.Identifier().Token()
@@ -72,36 +84,34 @@ namespace Diesel.Parsing
                 .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
                 .Named("SimpleValueTypeDeclaration");
 
+
         private static readonly Parser<ValueTypeDeclaration> ValueTypeDeclarationWithPropertyList
-            = (from declaration in Symbol("defvaluetype").Token()
-               from name in _cSharpGrammar.Identifier().Token()
-               from properties in PropertyDeclarations.Token()
-               select new ValueTypeDeclaration(name.Name, properties))
-                .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
-                .Named("ValueTypeDeclarationWithPropertyList");
+            = DefIdentifierPropertyDeclarations("defvaluetype",
+                                                (identifier, properties) =>
+                                                new ValueTypeDeclaration(identifier.Name, properties));
 
         public static readonly Parser<ValueTypeDeclaration> ValueTypeDeclaration
             = SimpleValueTypeDeclaration
                 .Or(ValueTypeDeclarationWithPropertyList)
                 .Named("ValueTypeDeclaration");
 
-
+        
         public static readonly Parser<CommandDeclaration> CommandDeclaration
-            = (from declaration in Symbol("defcommand").Token()
-               from name in _cSharpGrammar.Identifier().Token()
-               from optionalPropertyDeclarations in PropertyDeclarations.Optional()
-               select new CommandDeclaration(name.Name, optionalPropertyDeclarations.GetOrElse(new PropertyDeclaration[] { })))
-                .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
-                .Named("CommandDeclaration");
+            = DefIdentifierPropertyDeclarations("defcommand",
+                                                (identifier, properties) =>
+                                                new CommandDeclaration(identifier.Name, properties));
 
-
+        
         public static readonly Parser<DomainEventDeclaration> DomainEventDeclaration
-            = (from declaration in Symbol("defdomainevent").Token()
-               from name in _cSharpGrammar.Identifier().Token()
-               from propertyDeclarations in PropertyDeclarations.Token()
-               select new DomainEventDeclaration(name.Name, propertyDeclarations))
-                .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
-                .Named("DomainEventDeclaration");
+            = DefIdentifierPropertyDeclarations("defdomainevent",
+                                                (identifier, properties) =>
+                                                new DomainEventDeclaration(identifier.Name, properties));
+
+
+        public static readonly Parser<DtoDeclaration> DtoDeclaration =
+            DefIdentifierPropertyDeclarations("defdto",
+                                              (identifier, properties) =>
+                                              new DtoDeclaration(identifier.Name, properties));
 
 
         public static readonly Parser<ApplicationServiceDeclaration> ApplicationServiceDeclaration
@@ -112,11 +122,14 @@ namespace Diesel.Parsing
                 .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
                 .Named("ApplicationServiceDeclaration");
 
+
         public static readonly Parser<TypeDeclaration> TypeDeclaration
             = ValueTypeDeclaration
                 .Or<TypeDeclaration>(CommandDeclaration)
                 .Or<TypeDeclaration>(DomainEventDeclaration)
+                .Or<TypeDeclaration>(DtoDeclaration)
                 .Or<TypeDeclaration>(ApplicationServiceDeclaration);
+
 
         public static readonly Parser<Namespace> Namespace
             = (from declaration in Symbol("namespace").Token()
@@ -128,6 +141,8 @@ namespace Diesel.Parsing
                let declarationList = typeDeclarations.GetOrElse(new List<TypeDeclaration>())
                select new Namespace(name, declarationList))
                 .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen);
+
+
 
         // This can be expanded to generalized nested key-value maps later
         public static readonly Parser<ConventionsDeclaration> ConventionsDeclaration
@@ -154,5 +169,6 @@ namespace Diesel.Parsing
         /// </summary>
         public static readonly Parser<AbstractSyntaxTree> Everything
             = AbstractSyntaxTree.Token().End();
+
     }
 }

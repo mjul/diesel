@@ -40,3 +40,6 @@
 
 (namespace TestCases.Defdomainevent
 	(defdomainevent PaymentReceived (Guid Id, Decimal Amount, String Currency)))
+
+(namespace TestCases.Defdto
+	(defdto EmployeeName (string First, string Last)))

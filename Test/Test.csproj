@@ -59,6 +59,7 @@
     <Compile Include="DieselCompilerIntegrationTest.cs" />
     <Compile Include="GeneratedCommandTest.cs" />
     <Compile Include="GeneratedDomainEventTest.cs" />
+    <Compile Include="GeneratedDtoTest.cs" />
     <Compile Include="GeneratedValueTypeMultiplePropertiesTest.cs" />
     <Compile Include="GeneratedValueTypeTest.cs" />
     <Compile Include="GeneratedValueTypeWithArrayTest.cs" />
