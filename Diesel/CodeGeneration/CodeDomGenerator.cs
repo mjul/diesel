@@ -146,7 +146,7 @@ namespace Diesel.CodeGeneration
         private static CodeAssignStatement CreateFieldAssignment(string fieldName, string variableWithValue)
         {
             return new CodeAssignStatement(
-                new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fieldName),
+                ExpressionBuilder.ThisFieldReference(fieldName),
                 new CodeVariableReferenceExpression(variableWithValue));
         }
 
@@ -164,7 +164,7 @@ namespace Diesel.CodeGeneration
             var objVariableReference = new CodeArgumentReferenceExpression(parameterName);
             var ifReferenceEqualsNullObjReturnFalse =
                 new CodeConditionStatement(
-                    EqualityMethodsGenerator.CreateObjectReferenceEqualsNullPredicateExpression(objVariableReference),
+                    ExpressionBuilder.ObjectReferenceEqualsNull(objVariableReference),
                     new CodeStatement[]
                         {
                             new CodeMethodReturnStatement(new CodePrimitiveExpression(false))
@@ -201,11 +201,9 @@ namespace Diesel.CodeGeneration
 
             var nullGuardSeed = isValueType
                                     ? (CodeExpression) new CodePrimitiveExpression(true)
-                                    : new CodeBinaryOperatorExpression(
-                                          new CodePrimitiveExpression(false),
-                                          CodeBinaryOperatorType.ValueEquality,
-                                          EqualityMethodsGenerator.CreateObjectReferenceEqualsNullPredicateExpression(
-                                              new CodeVariableReferenceExpression("other")));
+                                    : ExpressionBuilder.Negate(
+                                        ExpressionBuilder.ObjectReferenceEqualsNull(
+                                            new CodeVariableReferenceExpression("other")));
 
             var comparerExpressionJoinedWithAnd = compareExpressions.Aggregate(
                 nullGuardSeed,
@@ -401,9 +399,9 @@ namespace Diesel.CodeGeneration
                 equality.Statements.Add(
                     // if (Object.ReferenceEquals(null, left)) return Object.ReferenceEquals(null, right);
                     new CodeConditionStatement(
-                        EqualityMethodsGenerator.CreateObjectReferenceEqualsNullPredicateExpression(new CodeArgumentReferenceExpression("left")),
+                        ExpressionBuilder.ObjectReferenceEqualsNull(new CodeArgumentReferenceExpression("left")),
                         new CodeMethodReturnStatement(
-                            EqualityMethodsGenerator.CreateObjectReferenceEqualsNullPredicateExpression(
+                            ExpressionBuilder.ObjectReferenceEqualsNull(
                                 new CodeArgumentReferenceExpression("right")))));
             }
             equality.Statements.Add(
@@ -432,10 +430,10 @@ namespace Diesel.CodeGeneration
                 disequality.Statements.Add(
                     // if (Object.ReferenceEquals(null, left)) return !Object.ReferenceEquals(null, right);
                     new CodeConditionStatement(
-                        EqualityMethodsGenerator.CreateObjectReferenceEqualsNullPredicateExpression(new CodeArgumentReferenceExpression("left")),
+                        ExpressionBuilder.ObjectReferenceEqualsNull(new CodeArgumentReferenceExpression("left")),
                         new CodeMethodReturnStatement(
                             CreateUnaryNegation(
-                                EqualityMethodsGenerator.CreateObjectReferenceEqualsNullPredicateExpression(
+                                ExpressionBuilder.ObjectReferenceEqualsNull(
                                     new CodeArgumentReferenceExpression("right"))))));
             }
 

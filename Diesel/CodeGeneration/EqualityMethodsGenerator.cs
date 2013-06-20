@@ -32,7 +32,7 @@ namespace Diesel.CodeGeneration
         private static CodeBinaryOperatorExpression CompareValueEquality(string propertyName, string otherVariableName)
         {
             return new CodeBinaryOperatorExpression(
-                ThisPropertyReference(propertyName),
+                ExpressionBuilder.ThisPropertyReference(propertyName),
                 CodeBinaryOperatorType.ValueEquality,
                 OtherPropertyReference(propertyName, otherVariableName));
         }
@@ -42,11 +42,8 @@ namespace Diesel.CodeGeneration
         /// </summary>
         private static CodeExpression CompareObjectEquality(string propertyName, string otherVariableName)
         {
-            return new CodeMethodInvokeExpression(
-                new CodeTypeReferenceExpression(typeof (Object)),
-                "Equals",
-                ThisPropertyReference(propertyName),
-                OtherPropertyReference(propertyName, otherVariableName));
+            return ExpressionBuilder.ObjectEquals(ExpressionBuilder.ThisPropertyReference(propertyName),
+                                                  OtherPropertyReference(propertyName, otherVariableName));
         }
 
         private static CodeBinaryOperatorExpression ComparePropertyValueEqualityExpression(NullableType propertyType, String propertyName, String otherVariableName)
@@ -76,7 +73,7 @@ namespace Diesel.CodeGeneration
             // (this.Property.Length == other.Property.Length) 
             // && Enumerable.Zip(a, b, (a, b) => Object.Equals(a, b)).All(areEqual => areEqual);
 
-            var thisPropertyReference = ThisPropertyReference(propertyName);
+            var thisPropertyReference = ExpressionBuilder.ThisPropertyReference(propertyName);
             var otherPropertyReference = OtherPropertyReference(propertyName, otherVariableName);
 
             var bothNull = new CodeBinaryOperatorExpression(CompareToNull(thisPropertyReference),
@@ -84,9 +81,9 @@ namespace Diesel.CodeGeneration
                                                             CompareToNull(otherPropertyReference));
 
             var bothNotNull = new CodeBinaryOperatorExpression(
-                Negate(CompareToNull(thisPropertyReference)),
+                ExpressionBuilder.Negate(CompareToNull(thisPropertyReference)),
                 CodeBinaryOperatorType.BooleanAnd,
-                Negate(CompareToNull(otherPropertyReference)));
+                ExpressionBuilder.Negate(CompareToNull(otherPropertyReference)));
 
             var sameArrayLength = new CodeBinaryOperatorExpression(
                 new CodePropertyReferenceExpression(thisPropertyReference, "Length"),
@@ -122,42 +119,17 @@ namespace Diesel.CodeGeneration
 
         private static CodeExpression CompareToNull(CodePropertyReferenceExpression propertyReference)
         {
-            return CreateObjectReferenceEqualsNullPredicateExpression(propertyReference);
-        }
-
-
-        private static CodeExpression Negate(CodeExpression expression)
-        {
-            return new CodeBinaryOperatorExpression(new CodePrimitiveExpression(false),
-                                                    CodeBinaryOperatorType.ValueEquality, expression);
+            return ExpressionBuilder.ObjectReferenceEqualsNull(propertyReference);
         }
 
         private static CodePropertyReferenceExpression OtherPropertyReference(string propertyName, string otherVariableName)
         {
-            return new CodePropertyReferenceExpression(new CodeVariableReferenceExpression(otherVariableName), propertyName);
-        }
-
-        private static CodePropertyReferenceExpression ThisPropertyReference(string propertyName)
-        {
-            return new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), propertyName);
+            return ExpressionBuilder.VariablePropertyReference(otherVariableName, propertyName);
         }
 
         private static CodeExpression ComparePropertyValueEqualityExpression(TypeNameTypeNode propertyType, String propertyName, String otherVariableName)
         {
             return CompareObjectEquality(propertyName, otherVariableName);
-        }
-
-
-        public static CodeMethodInvokeExpression CreateObjectReferenceEqualsNullPredicateExpression(CodeExpression instanceToCompareToNull)
-        {
-            return new CodeMethodInvokeExpression(
-                new CodeTypeReferenceExpression(typeof(object)),
-                "ReferenceEquals",
-                new[]
-                    {
-                        new CodePrimitiveExpression(null),
-                        instanceToCompareToNull
-                    });
         }
     }
 }
