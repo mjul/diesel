@@ -32,9 +32,11 @@ namespace Test.Diesel
             var otherEmployeeNumber = new Generated.EmployeeRatings(number + 1, ratings);
             var otherRatingsLength = new Generated.EmployeeRatings(number, new[] {1});
             var otherRatingsValues = new Generated.EmployeeRatings(number, new[] {1,3});
+            var otherRatingsOrder = new Generated.EmployeeRatings(number, new[] { 2, 1 });
+            var otherRatingsNull = new Generated.EmployeeRatings(number, null);
 
-            EqualityTesting.TestEqualsAndGetHashCode(a, b, c, otherEmployeeNumber, otherRatingsLength, otherRatingsValues);
-            EqualityTesting.TestEqualityOperators(a, b, c, otherEmployeeNumber, otherRatingsLength, otherRatingsValues);
+            EqualityTesting.TestEqualsAndGetHashCode(a, b, c, otherEmployeeNumber, otherRatingsLength, otherRatingsValues, otherRatingsOrder, otherRatingsNull);
+            EqualityTesting.TestEqualityOperators(a, b, c, otherEmployeeNumber, otherRatingsLength, otherRatingsValues, otherRatingsOrder, otherRatingsNull);
         }
 
 

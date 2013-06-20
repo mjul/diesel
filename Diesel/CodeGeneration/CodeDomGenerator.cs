@@ -160,9 +160,11 @@ namespace Diesel.CodeGeneration
         {
             // if (ReferenceEquals(null, obj)) return false;
             // return obj is EmployeeId && Equals((EmployeeId) obj);
+            const string parameterName = "obj";
+            var objVariableReference = new CodeArgumentReferenceExpression(parameterName);
             var ifReferenceEqualsNullObjReturnFalse =
                 new CodeConditionStatement(
-                    CreateObjectReferenceEqualsNullPredicateExpression(new CodeArgumentReferenceExpression("obj")),
+                    EqualityMethodsGenerator.CreateObjectReferenceEqualsNullPredicateExpression(objVariableReference),
                     new CodeStatement[]
                         {
                             new CodeMethodReturnStatement(new CodePrimitiveExpression(false))
@@ -173,19 +175,19 @@ namespace Diesel.CodeGeneration
             var returnObjIsTypeNameAndThisEqualsObj =
                 new CodeMethodReturnStatement(
                     new CodeBinaryOperatorExpression(
-                        CreateTypeIsAssignableFrom(typeName, new CodeArgumentReferenceExpression("obj")),
+                        CreateTypeIsAssignableFrom(typeName, objVariableReference),
                         CodeBinaryOperatorType.BooleanAnd,
                         new CodeMethodInvokeExpression(
                             new CodeThisReferenceExpression(),
                             "Equals",
-                            new CodeCastExpression(typeName, new CodeArgumentReferenceExpression("obj")))
+                            new CodeCastExpression(typeName, objVariableReference))
                         ));
 
             var equalsObject = new CodeMemberMethod()
             {
                 Attributes = MemberAttributes.Public | MemberAttributes.Override,
                 Name = "Equals",
-                Parameters = { new CodeParameterDeclarationExpression(typeof(object), "obj") },
+                Parameters = { new CodeParameterDeclarationExpression(typeof(object), parameterName) },
                 ReturnType = new CodeTypeReference(typeof(bool)),
                 Statements = 
                     { 
@@ -202,7 +204,7 @@ namespace Diesel.CodeGeneration
                                     : new CodeBinaryOperatorExpression(
                                           new CodePrimitiveExpression(false),
                                           CodeBinaryOperatorType.ValueEquality,
-                                          CreateObjectReferenceEqualsNullPredicateExpression(
+                                          EqualityMethodsGenerator.CreateObjectReferenceEqualsNullPredicateExpression(
                                               new CodeVariableReferenceExpression("other")));
 
             var comparerExpressionJoinedWithAnd = compareExpressions.Aggregate(
@@ -239,19 +241,7 @@ namespace Diesel.CodeGeneration
                     "GetType"));
         }
 
-        private static CodeMethodInvokeExpression CreateObjectReferenceEqualsNullPredicateExpression(CodeExpression codeVariableReferenceExpression)
-        {
-            return new CodeMethodInvokeExpression(
-                new CodeTypeReferenceExpression(typeof(object)),
-                "ReferenceEquals",
-                new CodeExpression[]
-                    {
-                        new CodePrimitiveExpression(null),
-                        codeVariableReferenceExpression
-                    });
-        }
-
-
+     
         private static CodeAttributeDeclaration CreateAttribute(Type type)
         {
             return new CodeAttributeDeclaration(new CodeTypeReference(type));
@@ -411,9 +401,9 @@ namespace Diesel.CodeGeneration
                 equality.Statements.Add(
                     // if (Object.ReferenceEquals(null, left)) return Object.ReferenceEquals(null, right);
                     new CodeConditionStatement(
-                        CreateObjectReferenceEqualsNullPredicateExpression(new CodeArgumentReferenceExpression("left")),
+                        EqualityMethodsGenerator.CreateObjectReferenceEqualsNullPredicateExpression(new CodeArgumentReferenceExpression("left")),
                         new CodeMethodReturnStatement(
-                            CreateObjectReferenceEqualsNullPredicateExpression(
+                            EqualityMethodsGenerator.CreateObjectReferenceEqualsNullPredicateExpression(
                                 new CodeArgumentReferenceExpression("right")))));
             }
             equality.Statements.Add(
@@ -442,10 +432,10 @@ namespace Diesel.CodeGeneration
                 disequality.Statements.Add(
                     // if (Object.ReferenceEquals(null, left)) return !Object.ReferenceEquals(null, right);
                     new CodeConditionStatement(
-                        CreateObjectReferenceEqualsNullPredicateExpression(new CodeArgumentReferenceExpression("left")),
+                        EqualityMethodsGenerator.CreateObjectReferenceEqualsNullPredicateExpression(new CodeArgumentReferenceExpression("left")),
                         new CodeMethodReturnStatement(
                             CreateUnaryNegation(
-                                CreateObjectReferenceEqualsNullPredicateExpression(
+                                EqualityMethodsGenerator.CreateObjectReferenceEqualsNullPredicateExpression(
                                     new CodeArgumentReferenceExpression("right"))))));
             }
 

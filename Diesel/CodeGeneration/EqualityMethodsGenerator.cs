@@ -55,8 +55,10 @@ namespace Diesel.CodeGeneration
         }
 
         /// <summary>
-        /// (this.Property.Length == other.Property.Length) 
-        ///  && Enumerable.Zip(a, b, (a, b) => a == b).All(areEqual => areEqual);
+        /// Compare ArraType member: both null or same length and values
+        /// (((this.Property == null) && (other.Property == null)) 
+        /// || ((this.Property.Length == other.Property.Length) 
+        ///      && Enumerable.Zip(a, b, (a, b) => Object.Equals(a, b)).All(areEqual => areEqual)));
         /// </summary>
         private static CodeBinaryOperatorExpression ComparePropertyValueEqualityExpression(ArrayType propertyType,
                                                                                            String propertyName,
@@ -77,6 +79,15 @@ namespace Diesel.CodeGeneration
             var thisPropertyReference = ThisPropertyReference(propertyName);
             var otherPropertyReference = OtherPropertyReference(propertyName, otherVariableName);
 
+            var bothNull = new CodeBinaryOperatorExpression(CompareToNull(thisPropertyReference),
+                                                            CodeBinaryOperatorType.BooleanAnd,
+                                                            CompareToNull(otherPropertyReference));
+
+            var bothNotNull = new CodeBinaryOperatorExpression(
+                Negate(CompareToNull(thisPropertyReference)),
+                CodeBinaryOperatorType.BooleanAnd,
+                Negate(CompareToNull(otherPropertyReference)));
+
             var sameArrayLength = new CodeBinaryOperatorExpression(
                 new CodePropertyReferenceExpression(thisPropertyReference, "Length"),
                 CodeBinaryOperatorType.ValueEquality,
@@ -84,7 +95,7 @@ namespace Diesel.CodeGeneration
 
             var zipExpression = new CodeMethodInvokeExpression(
                 new CodeMethodReferenceExpression(
-                    new CodeTypeReferenceExpression(typeof (System.Linq.Enumerable)),
+                    new CodeTypeReferenceExpression(typeof (Enumerable)),
                     "Zip"),
                 thisPropertyReference,
                 otherPropertyReference,
@@ -93,14 +104,32 @@ namespace Diesel.CodeGeneration
             var zipPairwiseEquality =
                 new CodeMethodInvokeExpression(
                     new CodeMethodReferenceExpression(
-                        new CodeTypeReferenceExpression(typeof (System.Linq.Enumerable)),
+                        new CodeTypeReferenceExpression(typeof (Enumerable)),
                         "All"),
                     zipExpression,
                     new CodeSnippetExpression("areEqual => areEqual")
                     );
 
-            return new CodeBinaryOperatorExpression(sameArrayLength,
-                                                    CodeBinaryOperatorType.BooleanAnd, zipPairwiseEquality);
+            return new CodeBinaryOperatorExpression(
+                bothNull,
+                CodeBinaryOperatorType.BooleanOr,
+                new CodeBinaryOperatorExpression(
+                    bothNotNull,
+                    CodeBinaryOperatorType.BooleanAnd,
+                    new CodeBinaryOperatorExpression(sameArrayLength,
+                                                     CodeBinaryOperatorType.BooleanAnd, zipPairwiseEquality)));
+        }
+
+        private static CodeExpression CompareToNull(CodePropertyReferenceExpression propertyReference)
+        {
+            return CreateObjectReferenceEqualsNullPredicateExpression(propertyReference);
+        }
+
+
+        private static CodeExpression Negate(CodeExpression expression)
+        {
+            return new CodeBinaryOperatorExpression(new CodePrimitiveExpression(false),
+                                                    CodeBinaryOperatorType.ValueEquality, expression);
         }
 
         private static CodePropertyReferenceExpression OtherPropertyReference(string propertyName, string otherVariableName)
@@ -116,6 +145,19 @@ namespace Diesel.CodeGeneration
         private static CodeExpression ComparePropertyValueEqualityExpression(TypeNameTypeNode propertyType, String propertyName, String otherVariableName)
         {
             return CompareObjectEquality(propertyName, otherVariableName);
+        }
+
+
+        public static CodeMethodInvokeExpression CreateObjectReferenceEqualsNullPredicateExpression(CodeExpression instanceToCompareToNull)
+        {
+            return new CodeMethodInvokeExpression(
+                new CodeTypeReferenceExpression(typeof(object)),
+                "ReferenceEquals",
+                new[]
+                    {
+                        new CodePrimitiveExpression(null),
+                        instanceToCompareToNull
+                    });
         }
     }
 }
