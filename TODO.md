@@ -13,6 +13,10 @@ that can be used from Commands and Domain Events.
         (defdto Name (string First, string Last))
         (defcommand CreateEmployee (int EmployeeNumber, Name Name))
 
+## Declare Bounded Contexts
+Commands and Domain Events should then have DataContract namespaces
+corresponding to the bounded context's name.
+
 ## Support for C# keyword Identifiers
 Support for Identifiers like `@event` and other reserved C# keywords.
 
