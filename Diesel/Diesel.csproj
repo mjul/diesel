@@ -47,6 +47,7 @@
     <Compile Include="CodeGeneration\CommandGenerator.cs" />
     <Compile Include="CodeGeneration\DomainEventGenerator.cs" />
     <Compile Include="CodeGeneration\DtoGenerator.cs" />
+    <Compile Include="CodeGeneration\EnumGenerator.cs" />
     <Compile Include="CodeGeneration\EqualityMethodsGenerator.cs" />
     <Compile Include="CodeGeneration\ExpressionBuilder.cs" />
     <Compile Include="CodeGeneration\ReadOnlyProperty.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Parsing\DomainEventConventions.cs" />
     <Compile Include="Parsing\DomainEventDeclaration.cs" />
     <Compile Include="Parsing\DtoDeclaration.cs" />
+    <Compile Include="Parsing\EnumDeclaration.cs" />
     <Compile Include="Parsing\ITreeNode.cs" />
     <Compile Include="Parsing\Keyword.cs" />
     <Compile Include="Parsing\CSharp\NamespaceName.cs" />

@@ -455,6 +455,16 @@ namespace Test.Diesel.Generated {
         }
     }
     
+    [System.Runtime.Serialization.DataContractAttribute(Name="Gender")]
+    public enum Gender {
+        
+        [System.Runtime.Serialization.EnumMemberAttribute(Value="Female")]
+        Female,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute(Value="Male")]
+        Male,
+    }
+    
     public partial interface IImportService {
         
         void Execute(ImportEmployee command);

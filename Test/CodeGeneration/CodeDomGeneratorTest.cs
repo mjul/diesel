@@ -178,6 +178,37 @@ namespace Test.Diesel.CodeGeneration
             return CodeDomGenerator.Compile(model);
         }
 
+
+        [Test]
+        public void EnumDeclaration_ValidDeclaration_ShouldProduceSealedClass()
+        {
+            var source = CompileToSource(CompileOnOffStateEnum());
+            Assert.That(source, Is.StringContaining(@"enum State"));
+        }
+
+        [Test]
+        public void EnumDeclaration_ValidDeclaration_ShouldAddDataMemberAttributes()
+        {
+            var source = CompileToSource(CompileOnOffStateEnum());
+            Assert.That(source, Is.StringMatching(@"EnumMemberAttribute\(Value\s*=\s*""On""\)]\s+On"));
+            Assert.That(source, Is.StringMatching(@"EnumMemberAttribute\(Value\s*=\s*""Off""\)]\s+Off"));
+        }
+
+        [Test]
+        public void EnumDeclaration_ValidDeclaration_ShouldAddDataContractAttribute()
+        {
+            var source = CompileToSource(CompileOnOffStateEnum());
+            Assert.That(source, Is.StringContaining(@"DataContractAttribute(Name=""State"")"));
+        }
+
+        private CodeCompileUnit CompileOnOffStateEnum()
+        {
+            var declaration = new EnumDeclaration("State", new[] {"On", "Off"});
+            var model = CreateAbstractSyntaxTreeWith(declaration);
+            return CodeDomGenerator.Compile(model);
+        }
+
+
         private AbstractSyntaxTree CreateAbstractSyntaxTreeWith(TypeDeclaration typeDeclaration)
         {
             return CreateAbstractSyntaxTreeWith(null, typeDeclaration);

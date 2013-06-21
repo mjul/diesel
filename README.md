@@ -2,13 +2,14 @@
 
 Diesel provides a declarative language for generating code for your .NET projects.
 
-* __Value Types__ - strong types for value types, e.g. EmployeeNumber instead of int. 
+* __Value Types__ - strong types for value types, e.g. struct EmployeeNumber instead of int. 
 * __Commands__ - generates classes for the Command DTOs.
 * __Domain Events__ - generates classes for the Domain Event DTOs.
-* __DTOs__ - generate other Data Transfer Objects.
+* __DTOs__ - generate other Data Transfer Objects: classes and enums tagged for serialization.
 * __Application Services__ - generate an interface for all the commands accepted by the service.
 
 Planned features include declarations for Value Objects, Aggregate Roots and Projections.
+
 
 ## Example
 
@@ -48,6 +49,15 @@ Now use it
     var firstName = command.FirstName;
      
 ```
+
+# Benefits
+
+Diesel saves you from writing a lot of trivial code that no humans should write by hand,
+so you can focus on building the essential parts of your application:
+
+* Get your Value Objects at huge discounts - no more excuses for [Primitive Obsession](http://c2.com/cgi/wiki?PrimitiveObsession)
+* DTOs are on sale, too: all you need to do is writing the constructor signature.
+* Get consistent serializability of Commands, Domain Events and other DTOs.
 
   
 # Defining Simple Value Types
@@ -190,6 +200,23 @@ The properties are specified in the C# constructor parameter syntax.
     (defdto Name (string FirstName, string LastName))
 
 This generates a class `Name` with properties `FirstName` and `LastName`.
+
+
+# Defining Enum DTOs
+
+    (defenum <typename> <values>)
+
+This defines an enum with the specified values.
+
+Being a DTO (Data Transfer Objects), the type is decorated with attributes
+to make it serializable with the BinarySerializer and the DataContractSerializer.
+
+## Example
+
+    (defenum Gender [Female Male])
+
+This generates an enum `Gender` with values `Female` and `Male`
+and the corresponding DataContract attributes.
 
 
 # Defining Application Services

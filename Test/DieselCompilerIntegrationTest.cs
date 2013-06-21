@@ -28,6 +28,8 @@ namespace Test.Diesel
             AssertIncludesDefvaluetypeExamples(sourceCode);
             AssertIncludesDefcommandExamples(sourceCode);
             AssertIncludesDefdomaineventExamples(sourceCode);
+            AssertIncludesDefdtoExamples(sourceCode);
+            AssertIncludesDefenumExamples(sourceCode);
         }
 
         private void AssertIncludesDefdomaineventExamples(string sourceCode)
@@ -56,6 +58,19 @@ namespace Test.Diesel
             Assert.That(sourceCode, Is.StringContaining("class PrintDateTime"));
             Assert.That(sourceCode, Is.StringContaining("class PrintGuid"));
         }
+
+        private static void AssertIncludesDefdtoExamples(string sourceCode)
+        {
+            Assert.That(sourceCode, Is.StringContaining("namespace TestCases.Defdto"));
+            Assert.That(sourceCode, Is.StringContaining("class EmployeeName"));
+        }
+
+        private static void AssertIncludesDefenumExamples(string sourceCode)
+        {
+            Assert.That(sourceCode, Is.StringContaining("namespace TestCases.Defenum"));
+            Assert.That(sourceCode, Is.StringContaining("enum State"));
+        }
+
 
         [Test]
         public void Compile_InvalidModelSource_ShouldFail()

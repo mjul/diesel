@@ -8,7 +8,7 @@ namespace Diesel.Parsing
 {
     public static class Grammar
     {
-        private static CSharpGrammar _cSharpGrammar = new CSharpGrammar();
+        private static readonly CSharpGrammar CSharpGrammar = new CSharpGrammar();
 
         /// <summary>
         /// A symbol is a naked string.
@@ -43,20 +43,42 @@ namespace Diesel.Parsing
         }
 
         public static Parser<PropertyDeclaration> PropertyDeclaration
-            = (from type in _cSharpGrammar.TypeNode().Token().Named("Property type")
-               from name in _cSharpGrammar.Identifier().Token().Named("Property name")
+            = (from type in CSharpGrammar.TypeNode().Token().Named("Property type")
+               from name in CSharpGrammar.Identifier().Token().Named("Property name")
                select new PropertyDeclaration(name.Name, type))
                 .Named("PropertyDeclartion");
 
-        private static Parser<IEnumerable<TElement>> SequenceOf<TElement,TDelimiter>(Parser<TElement> elementParser, Parser<TDelimiter> delimiterParser)
+
+
+        private static Parser<IEnumerable<TElement>> DelimitedSequenceParser<TElement, TDelimiter, 
+            TSequenceOpen, TSequenceClose>(
+            Parser<TElement> elementParser, 
+            Parser<TDelimiter> delimiterParser,
+            Parser<TSequenceOpen> sequenceOpenParser, 
+            Parser<TSequenceClose> sequenceCloseParser
+            )
         {
             return (from element in elementParser
                         .Many()
                         .DelimitedBy(delimiterParser)
                         .Token()
-                        .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
+                        .Contained(sequenceOpenParser, sequenceCloseParser)
                     select element.SelectMany(x => x));
         }
+
+        private static Parser<IEnumerable<TElement>> SequenceOf<TElement,TDelimiter>(Parser<TElement> elementParser, Parser<TDelimiter> delimiterParser)
+        {
+            return DelimitedSequenceParser(elementParser, delimiterParser, 
+                TokenGrammar.LeftParen, TokenGrammar.RightParen);
+        }
+
+        private static Parser<IEnumerable<TElement>> VectorOf<TElement>(Parser<TElement> elementParser)
+        {
+            return DelimitedSequenceParser(elementParser, 
+                TokenGrammar.Comma.Optional().Token(),
+                TokenGrammar.LeftSquareBracket, TokenGrammar.RightSquareBracket);
+        }
+
 
         private static readonly Parser<IEnumerable<PropertyDeclaration>> PropertyDeclarations
             = SequenceOf(PropertyDeclaration, TokenGrammar.Comma)
@@ -67,7 +89,7 @@ namespace Diesel.Parsing
             string symbol, Func<Identifier, IEnumerable<PropertyDeclaration>, TResult> selectFunction)
         {
             return (from declaration in Symbol(symbol).Token()
-                    from name in _cSharpGrammar.Identifier().Token()
+                    from name in CSharpGrammar.Identifier().Token()
                     from propertyDeclarations in PropertyDeclarations
                     select selectFunction(name, propertyDeclarations))
                 .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
@@ -77,8 +99,8 @@ namespace Diesel.Parsing
 
         private static readonly Parser<ValueTypeDeclaration> SimpleValueTypeDeclaration
             = (from declaration in Symbol("defvaluetype").Token()
-               from name in _cSharpGrammar.Identifier().Token()
-               from optionalTypeDeclaration in _cSharpGrammar.TypeNode().Optional().Token()
+               from name in CSharpGrammar.Identifier().Token()
+               from optionalTypeDeclaration in CSharpGrammar.TypeNode().Optional().Token()
                let property = new[] {new PropertyDeclaration(null, optionalTypeDeclaration.GetOrDefault())}
                select new ValueTypeDeclaration(name.Name, property))
                 .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
@@ -114,9 +136,19 @@ namespace Diesel.Parsing
                                               new DtoDeclaration(identifier.Name, properties));
 
 
+        public static readonly Parser<EnumDeclaration> EnumDeclaration =
+            (from declaration in Symbol("defenum").Token()
+             from name in CSharpGrammar.Identifier().Token()
+             from values in VectorOf(CSharpGrammar.Identifier().Token())
+             select new EnumDeclaration(name.Name, values.Select(v => v.Name)))
+                .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
+                .Named("EnumDeclaration");
+
+
+
         public static readonly Parser<ApplicationServiceDeclaration> ApplicationServiceDeclaration
             = (from declaration in Symbol("defapplicationservice").Token()
-               from name in _cSharpGrammar.Identifier().Token()
+               from name in CSharpGrammar.Identifier().Token()
                from commandDeclarations in CommandDeclaration.Token().AtLeastOnce()
                select new ApplicationServiceDeclaration(name.Name, commandDeclarations))
                 .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
@@ -128,12 +160,13 @@ namespace Diesel.Parsing
                 .Or<TypeDeclaration>(CommandDeclaration)
                 .Or<TypeDeclaration>(DomainEventDeclaration)
                 .Or<TypeDeclaration>(DtoDeclaration)
+                .Or<TypeDeclaration>(EnumDeclaration)
                 .Or<TypeDeclaration>(ApplicationServiceDeclaration);
 
 
         public static readonly Parser<Namespace> Namespace
             = (from declaration in Symbol("namespace").Token()
-               from name in _cSharpGrammar.NamespaceName().Named("namespace name").Token()
+               from name in CSharpGrammar.NamespaceName().Named("namespace name").Token()
                from typeDeclarations in TypeDeclaration
                    .Token()
                    .AtLeastOnce()
@@ -151,7 +184,7 @@ namespace Diesel.Parsing
                from lcurly in TokenGrammar.LeftCurlyBrace.Token()
                from inherits in Keyword("inherit").Token()
                from lbracket in TokenGrammar.LeftSquareBracket.Token()
-               from baseTypes in _cSharpGrammar.TypeName().Token().Many()
+               from baseTypes in CSharpGrammar.TypeName().Token().Many()
                from rbracket in TokenGrammar.RightSquareBracket.Token()
                from rcurly in TokenGrammar.RightCurlyBrace.Token()
                let domainEventConventions = new DomainEventConventions(baseTypes)

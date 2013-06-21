@@ -370,6 +370,58 @@ namespace Test.Diesel.Parsing
 
 
         [Test]
+        public void ConventionDeclarations_Valid_ShouldParse()
+        {
+            var actual = Grammar.ConventionsDeclaration.Parse(
+                    "(defconventions :domainevents {:inherit [SomeNamespace.IDomainEvent]})");
+            Assert.That(actual, Is.Not.Null);
+            Assert.That(actual.DomainEventConventions, Is.Not.Null);
+            Assert.That(actual.DomainEventConventions, Is.Not.Null);
+        }
+
+
+        [Test]
+        public void DtoDeclaration_ValidDeclaration_ShouldParseName()
+        {
+            var actual = Grammar.DtoDeclaration.Parse("(defdto EmployeeName (string First, string Last))");
+            Assert.That(actual.Name, Is.EqualTo("EmployeeName"));
+        }
+
+        [Test]
+        public void DtoDeclaration_ValidDeclaration_ShouldParseProperties()
+        {
+            var actual = Grammar.DtoDeclaration.Parse("(defdto EmployeeName (string First, string Last))");
+            Assert.That(actual.Properties.Count(), Is.EqualTo(2));
+            var actualNames = actual.Properties.Select(p => p.Name).ToArray();
+            Assert.That(actualNames, Is.EqualTo(new[] {"First", "Last"}));
+        }
+
+
+        [Test]
+        public void EnumDeclaration_ValidDeclaration_ShouldParseName()
+        {
+            var actual = Grammar.EnumDeclaration.Parse(@"(defenum State [On, Off])");
+            Assert.That(actual.Name, Is.EqualTo("State"));
+        }
+
+        [Test]
+        public void EnumDeclaration_ValidDeclarationWithoutCommaDelimiter_ShouldParseValues()
+        {
+            var actual = Grammar.EnumDeclaration.Parse(@"(defenum State [On Off])");
+            Assert.That(actual.Values, Is.EqualTo(new[] { "On", "Off" }));
+        }
+
+        [Test]
+        public void EnumDeclaration_ValidDeclarationWithCommaDelimiter_ShouldParseValues()
+        {
+            var actual = Grammar.EnumDeclaration.Parse(@"(defenum State [On, Off])");
+            Assert.That(actual.Values, Is.EqualTo(new[] { "On", "Off" }));
+        }
+
+
+
+
+        [Test]
         public void TypeDeclaration_ValueTypeDeclaration_ShouldBeAccepted()
         {
             var actual = Grammar.TypeDeclaration.TryParse("(defvaluetype EmployeeNumber)");
@@ -399,33 +451,11 @@ namespace Test.Diesel.Parsing
         }
 
         [Test]
-        public void ConventionDeclarations_Valid_ShouldParse()
+        public void TypeDeclaration_EnumDeclaration_ShouldBeAccepted()
         {
-            var actual = Grammar.ConventionsDeclaration.Parse(
-                    "(defconventions :domainevents {:inherit [SomeNamespace.IDomainEvent]})");
-            Assert.That(actual, Is.Not.Null);
-            Assert.That(actual.DomainEventConventions, Is.Not.Null);
-            Assert.That(actual.DomainEventConventions, Is.Not.Null);
+            var actual = Grammar.TypeDeclaration.TryParse("(defenum State [Pending Done])");
+            Assert.True(actual.WasSuccessful);
         }
-
-
-        [Test]
-        public void DtoDeclaration_ValidDeclaration_ShouldParseName()
-        {
-            var actual = Grammar.DtoDeclaration.Parse("(defdto EmployeeName (string First, string Last))");
-            Assert.That(actual.Name, Is.EqualTo("EmployeeName"));
-        }
-
-        [Test]
-        public void DtoDeclaration_ValidDeclaration_ShouldParseProperties()
-        {
-            var actual = Grammar.DtoDeclaration.Parse("(defdto EmployeeName (string First, string Last))");
-            Assert.That(actual.Properties.Count(), Is.EqualTo(2));
-            var actualNames = actual.Properties.Select(p => p.Name).ToArray();
-            Assert.That(actualNames, Is.EqualTo(new[] {"First", "Last"}));
-        }
-
-
 
 
         [Test]

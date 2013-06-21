@@ -43,3 +43,7 @@
 
 (namespace TestCases.Defdto
 	(defdto EmployeeName (string First, string Last)))
+
+(namespace TestCases.Defenum
+	(defenum State [On Off])
+	(defenum StateWithOptionalDelimiter [On, Off]))

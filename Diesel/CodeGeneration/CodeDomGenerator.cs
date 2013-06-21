@@ -71,6 +71,10 @@ namespace Diesel.CodeGeneration
             ns.Types.Add(DtoGenerator.CreateCommandDeclaration(declaration));
         }
 
+        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, EnumDeclaration declaration)
+        {
+            ns.Types.Add(EnumGenerator.CreateEnumDeclaration(declaration));
+        }
 
         private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, ApplicationServiceDeclaration declaration)
         {
@@ -251,7 +255,7 @@ namespace Diesel.CodeGeneration
             return new CodeAttributeDeclaration(new CodeTypeReference(type));
         }
 
-        private static CodeAttributeDeclaration CreateDataContractAttribute(string name)
+        protected static CodeAttributeDeclaration CreateDataContractAttribute(string name)
         {
             return new CodeAttributeDeclaration(
                 new CodeTypeReference(typeof (DataContractAttribute)),
@@ -457,11 +461,13 @@ namespace Diesel.CodeGeneration
             return new CodeTypeMember[] { equality, disequality };
         }
 
+        // TODO: to expression builder
         private static CodeExpression CreateUnaryNegation(CodeExpression predicateExpression)
         {
             return CreateBinaryValueEquality(new CodePrimitiveExpression(false), predicateExpression);
         }
 
+        // TODO: to expression builder
         private static CodeExpression CreateBinaryValueEquality(CodeExpression a, CodeExpression b)
         {
             return new CodeBinaryOperatorExpression(a, CodeBinaryOperatorType.ValueEquality, b);
@@ -483,6 +489,16 @@ namespace Diesel.CodeGeneration
         protected static string InterfaceNameFor(string name)
         {
             return String.Format("I{0}", name);
+        }
+
+        protected static CodeAttributeDeclaration CreateEnumMemberAttribute(string name)
+        {
+            return new CodeAttributeDeclaration(
+                new CodeTypeReference(typeof (EnumMemberAttribute)),
+                new[]
+                    {
+                        new CodeAttributeArgument("Value", new CodePrimitiveExpression(name))
+                    });
         }
     }
 }

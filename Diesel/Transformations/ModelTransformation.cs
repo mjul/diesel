@@ -41,6 +41,11 @@ namespace Diesel.Transformations
             return declaration;
         }
 
+        public virtual EnumDeclaration Transform(EnumDeclaration declaration)
+        {
+            return declaration;
+        }
+
         public virtual ApplicationServiceDeclaration Transform(ApplicationServiceDeclaration declaration)
         {
             return declaration;
