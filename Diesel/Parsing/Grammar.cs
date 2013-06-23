@@ -165,7 +165,7 @@ namespace Diesel.Parsing
         public static readonly Parser<ApplicationServiceDeclaration> ApplicationServiceDeclaration
             = (from declaration in Symbol("defapplicationservice").Token()
                from name in CSharpGrammar.Identifier().Token()
-               from commandDeclarations in CommandDeclaration.Token().AtLeastOnce()
+               from commandDeclarations in CommandDeclaration.TokenAllowingComments().AtLeastOnce()
                select new ApplicationServiceDeclaration(name.Name, commandDeclarations))
                 .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
                 .Named("ApplicationServiceDeclaration");

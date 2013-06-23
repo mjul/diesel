@@ -499,6 +499,44 @@ namespace Test.Diesel.Parsing
 
 
         [Test]
+        public void ApplicationServiceDeclaration_CommentBeforeCommands_ShouldParse()
+        {
+            var actual = Grammar.ApplicationServiceDeclaration
+                                .Parse("(defapplicationservice ImportService" + Environment.NewLine +
+                                       "  ;; Comment" + Environment.NewLine +
+                                       "  (defcommand ImportEmployee (int EmployeeNumber, string Name)))");
+            Assert.That(actual.Name, Is.EqualTo("ImportService"));
+            Assert.That(actual.Commands.Single().Name, Is.EqualTo("ImportEmployee"));
+        }
+
+        [Test]
+        public void ApplicationServiceDeclaration_CommentBetweenCommands_ShouldParse()
+        {
+            var actual = Grammar.ApplicationServiceDeclaration
+                                .Parse("(defapplicationservice ImportService" + Environment.NewLine +
+                                       "  (defcommand ImportEmployee (int EmployeeNumber, string Name))" + Environment.NewLine +
+                                       "  ;; Comment" + Environment.NewLine +
+                                       "  (defcommand ImportClient (int ClientNumber, string Name)))");
+            Assert.That(actual.Name, Is.EqualTo("ImportService"));
+            Assert.That(actual.Commands.First().Name, Is.EqualTo("ImportEmployee"));
+            Assert.That(actual.Commands.Last().Name, Is.EqualTo("ImportClient"));
+        }
+
+
+        [Test]
+        public void ApplicationServiceDeclaration_CommentAfterCommands_ShouldParse()
+        {
+            var actual = Grammar.ApplicationServiceDeclaration
+                                .Parse("(defapplicationservice ImportService" + Environment.NewLine +
+                                       "  (defcommand ImportEmployee (int EmployeeNumber, string Name))" + Environment.NewLine +
+                                       "  ;; Comment" + Environment.NewLine +
+                                       ")");
+            Assert.That(actual.Name, Is.EqualTo("ImportService"));
+            Assert.That(actual.Commands.Single().Name, Is.EqualTo("ImportEmployee"));
+        }
+
+
+        [Test]
         public void ApplicationServiceDeclaration_MultipleCommands_ShouldParseCommands()
         {
             var actual = Grammar.ApplicationServiceDeclaration.Parse("(defapplicationservice ImportService" +
