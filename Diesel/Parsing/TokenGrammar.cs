@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Sprache;
 
 namespace Diesel.Parsing
@@ -30,6 +31,27 @@ namespace Diesel.Parsing
         public static readonly Parser<Char> LeftSquareBracket = Char('[', "LeftSquareBracket");
         public static readonly Parser<Char> RightSquareBracket = Char(']', "RightSquareBracket");
 
- 
+        public static readonly Parser<Char> Semicolon = Char(';', "Semicolon");
+        
+        public static readonly Parser<Char> CarriageReturn = Char('\u000D' , "CR");
+        public static readonly Parser<Char> LineFeed = Char('\u000A', "LineFeed");
+        public static readonly Parser<Char> LineSeparator = Char('\u2028', "LineSeparator");
+        public static readonly Parser<Char> ParagraphSeparator = Char('\u2029', "ParagraphSeparator");
+
+        private static readonly char[] NewLineChars = {'\u000D', '\u000A', '\u2028', '\u2029'};
+
+        public static readonly Parser<string> CarriageReturnLineFeed
+            = (from cr in CarriageReturn
+               from lf in LineFeed
+               select Environment.NewLine);
+
+        public static readonly Parser<String> NewLine =
+            CarriageReturnLineFeed
+                .Or(CarriageReturn.Select(c => Environment.NewLine))
+                .Or(LineFeed.Select(c => Environment.NewLine))
+                .Or(LineSeparator.Select(c => Environment.NewLine))
+                .Or(ParagraphSeparator.Select(c => Environment.NewLine));
+
+        public static readonly Parser<String> RestOfLine = Parse.CharExcept(NewLineChars).Many().Text();
     }
 }
