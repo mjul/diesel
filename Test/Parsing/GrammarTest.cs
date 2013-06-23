@@ -33,6 +33,34 @@ namespace Test.Diesel.Parsing
             Assert.That(actual.WasSuccessful, Is.False);
         }
 
+        [Test]
+        public void Comment_JustSemicolonAtEndOfFile_ShouldParse()
+        {
+            var actual = Grammar.Comment.Parse(";");
+            Assert.That(actual, Is.EqualTo(""));
+        }
+
+        [Test]
+        public void Comment_SemicolonThenNewLine_ShouldParse()
+        {
+            var actual = Grammar.Comment.Parse(";" + Environment.NewLine);
+            Assert.That(actual, Is.EqualTo(""));
+        }
+
+        [Test]
+        public void Comment_SemicolonAndTextAtEndOfFile_ShouldParse()
+        {
+            var actual = Grammar.Comment.Parse("; This is a comment");
+            Assert.That(actual, Is.EqualTo(" This is a comment"));
+        }
+
+        [Test]
+        public void Comment_SemicolonAndTextThenNewLine_ShouldParse()
+        {
+            var actual = Grammar.Comment.Parse("; This is a comment" + Environment.NewLine);
+            Assert.That(actual, Is.EqualTo(" This is a comment"));
+        }
+
 
         [Test]
         public void ValueTypeDeclaration_JustNameNoType_ShouldParseName()
@@ -496,6 +524,5 @@ namespace Test.Diesel.Parsing
             var actual = Grammar.Everything.TryParse("(namespace Foo (defvaluetype FooId))");
             Assert.True(actual.WasSuccessful);
         }
-
     }
 }

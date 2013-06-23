@@ -10,6 +10,11 @@ namespace Diesel.Parsing
     {
         private static readonly CSharpGrammar CSharpGrammar = new CSharpGrammar();
 
+        public static Parser<object> Comment =
+            (from semicolon in TokenGrammar.Semicolon
+             from comment in TokenGrammar.RestOfLine
+             select comment);
+
         /// <summary>
         /// A symbol is a naked string.
         /// </summary>
@@ -202,6 +207,5 @@ namespace Diesel.Parsing
         /// </summary>
         public static readonly Parser<AbstractSyntaxTree> Everything
             = AbstractSyntaxTree.Token().End();
-
     }
 }
