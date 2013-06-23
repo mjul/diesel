@@ -282,6 +282,32 @@ For now, it only controls the list of interfaces and base classes for the Domain
 This adds the `Test.Diesel.IDomainEvent` as a base on all generated Domain Events.
 
 
+# Comments
+
+Single-line comments are supported. They begin with one (or more) semicolons and 
+continue to the end of the line.
+
+Comments are allowed between the high-level syntactic elements, such as namespaces,
+services, convetions and type declarations such as DTOs, enums, Domain Events, Services and Commands.
+
+Comments are generally not allowed _inside_ the elements, _e.g._ between parameters in a parameter declaration.
+The reason for this is that the inside is typically a C# syntax property list, which has a different 
+comment syntax than Diesel.
+
+## Example
+
+```
+    ;; Declare Employees namespace
+    (namespace Employees
+        ;; This a comment
+        (defvaluetype EmployeeNumber)
+        (defapplicationService ImportService
+            ;; Comments can also be nested
+            (defcommand ImportEmployee (int EmployeeNumber, string FirstName, string LastName))
+        (defdomainevent EmployeeImported (Guid Id, int EmployeeNumber, string FirstName, string LastName)))
+```
+
+
 # Using the T4 Template
 
 The Test project contains a Visual Studio T4 template (.tt file) under Generated.
