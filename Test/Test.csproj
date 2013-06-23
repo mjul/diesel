@@ -76,6 +76,7 @@
     <Compile Include="Parsing\CSharp\SimpleTypeTest.cs" />
     <Compile Include="Parsing\GrammarTest.cs" />
     <Compile Include="CodeGeneration\CodeDomGeneratorTest.cs" />
+    <Compile Include="Parsing\TokenGrammarTest.cs" />
     <Compile Include="TestHelpers\SerializationTesting.cs" />
     <Compile Include="Transformations\ApplyDefaultsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
