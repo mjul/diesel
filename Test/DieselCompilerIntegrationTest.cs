@@ -30,6 +30,7 @@ namespace Test.Diesel
             AssertIncludesDefdomaineventExamples(sourceCode);
             AssertIncludesDefdtoExamples(sourceCode);
             AssertIncludesDefenumExamples(sourceCode);
+            AssertIncludesCommentExamples(sourceCode);
         }
 
         private void AssertIncludesDefdomaineventExamples(string sourceCode)
@@ -71,6 +72,13 @@ namespace Test.Diesel
             Assert.That(sourceCode, Is.StringContaining("enum State"));
         }
 
+        private void AssertIncludesCommentExamples(string sourceCode)
+        {
+            Assert.That(sourceCode, Is.StringContaining("namespace TestCases.Comments"));
+            Assert.That(sourceCode, Is.StringContaining("struct CommentId"));
+            Assert.That(sourceCode, Is.StringContaining("interface ICommentService"));
+            Assert.That(sourceCode, Is.StringContaining("class ImportComment"));
+        }
 
         [Test]
         public void Compile_InvalidModelSource_ShouldFail()

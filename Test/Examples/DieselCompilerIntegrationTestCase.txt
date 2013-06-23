@@ -47,3 +47,15 @@
 (namespace TestCases.Defenum
 	(defenum State [On Off])
 	(defenum StateWithOptionalDelimiter [On, Off]))
+
+; Comment before namespace
+(namespace TestCases.Comments
+	;; Comment in namespace
+	(defvaluetype CommentId)
+	(defapplicationservice CommentService
+		; Comment before commands
+		(defcommand ImportComment (int CommentId, string Name))
+		;; Comment after
+		;; Multiple comments after
+		))
+
