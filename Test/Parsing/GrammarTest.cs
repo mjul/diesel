@@ -332,6 +332,43 @@ namespace Test.Diesel.Parsing
 
 
         [Test]
+        public void Namespace_CommentBeforeDeclaration_ShouldParseDeclaration()
+        {
+            var actual = Grammar.Namespace.Parse("(namespace Administration.Client" +
+                                                 "  ;; Comment " + Environment.NewLine +
+                                                 "  (defvaluetype ClientId))");
+            Assert.That(actual.Name.Name, Is.EqualTo("Administration.Client"));
+            var singleDeclaration = actual.Declarations.Single();
+            Assert.That(singleDeclaration.Name, Is.EqualTo("ClientId"));
+        }
+
+        [Test]
+        public void Namespace_CommentBetweenDeclarations_ShouldParseDeclarations()
+        {
+            var actual = Grammar.Namespace.Parse("(namespace Administration.Client" +
+                                                 "  (defvaluetype ClientId)" + Environment.NewLine +
+                                                 "  ;; Comment " + Environment.NewLine +
+                                                 "  (defvaluetype AccountNumber))");
+
+            Assert.That(actual.Name.Name, Is.EqualTo("Administration.Client"));
+            Assert.That(actual.Declarations.Select(d => d.Name).ToArray(), Is.EquivalentTo(new[]{"ClientId", "AccountNumber"}));
+        }
+
+        [Test]
+        public void Namespace_CommentAfterDeclarations_ShouldParseDeclaration()
+        {
+            var actual = Grammar.Namespace.Parse("(namespace Administration.Client" +
+                                                 "  (defvaluetype ClientId)" + Environment.NewLine +
+                                                 "  (defvaluetype AccountNumber)" + Environment.NewLine +
+                                                 "  ;; Comment" + Environment.NewLine +
+                                                 ")");
+
+            Assert.That(actual.Name.Name, Is.EqualTo("Administration.Client"));
+            Assert.That(actual.Declarations.Select(d => d.Name).ToArray(), Is.EquivalentTo(new[] { "ClientId", "AccountNumber" }));
+        }
+
+
+        [Test]
         public void CommandDeclaration_ValidDeclaration_ShouldParseName()
         {
             var actual = Grammar.CommandDeclaration.Parse("(defcommand ImportEmployee (int EmployeeNumber))");

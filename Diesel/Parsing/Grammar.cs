@@ -184,7 +184,7 @@ namespace Diesel.Parsing
             = (from declaration in Symbol("namespace").Token()
                from name in CSharpGrammar.NamespaceName().Named("namespace name").Token()
                from typeDeclarations in TypeDeclaration
-                   .Token()
+                   .TokenAllowingComments()
                    .AtLeastOnce()
                    .Optional()
                let declarationList = typeDeclarations.GetOrElse(new List<TypeDeclaration>())
