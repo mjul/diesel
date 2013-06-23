@@ -10,10 +10,21 @@ namespace Diesel.Parsing
     {
         private static readonly CSharpGrammar CSharpGrammar = new CSharpGrammar();
 
-        public static Parser<object> Comment =
+        public static readonly Parser<string> Comment =
             (from semicolon in TokenGrammar.Semicolon
              from comment in TokenGrammar.RestOfLine
              select comment);
+
+        public static readonly Parser<string> CommentOrWhiteSpace =
+            Comment.Token().Optional().Token().Select(c => c.GetOrDefault());
+
+        public static Parser<T> TokenAllowingComments<T>(this Parser<T> innerParser)
+        {
+            return (from leadingTrivia in CommentOrWhiteSpace.Many().Optional()
+                    from inner in innerParser
+                    from followingTrivia in CommentOrWhiteSpace.Many().Optional()
+                    select inner);
+        }
 
         /// <summary>
         /// A symbol is a naked string.
@@ -198,8 +209,8 @@ namespace Diesel.Parsing
                 .Named("ConventionsDeclaration");
 
         public static readonly Parser<AbstractSyntaxTree> AbstractSyntaxTree
-            = (from conventions in ConventionsDeclaration.Optional()
-               from namespaces in Namespace.Token().Many().Token() 
+            = (from conventions in ConventionsDeclaration.Optional().TokenAllowingComments()
+               from namespaces in Namespace.TokenAllowingComments().Many()
                select new AbstractSyntaxTree(conventions.GetOrDefault(), namespaces));
 
         /// <summary>

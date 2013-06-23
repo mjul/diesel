@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Diesel;
 using Diesel.Parsing;
 using Diesel.Parsing.CSharp;
 using NUnit.Framework;
@@ -60,6 +59,96 @@ namespace Test.Diesel.Parsing
             var actual = Grammar.Comment.Parse("; This is a comment" + Environment.NewLine);
             Assert.That(actual, Is.EqualTo(" This is a comment"));
         }
+
+        [Test]
+        public void Comment_NoSemicolon_ShouldNotParse()
+        {
+            var actual = Grammar.Comment.TryParse("This is not comment" + Environment.NewLine);
+            Assert.That(actual.WasSuccessful, Is.False);
+        }
+
+        [Test]
+        public void CommentOrWhiteSpace_CommentOnly_ShouldParse()
+        {
+            var actual = Grammar.CommentOrWhiteSpace.TryParse(";; This is a comment" + Environment.NewLine);
+            Assert.That(actual.WasSuccessful, Is.True);
+        }
+
+        [Test]
+        public void CommentOrWhiteSpace_WhitespaceThenComment_ShouldParse()
+        {
+            var actual = Grammar.CommentOrWhiteSpace.TryParse(Environment.NewLine + "  ;; This is a comment" + Environment.NewLine);
+            Assert.That(actual.WasSuccessful, Is.True);
+        }
+
+
+        [Test]
+        public void CommentOrWhiteSpace_WhiteSpaceOnly_ShouldParse()
+        {
+            var actual = Grammar.CommentOrWhiteSpace.TryParse("  ");
+            Assert.That(actual.WasSuccessful, Is.True);
+        }
+
+
+        [Test]
+        public void TokenAllowingComments_JustTheToken_ShouldParse()
+        {
+            var actual = TokenGrammar.QuestionMark.TokenAllowingComments().Parse("?");
+            Assert.That(actual, Is.EqualTo('?'));
+        }
+
+        [Test]
+        public void TokenAllowingComments_WhitespaceBeforeTheToken_ShouldParse()
+        {
+            var actual = Grammar.TokenAllowingComments(TokenGrammar.QuestionMark).Parse("  ?");
+            Assert.That(actual, Is.EqualTo('?'));
+        }
+
+        [Test]
+        public void TokenAllowingComments_CommentBeforeTheToken_ShouldParse()
+        {
+            var actual = TokenGrammar.QuestionMark.TokenAllowingComments()
+                .Parse(";; Comment " + Environment.NewLine + "?");
+            Assert.That(actual, Is.EqualTo('?'));
+        }
+
+        [Test]
+        public void TokenAllowingComments_CommentsBeforeTheToken_ShouldParse()
+        {
+            var actual = TokenGrammar.QuestionMark.TokenAllowingComments()
+                                .Parse(" ;; Comment 1" + Environment.NewLine +
+                                       " ;; Comment 2" + Environment.NewLine +
+                                       " ?");
+            Assert.That(actual, Is.EqualTo('?'));
+        }
+
+        [Test]
+        public void TokenAllowingComments_WhiteSpaceAfterTheToken_ShouldParse()
+        {
+            var actual = TokenGrammar.QuestionMark.TokenAllowingComments()
+                                .Parse("? " + Environment.NewLine);
+            Assert.That(actual, Is.EqualTo('?'));
+        }
+
+        [Test]
+        public void TokenAllowingComments_CommentAfterTheToken_ShouldParse()
+        {
+            var actual = TokenGrammar.QuestionMark.TokenAllowingComments()
+                                .Parse("?" + 
+                                       ";; Comment 1" + Environment.NewLine);
+            Assert.That(actual, Is.EqualTo('?'));
+        }
+
+        [Test]
+        public void TokenAllowingComments_CommentsAfterTheToken_ShouldParse()
+        {
+            var actual = TokenGrammar.QuestionMark.TokenAllowingComments()
+                                .Parse("?" + 
+                                       ";; Comment 1" + Environment.NewLine +
+                                       ";; Comment 2" + Environment.NewLine);
+            Assert.That(actual, Is.EqualTo('?'));
+        }
+
 
 
         [Test]
@@ -496,6 +585,70 @@ namespace Test.Diesel.Parsing
             Assert.That(actual, Is.Not.Null);
             Assert.That(actual.Namespaces.Count(), Is.EqualTo(2));
         }
+
+
+        [Test]
+        public void AbstractSyntaxTree_CommentBeforeNamespaces_ShouldParseNamespaces()
+        {
+            var actual =
+                Grammar.AbstractSyntaxTree.Parse(
+                    ";; Comment before " + Environment.NewLine +
+                    "(namespace Foo (defvaluetype FooId)) " +
+                    "(namespace Bar (defcommand Say (string message)))");
+            Assert.That(actual, Is.Not.Null);
+            Assert.That(actual.Namespaces.Count(), Is.EqualTo(2));
+        }
+
+        [Test]
+        public void AbstractSyntaxTree_CommentBetweenNamespaces_ShouldParseNamespaces()
+        {
+            var actual =
+                Grammar.AbstractSyntaxTree.Parse(
+                    "(namespace Foo (defvaluetype FooId)) " +
+                    ";; Comment between" + Environment.NewLine +
+                    "(namespace Bar (defcommand Say (string message)))");
+            Assert.That(actual, Is.Not.Null);
+            Assert.That(actual.Namespaces.Count(), Is.EqualTo(2));
+        }
+
+        [Test]
+        public void AbstractSyntaxTree_CommentAfterNamespaces_ShouldParseNamespaces()
+        {
+            var actual =
+                Grammar.AbstractSyntaxTree.Parse(
+                    "(namespace Foo (defvaluetype FooId)) " +
+                    "(namespace Bar (defcommand Say (string message)))" +
+                    ";; Comment after");
+            Assert.That(actual, Is.Not.Null);
+            Assert.That(actual.Namespaces.Count(), Is.EqualTo(2));
+        }
+
+        [Test]
+        public void AbstractSyntaxTree_CommentWithWhiteSpaceAfterNamespaces_ShouldParseNamespaces()
+        {
+            var actual =
+                Grammar.AbstractSyntaxTree.Parse(
+                    "(namespace Foo (defvaluetype FooId)) " +
+                    "(namespace Bar (defcommand Say (string message)))" +
+                    "  ;; Comment after");
+            Assert.That(actual, Is.Not.Null);
+            Assert.That(actual.Namespaces.Count(), Is.EqualTo(2));
+        }
+
+        [Test]
+        public void AbstractSyntaxTree_CommentsAroundConventions_ShouldParseNamespaces()
+        {
+            var actual =
+                Grammar.AbstractSyntaxTree.Parse(
+                    ";; Comment before " + Environment.NewLine +
+                    "(defconventions :domainevents {:inherit [SomeName.IDomainEvent]})" +
+                    ";; Comment after " + Environment.NewLine +
+                    "(namespace Foo (defvaluetype FooId))");
+            Assert.That(actual, Is.Not.Null);
+            Assert.That(actual.Conventions, Is.Not.Null);
+            Assert.That(actual.Namespaces.Count(), Is.EqualTo(1));
+        }
+
 
         [Test]
         public void AbstractSyntaxTree_WithConventions_ShouldParseConventions()
