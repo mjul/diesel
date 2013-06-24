@@ -9,7 +9,7 @@
 	(defapplicationservice ImportService
 		(defcommand ImportClient (int ClientId, string Name))))
 
-(namespace TestCases.TypeDeclarations
+(namespace TestCases.PropertyTypeDeclarations
 	(defcommand PrintInt (int Value))
 	(defcommand PrintNullable (float? Value))
 	(defcommand PrintArraySimple (int[] Value))
@@ -30,6 +30,7 @@
 	(defvaluetype SourceMetadata (string Source, int? SourceId))
 	(defvaluetype RoleCollection (string[] Roles)))
 
+
 (namespace TestCases.Defcommand
 	(defcommand PrintString (string Name))
 	(defcommand PrintNullable (int? Value))
@@ -38,15 +39,22 @@
 	(defcommand PrintGuid (Guid SourceId))
 	(defcommand PrintArrays (string[] Names, int[] Numbers, Guid[] Guids, DateTime[] Timestamps)))
 
+(namespace TestCases.Defapplicationservice
+	(defapplicationservice ImportApplicationService
+		(defcommand ImportApplicationServiceCommand (Guid Id, string Name))))
+
 (namespace TestCases.Defdomainevent
 	(defdomainevent PaymentReceived (Guid Id, Decimal Amount, String Currency)))
+
 
 (namespace TestCases.Defdto
 	(defdto EmployeeName (string First, string Last)))
 
+
 (namespace TestCases.Defenum
 	(defenum State [On Off])
 	(defenum StateWithOptionalDelimiter [On, Off]))
+
 
 ; Comment before namespace
 (namespace TestCases.Comments
@@ -58,4 +66,3 @@
 		;; Comment after
 		;; Multiple comments after
 		))
-

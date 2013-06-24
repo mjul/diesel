@@ -14,34 +14,64 @@ namespace Test.Diesel
         [Test]
         public void Compile_ValidModelSource_ShouldGenerateSourceCode()
         {
-            var modelSource = CodeExamples.DieselCompilerIntegrationTestCase;
-            var sourceCode = DieselCompiler.Compile(modelSource);
+            var sourceCode = CompileIngegrationTestCases();
 
             Assert.That(sourceCode, Is.Not.Empty);
             Assert.That(sourceCode, Is.StringContaining("namespace Employees"));
             Assert.That(sourceCode, Is.StringContaining("struct EmployeeNumber"));
             Assert.That(sourceCode, Is.StringContaining("class ChangeTelephoneNumber"));
+
             Assert.That(sourceCode, Is.StringContaining("namespace Clients"));
             Assert.That(sourceCode, Is.StringContaining("interface IImportService"));
             Assert.That(sourceCode, Is.StringContaining("class ImportClient"));
-
-            AssertIncludesDefvaluetypeExamples(sourceCode);
-            AssertIncludesDefcommandExamples(sourceCode);
-            AssertIncludesDefdomaineventExamples(sourceCode);
-            AssertIncludesDefdtoExamples(sourceCode);
-            AssertIncludesDefenumExamples(sourceCode);
-            AssertIncludesCommentExamples(sourceCode);
         }
 
-        private void AssertIncludesDefdomaineventExamples(string sourceCode)
+        private static string CompileIngegrationTestCases()
         {
+            var modelSource = CodeExamples.DieselCompilerIntegrationTestCase;
+            var sourceCode = DieselCompiler.Compile(modelSource);
+            return sourceCode;
+        }
+
+        [Test]
+        public void Compile_ValidModelSource_ShouldIncludePropertyTypeDeclarations()
+        {
+            var sourceCode = CompileIngegrationTestCases();
+            Assert.That(sourceCode, Is.StringContaining("class PrintInt"));
+            Assert.That(sourceCode, Is.StringContaining("class PrintNullable"));
+            Assert.That(sourceCode, Is.StringContaining("class PrintArraySimple"));
+            Assert.That(sourceCode, Is.StringContaining("class PrintNullableSimple"));
+            Assert.That(sourceCode, Is.StringContaining("class PrintString"));
+            Assert.That(sourceCode, Is.StringContaining("class PrintNamedTypeQualifiedDateTime"));
+            Assert.That(sourceCode, Is.StringContaining("class PrintNamedTypeQualifiedGuid"));
+            Assert.That(sourceCode, Is.StringContaining("class PrintNamedTypeUnqualifiedGuid"));
+            Assert.That(sourceCode, Is.StringContaining("class PrintNamedTypeUnqualifiedDecimal"));
+            Assert.That(sourceCode, Is.StringContaining("class PrintMulti"));
+        }
+
+        [Test]
+        private void Compile_ValidModelSource_ShouldIncludeDefapplicationserviceExamples()
+        {
+            var sourceCode = CompileIngegrationTestCases();
+            Assert.That(sourceCode, Is.StringContaining("namespace TestCases.Defapplicationservice"));
+            Assert.That(sourceCode, Is.StringContaining("interface IImportApplicationService"));
+            Assert.That(sourceCode, Is.StringContaining("class ImportApplicationServiceCommand"));
+        }
+
+
+        [Test]
+        private void Compile_ValidModelSource_ShouldIncludeDefdomaineventExamples()
+        {
+            var sourceCode = CompileIngegrationTestCases();
             Assert.That(sourceCode, Is.StringContaining("namespace TestCases.Defdomainevent"));
             Assert.That(sourceCode, Is.StringContaining("sealed partial class PaymentReceived"));
             Assert.That(sourceCode, Is.StringMatching("class PaymentReceived :.*Test.Diesel.IDomainEvent"));
         }
 
-        private static void AssertIncludesDefvaluetypeExamples(string sourceCode)
+        [Test]
+        private void Compile_ValidModelSource_ShouldIncludeDefvaluetypeExamples()
         {
+            var sourceCode = CompileIngegrationTestCases();
             Assert.That(sourceCode, Is.StringContaining("namespace TestCases.Defvaluetype"));
             Assert.That(sourceCode, Is.StringContaining("struct InvoiceNumber"));
             Assert.That(sourceCode, Is.StringContaining("struct Amount"));
@@ -50,8 +80,10 @@ namespace Test.Diesel
             Assert.That(sourceCode, Is.StringContaining("struct SourceMetadata"));
         }
 
-        private static void AssertIncludesDefcommandExamples(string sourceCode)
+        [Test]
+        private void Compile_ValidModelSource_ShouldIncludeDefcommandExamples()
         {
+            var sourceCode = CompileIngegrationTestCases();
             Assert.That(sourceCode, Is.StringContaining("namespace TestCases.Defcommand"));
             Assert.That(sourceCode, Is.StringContaining("class PrintString"));
             Assert.That(sourceCode, Is.StringContaining("class PrintNullable"));
@@ -60,20 +92,26 @@ namespace Test.Diesel
             Assert.That(sourceCode, Is.StringContaining("class PrintGuid"));
         }
 
-        private static void AssertIncludesDefdtoExamples(string sourceCode)
+        [Test]
+        public void Compile_ValidModelSource_ShouldIncludeDefdtoExamples()
         {
+            var sourceCode = CompileIngegrationTestCases(); 
             Assert.That(sourceCode, Is.StringContaining("namespace TestCases.Defdto"));
             Assert.That(sourceCode, Is.StringContaining("class EmployeeName"));
         }
 
-        private static void AssertIncludesDefenumExamples(string sourceCode)
+        [Test]
+        public void Compile_ValidModelSource_ShouldIncludeDefenumExamples()
         {
+            var sourceCode = CompileIngegrationTestCases(); 
             Assert.That(sourceCode, Is.StringContaining("namespace TestCases.Defenum"));
             Assert.That(sourceCode, Is.StringContaining("enum State"));
         }
 
-        private void AssertIncludesCommentExamples(string sourceCode)
+        [Test]
+        public void Compile_ValidModelSource_ShouldIncludeCommentExamples()
         {
+            var sourceCode = CompileIngegrationTestCases(); 
             Assert.That(sourceCode, Is.StringContaining("namespace TestCases.Comments"));
             Assert.That(sourceCode, Is.StringContaining("struct CommentId"));
             Assert.That(sourceCode, Is.StringContaining("interface ICommentService"));
