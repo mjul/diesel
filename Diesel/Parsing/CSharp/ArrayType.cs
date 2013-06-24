@@ -14,6 +14,11 @@ namespace Diesel.Parsing.CSharp
             RankSpecifiers = rankSpecifiers;
         }
 
+        public override void Accept(ITypeNodeVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
         public override IEnumerable<ITreeNode> Children
         {
             get 

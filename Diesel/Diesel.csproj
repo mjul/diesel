@@ -59,6 +59,7 @@
     <Compile Include="Parsing\ConventionsDeclaration.cs" />
     <Compile Include="Parsing\CSharp\CSharpGrammar.cs" />
     <Compile Include="Parsing\CSharp\Identifier.cs" />
+    <Compile Include="Parsing\CSharp\ITypeNodeVisitor.cs" />
     <Compile Include="Parsing\CSharp\NullableType.cs" />
     <Compile Include="Parsing\CSharp\RankSpecifier.cs" />
     <Compile Include="Parsing\CSharp\RankSpecifiers.cs" />

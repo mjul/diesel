@@ -15,6 +15,11 @@ namespace Diesel.Parsing.CSharp
             Underlying = underlying;
         }
 
+        public override void Accept(ITypeNodeVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
         public override IEnumerable<ITreeNode> Children
         {
             get { yield return Underlying; }

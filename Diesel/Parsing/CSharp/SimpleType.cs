@@ -15,6 +15,11 @@ namespace Diesel.Parsing.CSharp
             Type = type;
         }
 
+        public override void Accept(ITypeNodeVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
         public override IEnumerable<ITreeNode> Children
         {
             get { yield break; }

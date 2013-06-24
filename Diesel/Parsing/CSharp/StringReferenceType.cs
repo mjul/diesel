@@ -8,7 +8,12 @@ namespace Diesel.Parsing.CSharp
         public StringReferenceType()
         {
         }
-        
+
+        public override void Accept(ITypeNodeVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
         public override IEnumerable<ITreeNode> Children
         {
             get { yield break; }
