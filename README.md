@@ -21,7 +21,7 @@ Create a model in the Diesel DSL language:
         (defvaluetype EmployeeName (string FirstName, string LastName))
         (defdto Name (string FirstName, string LastName))
         (defapplicationService ImportService
-            (defcommand ImportEmployee (int EmployeeNumber, string FirstName, string LastName))
+            (defcommand ImportEmployee (int EmployeeNumber, Name Name))
         (defdomainevent EmployeeImported (Guid Id, int EmployeeNumber, string FirstName, string LastName)))
 ```
 
@@ -43,10 +43,10 @@ Now use it
     var isFounder = (employee.EmployeeNumber == founderNumber);
          
     // Commands are classes and have a constructor that assigns all properties
-    var command = new ImportEmployeeCommand(1, "Martin", "Jul");
+    var command = new ImportEmployeeCommand(1, new Name("Martin", "Jul"));
            
-    // Properties exposing these are automatically added to the class:
-    var firstName = command.FirstName;
+    // The corresponding properties are automatically added to the classes:
+    var firstName = command.Name.FirstName;
      
 ```
 
