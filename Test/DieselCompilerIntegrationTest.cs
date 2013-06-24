@@ -118,6 +118,21 @@ namespace Test.Diesel
             Assert.That(sourceCode, Is.StringContaining("class ImportComment"));
         }
 
+
+        [Test]
+        public void Compile_ValidModelSource_ShouldIncludeNestedDtoExamples()
+        {
+            var sourceCode = CompileIngegrationTestCases();
+            Assert.That(sourceCode, Is.StringContaining("namespace TestCases.NestedDtos"));
+            Assert.That(sourceCode, Is.StringContaining("class DtoNestedEnum"));
+            Assert.That(sourceCode, Is.StringContaining("class DtoNestedDto"));
+            Assert.That(sourceCode, Is.StringContaining("class ImportPersonNestedEnum"));
+            Assert.That(sourceCode, Is.StringContaining("class PersonImportedNestedEnum"));
+            Assert.That(sourceCode, Is.StringContaining("class ImportPersonNestedDto"));
+            Assert.That(sourceCode, Is.StringContaining("class PersonImportedNestedDto"));
+        }
+
+
         [Test]
         public void Compile_InvalidModelSource_ShouldFail()
         {

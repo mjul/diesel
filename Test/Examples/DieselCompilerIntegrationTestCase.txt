@@ -66,3 +66,15 @@
 		;; Comment after
 		;; Multiple comments after
 		))
+
+
+;; We should be able to add DTOs (objects and enums) to DTOs, Commands and Events
+(namespace TestCases.NestedDtos
+	(defenum Role [Employee Contractor])
+	(defdto PersonName (string First, string Last))
+	(defdto DtoNestedEnum (Guid Id, Role Role))
+	(defdto DtoNestedDto (Guid Id, PersonName Name))
+	(defcommand ImportPersonNestedEnum (string Name, Role Role))
+	(defdomainevent PersonImportedNestedEnum (Guid Id, string Name, Role Role))
+	(defcommand ImportPersonNestedDto (PersonName Name, Role Role))
+	(defdomainevent PersonImportedNestedDto (Guid Id, PersonName Name, Role Role)))
