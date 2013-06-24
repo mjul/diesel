@@ -58,6 +58,7 @@
     <Compile Include="CodeGeneration\MemberTypeMapper.cs" />
     <Compile Include="CodeGeneration\SystemTypeMapperTest.cs" />
     <Compile Include="DieselCompilerIntegrationTest.cs" />
+    <Compile Include="GeneratedCommandNestedTypesTest.cs" />
     <Compile Include="GeneratedCommandTest.cs" />
     <Compile Include="GeneratedDomainEventTest.cs" />
     <Compile Include="GeneratedDtoTest.cs" />

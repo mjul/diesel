@@ -12,5 +12,7 @@
 	(defenum Gender [Female Male])
 	(defapplicationservice ImportService
 		(defcommand ImportEmployee (Guid CommandId, int EmployeeNumber, string FirstName, string LastName, int? SourceId))
-		(defcommand ImportConsultant (string FirstName, string LastName, string Company))))
+		(defcommand ImportConsultant (string FirstName, string LastName, string Company)))
+	;; Verify that we can use nested DTOs and enums in commands:
+	(defcommand ImportEmployeeNestedTypes(Guid CommandId, int EmployeeNumber, Name Name, Gender Gender)))
 

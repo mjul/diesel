@@ -635,4 +635,86 @@ namespace Test.Diesel.Generated {
             return (typeof(ImportConsultant).IsAssignableFrom(obj.GetType()) && this.Equals(((ImportConsultant)(obj))));
         }
     }
+    
+    [System.Runtime.Serialization.DataContractAttribute(Name="ImportEmployeeNestedTypes")]
+    [System.SerializableAttribute()]
+    public partial class ImportEmployeeNestedTypes : System.IEquatable<ImportEmployeeNestedTypes> {
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Name="CommandId", Order=1)]
+        private System.Guid _commandId;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Name="EmployeeNumber", Order=2)]
+        private int _employeeNumber;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Name="Name", Order=3)]
+        private Name _name;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Name="Gender", Order=4)]
+        private Gender _gender;
+        
+        public ImportEmployeeNestedTypes(System.Guid commandId, int employeeNumber, Name name, Gender gender) {
+            this._commandId = commandId;
+            this._employeeNumber = employeeNumber;
+            this._name = name;
+            this._gender = gender;
+        }
+        
+        public System.Guid CommandId {
+            get {
+                return this._commandId;
+            }
+        }
+        
+        public int EmployeeNumber {
+            get {
+                return this._employeeNumber;
+            }
+        }
+        
+        public Name Name {
+            get {
+                return this._name;
+            }
+        }
+        
+        public Gender Gender {
+            get {
+                return this._gender;
+            }
+        }
+        
+        public static bool operator ==(ImportEmployeeNestedTypes left, ImportEmployeeNestedTypes right) {
+            if (object.ReferenceEquals(null, left)) {
+                return object.ReferenceEquals(null, right);
+            }
+            return left.Equals(right);
+        }
+        
+        public static bool operator !=(ImportEmployeeNestedTypes left, ImportEmployeeNestedTypes right) {
+            if (object.ReferenceEquals(null, left)) {
+                return (false == object.ReferenceEquals(null, right));
+            }
+            return (false == left.Equals(right));
+        }
+        
+        public override int GetHashCode() {
+            return ((0 + this.CommandId.GetHashCode()) 
+                        + this.EmployeeNumber.GetHashCode());
+        }
+        
+        public bool Equals(ImportEmployeeNestedTypes other) {
+            return (((((false == object.ReferenceEquals(null, other)) 
+                        && object.Equals(this.CommandId, other.CommandId)) 
+                        && (this.EmployeeNumber == other.EmployeeNumber)) 
+                        && object.Equals(this.Name, other.Name)) 
+                        && object.Equals(this.Gender, other.Gender));
+        }
+        
+        public override bool Equals(object obj) {
+            if (object.ReferenceEquals(null, obj)) {
+                return false;
+            }
+            return (typeof(ImportEmployeeNestedTypes).IsAssignableFrom(obj.GetType()) && this.Equals(((ImportEmployeeNestedTypes)(obj))));
+        }
+    }
 }
