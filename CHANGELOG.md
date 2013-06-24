@@ -1,3 +1,8 @@
+# Version NEXT
+* Support for single-line comments added (semicolon to end-of-line)
+* `defenum` added to generate enumeration DTOs (Data Transfer Objects).
+* Properties can now be any type (generator will emit names of custom/non-system types literally)
+
 # Version 1.8
 * `defdto` added to generate DTOs (Data Transfer Objects).
 
