@@ -1,26 +1,11 @@
 # Feature Requests
 
-## Support for Nested DTOs
-Extend TypeNameTypeNode generation to emit fields of non-System / non-primite types
-to support tree structured types, and add a DTO type for non-root DTO classes
-that can be used from Commands and Domain Events.
-
-### Example
-
-        (defdto Name (string First, string Last))
-        (defcommand CreateEmployee (int EmployeeNumber, Name Name))
-
 ## Declare Bounded Contexts
 Commands and Domain Events should then have DataContract namespaces
 corresponding to the bounded context's name.
 
 ## Support for C# keyword Identifiers
 Support for Identifiers like `@event` and other reserved C# keywords.
-
-## Emit verbatim type-name for unknown types
-When a named type does not exist, emit the type name as specified
-rather than failing in the generation step when the corresponding System type 
-has not been found (`CodeDomGenerator`, `SystemTypeMapper`).
 
 ## Emit DebuggerDisplay for types with more than one field
 Currently, this is emitted only for single-field types.
