@@ -67,6 +67,46 @@ namespace Test.Diesel.CodeGeneration
         }
 
         [Test]
+        public void CommandDeclaration_WithNestedDto_Enum_ShouldCompile()
+        {
+            var enumDeclaration = new EnumDeclaration("Role", new[] {"Tester", "Developer"});
+            var commandDeclaration = new CommandDeclaration("ImportEmployeeCommand",
+                                                new[]
+                                                                {
+                                                                    new PropertyDeclaration("EmployeeNumber", new SimpleType(typeof (int))),
+                                                                    new PropertyDeclaration("Role", new TypeNameTypeNode(new TypeName("Role"))),
+                                                                });
+            var model = CreateAbstractSyntaxTreeWith(enumDeclaration, commandDeclaration);
+            var actual = CodeDomGenerator.Compile(model);
+
+            Assert.That(actual, Is.Not.Null);
+            var source = CompileToSource(actual);
+            Assert.That(source, Is.StringContaining("class ImportEmployeeCommand"));
+            Assert.That(source, Is.StringMatching(@"public.*Role\s+Role"));
+        }
+
+
+        [Test]
+        public void CommandDeclaration_WithNestedDto_Dto_ShouldCompile()
+        {
+            var dtoDeclaration = new DtoDeclaration("AmountDto", new[] { new PropertyDeclaration("Amount", new SimpleType(typeof(decimal))) });
+            var commandDeclaration = new CommandDeclaration("ImportEmployeeCommand",
+                                                new[]
+                                                                {
+                                                                    new PropertyDeclaration("EmployeeNumber", new SimpleType(typeof (int))),
+                                                                    new PropertyDeclaration("Salary", new TypeNameTypeNode(new TypeName("AmountDto"))),
+                                                                });
+            var model = CreateAbstractSyntaxTreeWith(dtoDeclaration, commandDeclaration);
+            var actual = CodeDomGenerator.Compile(model);
+
+            Assert.That(actual, Is.Not.Null);
+            var source = CompileToSource(actual);
+            Assert.That(source, Is.StringContaining("class ImportEmployeeCommand"));
+            Assert.That(source, Is.StringMatching(@"public.*AmountDto\s+Salary"));
+        }
+
+
+        [Test]
         public void CommandDeclaration_ValidDeclaration_ShouldAddDataMemberAttributes()
         {
             var source = CompileToSource(CompileImportEmployeeCommand());
@@ -209,15 +249,15 @@ namespace Test.Diesel.CodeGeneration
         }
 
 
-        private AbstractSyntaxTree CreateAbstractSyntaxTreeWith(TypeDeclaration typeDeclaration)
+        private AbstractSyntaxTree CreateAbstractSyntaxTreeWith(params TypeDeclaration[] typeDeclaration)
         {
             return CreateAbstractSyntaxTreeWith(null, typeDeclaration);
         }
 
-        private AbstractSyntaxTree CreateAbstractSyntaxTreeWith(ConventionsDeclaration conventions, TypeDeclaration typeDeclaration)
+        private AbstractSyntaxTree CreateAbstractSyntaxTreeWith(ConventionsDeclaration conventions, params TypeDeclaration[] typeDeclarations)
         {
             var ns = new NamespaceName(typeof(CodeDomGeneratorTest).Namespace + ".Generated");
-            return new AbstractSyntaxTree(conventions, new[] { new Namespace(ns, new[] { typeDeclaration }) });
+            return new AbstractSyntaxTree(conventions, new[] { new Namespace(ns, typeDeclarations) });
         }
 
 

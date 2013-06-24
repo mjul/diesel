@@ -126,13 +126,26 @@ namespace Diesel.CodeGeneration
             return Enumerable.Zip(
                 declarations,
                 Enumerable.Range(1, declarations.Length),
-                (p, dataMemberOrder) => new ReadOnlyProperty(p.Name, SystemTypeFor(p.Type),
-                                               new BackingField(BackingFieldName(p.Name), SystemTypeFor(p.Type),
-                                                                isDataContract
-                                                                    ? new[] {CreateDataMemberAttribute(dataMemberOrder, p.Name)}
-                                                                    : noAttributes),
-                                               noAttributes
-                              ));
+                (p, dataMemberOrder) =>
+                    {
+                        var memberType = MemberTypeFor(p.Type);
+                        return new ReadOnlyProperty(p.Name, memberType,
+                                                    new BackingField(BackingFieldName(p.Name), memberType,
+                                                                     isDataContract
+                                                                         ? new[]
+                                                                             {
+                                                                                 CreateDataMemberAttribute(
+                                                                                     dataMemberOrder,
+                                                                                     p.Name)
+                                                                             }
+                                                                         : noAttributes),
+                                                    noAttributes);
+                    });
+        }
+
+        private static MemberType MemberTypeFor(TypeNode type)
+        {
+            return MemberTypeMapper.MemberTypeFor(type);
         }
 
 
@@ -146,12 +159,16 @@ namespace Diesel.CodeGeneration
             foreach (var property in properties)
             {
                 var parameterName = CamelCase(property.Name);
-                constructor.Parameters.Add(new CodeParameterDeclarationExpression(property.Type, parameterName));
+                constructor.Parameters.Add(CreateParameterDeclaration(property.Type, parameterName));
                 constructor.Statements.Add(CreateFieldAssignment(property.BackingField.Name, parameterName));
             }
             return new CodeTypeMember[] {constructor};
         }
 
+        private static CodeParameterDeclarationExpression CreateParameterDeclaration(MemberType type, string name)
+        {
+            return new CodeParameterDeclarationExpression(type.FullName, name);
+        }
 
         private static CodeAssignStatement CreateFieldAssignment(string fieldName, string variableWithValue)
         {
@@ -288,7 +305,7 @@ namespace Diesel.CodeGeneration
             // Hash code just needs to be the same if the objects are Equal, 
             // not different if they are not Equal
             var hashCodeExpressions = properties
-                .Where(p => SystemTypeFor(p.Type).IsValueType)
+                .Where(p => MemberTypeFor(p.Type).IsValueType)
                 .Select(p =>
                     new CodeMethodInvokeExpression(
                         new CodePropertyReferenceExpression(
@@ -308,7 +325,7 @@ namespace Diesel.CodeGeneration
 
         private static Type SystemTypeFor(TypeNode type)
         {
-            return new SystemTypeMapper().SystemTypeFor(type);
+            return SystemTypeMapper.SystemTypeFor(type);
         }
 
 
@@ -334,7 +351,7 @@ namespace Diesel.CodeGeneration
             var propertyField = new CodeMemberProperty()
             {
                 Name = property.Name,
-                Type = new CodeTypeReference(property.Type),
+                Type = CreateCodeTypeReference(property.Type),
                 Attributes = MemberAttributes.Public | MemberAttributes.Final,
                 CustomAttributes = new CodeAttributeDeclarationCollection(property.Attributes.ToArray()),
                 GetStatements = 
@@ -347,9 +364,14 @@ namespace Diesel.CodeGeneration
             return new CodeTypeMember[] { backingField, propertyField };
         }
 
+        private static CodeTypeReference CreateCodeTypeReference(MemberType type)
+        {
+            return new CodeTypeReference(type.FullName);
+        }
+
         private static CodeTypeMember CreateField(BackingField field)
         {
-            return new CodeMemberField(field.Type, field.Name)
+            return new CodeMemberField(CreateCodeTypeReference(field.Type), field.Name)
                 {
                     CustomAttributes = new CodeAttributeDeclarationCollection(field.Attributes.ToArray())
                 };
@@ -360,7 +382,7 @@ namespace Diesel.CodeGeneration
             return propertyDeclarations.SelectMany(CreateReadOnlyProperty).ToArray();
         }
 
-        private static CodeMemberMethod[] CreateSetMethodForProperty(string name, Type valueType)
+        private static CodeMemberMethod[] CreateSetMethodForProperty(string name, MemberType type)
         {
             var parameterName = CamelCase(name);
             return new[] { 
@@ -370,7 +392,7 @@ namespace Diesel.CodeGeneration
                         Name = PropertySetMethodName(name),
                         Parameters =
                             {
-                                new CodeParameterDeclarationExpression(valueType, parameterName)
+                                CreateParameterDeclaration(type, parameterName)
                             },
                         Statements =
                             {
