@@ -50,6 +50,7 @@
     <Compile Include="CodeGeneration\EnumGenerator.cs" />
     <Compile Include="CodeGeneration\EqualityMethodsGenerator.cs" />
     <Compile Include="CodeGeneration\ExpressionBuilder.cs" />
+    <Compile Include="CodeGeneration\MemberTypeMapper.cs" />
     <Compile Include="CodeGeneration\ReadOnlyProperty.cs" />
     <Compile Include="CodeGeneration\SystemTypeMapper.cs" />
     <Compile Include="CodeGeneration\ValueTypeGenerator.cs" />

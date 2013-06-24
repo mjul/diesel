@@ -55,6 +55,7 @@
     <Compile Include="CodeGeneration\ConventionsDeclarationTest.cs" />
     <Compile Include="CodeGeneration\DomainEventConventionsDeclarationTest.cs" />
     <Compile Include="CodeGeneration\EqualityMethodsGeneratorTest.cs" />
+    <Compile Include="CodeGeneration\MemberTypeMapper.cs" />
     <Compile Include="CodeGeneration\SystemTypeMapperTest.cs" />
     <Compile Include="DieselCompilerIntegrationTest.cs" />
     <Compile Include="GeneratedCommandTest.cs" />

@@ -13,9 +13,9 @@ namespace Diesel.CodeGeneration
             return visitor.Result;
         }
 
-        public static bool IsSystemType(TypeNameTypeNode typeNameTypeNode)
+        public static bool IsSystemType(TypeNode node)
         {
-            return Visit(typeNameTypeNode).FoundSystemType;
+            return Visit(node).FoundSystemType;
         }
 
         private static SystemTypeMapperVisitor Visit(TypeNode node)
