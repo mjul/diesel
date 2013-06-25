@@ -257,10 +257,8 @@ namespace Test.Diesel.CodeGeneration
             var actual = CodeDomGenerator.Compile(model);
             var source = CompileToSource(actual);
 
-            Assert.That(source, Is.StringMatching(@"EmployeeName\s+Name"));
+            Assert.That(source, Is.StringMatching(@"EmployeeName\[\]\s+Employees"));
         }
-
-
 
 
         [Test]

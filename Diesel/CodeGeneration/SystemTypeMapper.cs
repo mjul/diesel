@@ -40,14 +40,8 @@ namespace Diesel.CodeGeneration
 
             public void Visit(ArrayType typeNode)
             {
-                Type underlying = SystemTypeFor(typeNode.Type);
-                var rankSpecifiers = (from rank in typeNode.RankSpecifiers.Ranks.Reverse()
-                                      from rankSpec in String.Format("[{0}]",
-                                                                     String.Join("", Enumerable.Repeat(',', rank.Dimensions - 1)))
-                                      select rankSpec);
-                Result = Type.GetType(String.Format("{0}{1}",
-                                                    underlying.FullName,
-                                                    String.Concat(rankSpecifiers)));
+                Type elementType = SystemTypeFor(typeNode.Type);
+                Result = Type.GetType(TypeNameMapper.TypeNameForArray(elementType.FullName, typeNode.RankSpecifiers));
             }
 
             public void Visit(SimpleType typeNode)

@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeGeneration\ApplicationServiceGenerator.cs" />
+    <Compile Include="CodeGeneration\TypeNameMapper.cs" />
     <Compile Include="CodeGeneration\CommandGenerator.cs" />
     <Compile Include="CodeGeneration\DomainEventGenerator.cs" />
     <Compile Include="CodeGeneration\DtoGenerator.cs" />

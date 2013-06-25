@@ -1,4 +1,5 @@
-﻿using Diesel.Parsing.CSharp;
+﻿using System;
+using Diesel.Parsing.CSharp;
 
 namespace Diesel.CodeGeneration
 {
@@ -6,46 +7,66 @@ namespace Diesel.CodeGeneration
     {
         public static MemberType MemberTypeFor(TypeNode type)
         {
-            if (SystemTypeMapper.IsSystemType(type))
-            {
-                return MemberType.CreateForSystemType(SystemTypeMapper.SystemTypeFor(type));
-            }
-            var visitor = new MemberTypeMapperForNonSystemType();
+            var visitor = new MemberTypeMapperTypeNodeVisitor();
             type.Accept(visitor);
-            // TODO: fix this
-            bool isValueType = false;
-            return MemberType.CreateForTypeName(visitor.Result, isValueType);
+            return visitor.MemberType;
         }
 
-        private class MemberTypeMapperForNonSystemType : ITypeNodeVisitor
+        private class MemberTypeMapperTypeNodeVisitor : ITypeNodeVisitor
         {
-            public TypeName Result { get; private set; }
+            public MemberType MemberType { get; private set; }
 
             public void Visit(TypeNameTypeNode typeNameTypeNode)
             {
-                Result = typeNameTypeNode.TypeName;
+                if (SystemTypeMapper.IsSystemType(typeNameTypeNode))
+                {
+                    ReturnSystemMemberType(typeNameTypeNode);
+                }
+                else
+                {
+                    ReturnNamedMember(typeNameTypeNode);
+                }
+            }
+
+            private void ReturnNamedMember(TypeNameTypeNode typeNameTypeNode)
+            {
+                // TODO : look up the actual value type info 
+                var isValueType = false;
+                MemberType = MemberType.CreateForTypeName(typeNameTypeNode.TypeName, isValueType);
+            }
+
+            private void ReturnSystemMemberType(TypeNode node)
+            {
+                MemberType = MemberType.CreateForSystemType(SystemTypeMapper.SystemTypeFor(node));
             }
 
             public void Visit(StringReferenceType stringReferenceType)
             {
-                throw new System.NotImplementedException();
+                ReturnSystemMemberType(stringReferenceType);
             }
 
             public void Visit(ArrayType arrayType)
             {
-                throw new System.NotImplementedException();
+                var elementMemberType = MemberTypeFor(arrayType.Type);
+                MemberType = MemberType.CreateForArray(elementMemberType, arrayType.RankSpecifiers);
             }
 
             public void Visit(SimpleType simpleType)
             {
-                throw new System.NotImplementedException();
+                ReturnSystemMemberType(simpleType);
             }
 
             public void Visit(NullableType nullableType)
             {
-                throw new System.NotImplementedException();
+                if (SystemTypeMapper.IsSystemType(nullableType.Underlying))
+                {
+                    ReturnSystemMemberType(nullableType);
+                }
+                else
+                {
+                    throw new NotImplementedException("Nullable Type members not implemented for non-system types.");
+                }
             }
-
         }
     }
 }

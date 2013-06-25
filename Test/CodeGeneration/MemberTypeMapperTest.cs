@@ -23,6 +23,16 @@ namespace Test.Diesel.CodeGeneration
             Assert.That(actual.FullName, Is.EqualTo("Foo.Bar.SomeType"));
         }
 
+
+        [Test]
+        public void MemberType_ForArrayOfNamedType_ShouldBeArrayOfNamedTypeMemberType()
+        {
+            var elementType = new TypeNameTypeNode(new TypeName("Foo.Bar.SomeType"));
+            var actual = MemberTypeMapper.MemberTypeFor(
+                new ArrayType(elementType, new RankSpecifiers(new[] {new RankSpecifier(1)})));
+            Assert.That(actual.FullName, Is.EqualTo("Foo.Bar.SomeType[]"));
+        }
+
         [Test]
         public void MemberType_ForNamedType_ShouldSetIsValueType()
         {

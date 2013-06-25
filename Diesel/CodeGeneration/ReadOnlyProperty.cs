@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.Linq;
 using Diesel.Parsing.CSharp;
 
 namespace Diesel.CodeGeneration
@@ -57,6 +58,12 @@ namespace Diesel.CodeGeneration
         public static MemberType CreateForTypeName(TypeName name, bool isValueType)
         {
             return new MemberType(name.Name, isValueType);
+        }
+
+        public static MemberType CreateForArray(MemberType elementType, RankSpecifiers rankSpecifiers)
+        {
+            var fullName = TypeNameMapper.TypeNameForArray(elementType.FullName, rankSpecifiers);
+            return new MemberType(fullName, false);
         }
     }
 }
