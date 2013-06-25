@@ -143,6 +143,54 @@ namespace Test.Diesel.CodeGeneration
             Assert.That(source, Is.StringContaining(@"class EmployeeImported"));
         }
 
+
+        [Test]
+        public void DomainEventDeclaration_WithNestedDto_Enum_ShouldCompile()
+        {
+            var enumDeclaration = new EnumDeclaration("Role", new[] {"Tester", "Developer"});
+            var eventDeclaration = new DomainEventDeclaration(
+                "EmployeeImported",
+                new[]
+                    {
+                        new PropertyDeclaration(
+                            "EmployeeNumber", new SimpleType(typeof (int))),
+                        new PropertyDeclaration(
+                            "EmployeeRole", new TypeNameTypeNode(new TypeName("Role")))
+                    });
+            var model = CreateAbstractSyntaxTreeWith(enumDeclaration, eventDeclaration);
+            var actual = CodeDomGenerator.Compile(model);
+            var source = CompileToSource(actual);
+
+            Assert.That(source, Is.StringMatching(@"Role\s+EmployeeRole"));
+        }
+
+        [Test]
+        public void DomainEventDeclaration_WithNestedDto_Dto_ShouldCompile()
+        {
+            var dtoDeclaration = new DtoDeclaration(
+                "EmployeeName",
+                new[]
+                    {
+                        new PropertyDeclaration("First", new StringReferenceType()),
+                        new PropertyDeclaration("Last", new StringReferenceType()),
+                    });
+            var eventDeclaration = new DomainEventDeclaration(
+                "EmployeeImported",
+                new[]
+                    {
+                        new PropertyDeclaration(
+                            "EmployeeNumber", new SimpleType(typeof (int))),
+                        new PropertyDeclaration(
+                            "Name", new TypeNameTypeNode(new TypeName("EmployeeName")))
+                    });
+            var model = CreateAbstractSyntaxTreeWith(dtoDeclaration, eventDeclaration);
+            var actual = CodeDomGenerator.Compile(model);
+            var source = CompileToSource(actual);
+
+            Assert.That(source, Is.StringMatching(@"EmployeeName\s+Name"));
+        }
+
+
         [Test]
         public void DomainEventDeclaration_ValidDeclaration_ShouldProduceSealedClass()
         {
@@ -191,6 +239,39 @@ namespace Test.Diesel.CodeGeneration
         }
 
         [Test]
+        public void DtoDeclaration_WithNestedDto_Dto_ShouldCompile()
+        {
+            var nameDto = CreateNameDtoDeclaration();
+            var employeeInfoDto = new DtoDeclaration(
+                "EmployeeInfo",
+                new[]
+                    {
+                        new PropertyDeclaration("EmployeeName", new TypeNameTypeNode(new TypeName("Name")))
+                    }
+                );
+            var source = CompileToSource(CodeDomGenerator
+                                             .Compile(CreateAbstractSyntaxTreeWith(nameDto, employeeInfoDto)));
+            Assert.That(source, Is.StringMatching(@"public\s+Name\s+EmployeeName"));
+        }
+
+        [Test]
+        public void DtoDeclaration_WithNestedDto_Enum_ShouldCompile()
+        {
+            var enumDeclaration = new EnumDeclaration("Role", new[] { "Tester", "Developer" });
+            var employeeInfoDto = new DtoDeclaration(
+                "EmployeeInfo",
+                new[]
+                    {
+                        new PropertyDeclaration("EmployeeRole", new TypeNameTypeNode(new TypeName("Role")))
+                    }
+                );
+            var source = CompileToSource(CodeDomGenerator
+                                             .Compile(CreateAbstractSyntaxTreeWith(enumDeclaration, employeeInfoDto)));
+            Assert.That(source, Is.StringMatching(@"public\s+Role\s+EmployeeRole"));
+        }
+
+
+        [Test]
         public void DtoDeclaration_ValidDeclaration_ShouldAddDataMemberAttributes()
         {
             var source = CompileToSource(CompileNameDto());
@@ -208,14 +289,19 @@ namespace Test.Diesel.CodeGeneration
 
         private CodeCompileUnit CompileNameDto()
         {
-            var declaration = new DtoDeclaration("Name",
-                                                 new[]
-                                                     {
-                                                         new PropertyDeclaration("First", new StringReferenceType()),
-                                                         new PropertyDeclaration("Last", new StringReferenceType())
-                                                     });
+            var declaration = CreateNameDtoDeclaration();
             var model = CreateAbstractSyntaxTreeWith(declaration);
             return CodeDomGenerator.Compile(model);
+        }
+
+        private static DtoDeclaration CreateNameDtoDeclaration()
+        {
+            return new DtoDeclaration("Name",
+                                      new[]
+                                          {
+                                              new PropertyDeclaration("First", new StringReferenceType()),
+                                              new PropertyDeclaration("Last", new StringReferenceType())
+                                          });
         }
 
 
