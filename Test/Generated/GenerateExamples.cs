@@ -302,6 +302,65 @@ namespace Test.Diesel.Generated {
         }
     }
     
+    [System.SerializableAttribute()]
+    public partial struct EmployeeInfo : System.IEquatable<EmployeeInfo> {
+        
+        private EmployeeNumber _number;
+        
+        private EmployeeName _name;
+        
+        private EmailAddress _email;
+        
+        public EmployeeInfo(EmployeeNumber number, EmployeeName name, EmailAddress email) {
+            this._number = number;
+            this._name = name;
+            this._email = email;
+        }
+        
+        public EmployeeNumber Number {
+            get {
+                return this._number;
+            }
+        }
+        
+        public EmployeeName Name {
+            get {
+                return this._name;
+            }
+        }
+        
+        public EmailAddress Email {
+            get {
+                return this._email;
+            }
+        }
+        
+        public static bool operator ==(EmployeeInfo left, EmployeeInfo right) {
+            return left.Equals(right);
+        }
+        
+        public static bool operator !=(EmployeeInfo left, EmployeeInfo right) {
+            return (false == left.Equals(right));
+        }
+        
+        public override int GetHashCode() {
+            return 0;
+        }
+        
+        public bool Equals(EmployeeInfo other) {
+            return (((true && object.Equals(this.Number, other.Number)) 
+                        && object.Equals(this.Name, other.Name)) 
+                        && object.Equals(this.Email, other.Email));
+        }
+        
+        public override bool Equals(object obj) {
+            if (object.ReferenceEquals(null, obj)) {
+                return false;
+            }
+            return (typeof(EmployeeInfo).IsAssignableFrom(obj.GetType()) && this.Equals(((EmployeeInfo)(obj))));
+        }
+    }
+    
     [System.Runtime.Serialization.DataContractAttribute(Name="EmployeeImported")]
     [System.SerializableAttribute()]
     public sealed partial class EmployeeImported : System.IEquatable<EmployeeImported>, Test.Diesel.IDomainEvent {

@@ -7,6 +7,8 @@
 	(defvaluetype EmployeeMetadata (string Source, int? SourceId))
 	(defvaluetype EmployeeRatings (int EmployeeNumber, int[] Ratings))
 	(defvaluetype EmployeeRoles (int EmployeeNumber, string[] Roles))
+	;; Value types can contain other value types:
+	(defvaluetype EmployeeInfo (EmployeeNumber Number, EmployeeName Name, EmailAddress Email))
 	(defdomainevent EmployeeImported (Guid Id, int EmployeeNumber, string FirstName, string LastName, int? SourceId))
 	(defdto Name (string First, string Last))
 	(defenum Gender [Female Male])
