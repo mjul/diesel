@@ -1,3 +1,6 @@
+# Version 1.10
+* Added support for properties that are uni-dimensional arrays of named types (e.g. `EmployeeNumber[]`).
+
 # Version 1.9
 * Support for single-line comments added (semicolon to end-of-line)
 * `defenum` added to generate enumeration DTOs (Data Transfer Objects).
