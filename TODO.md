@@ -1,5 +1,15 @@
 # Feature Requests
 
+## Get correct IsValueType for named types 
+Named types declared in the DSL should have the correct IsValueType
+when generating members (optimization - currently they are assumed to 
+be non-value types for equality).
+
+## Reference out-of-namespace known types without qualification
+The DSL should know all declared types allowed, and be able
+to reference them without writing the fully qualified type name.
+
+
 ## Declare Bounded Contexts
 Commands and Domain Events should then have DataContract namespaces
 corresponding to the bounded context's name.
