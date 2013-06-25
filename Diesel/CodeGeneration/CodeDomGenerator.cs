@@ -323,12 +323,6 @@ namespace Diesel.CodeGeneration
             return CreateGetHashCode(hashCodeCalculationExpression);
         }
 
-        private static Type SystemTypeFor(TypeNode type)
-        {
-            return SystemTypeMapper.SystemTypeFor(type);
-        }
-
-
         private static CodeTypeMember[] CreateGetHashCode(CodeExpression hashCodeCalculationExpression)
         {
             var getHashCode = new CodeMemberMethod()

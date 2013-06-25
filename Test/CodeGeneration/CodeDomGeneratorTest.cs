@@ -94,7 +94,7 @@ namespace Test.Diesel.CodeGeneration
                                                 new[]
                                                                 {
                                                                     new PropertyDeclaration("EmployeeNumber", new SimpleType(typeof (int))),
-                                                                    new PropertyDeclaration("Salary", new TypeNameTypeNode(new TypeName("AmountDto"))),
+                                                                    new PropertyDeclaration("Salary", new TypeNameTypeNode(new TypeName("AmountDto")))
                                                                 });
             var model = CreateAbstractSyntaxTreeWith(dtoDeclaration, commandDeclaration);
             var actual = CodeDomGenerator.Compile(model);
@@ -333,7 +333,7 @@ namespace Test.Diesel.CodeGeneration
             var ast = new AbstractSyntaxTree(null, new[]
                 {
                     new Namespace(new NamespaceName("Employees.Commands"), new[] {CreateImportEmployeeCommandDeclaration()}),
-                    new Namespace(new NamespaceName("Employees.Model"), new[] {CreateEmployeeNumberValueTypeDeclaration()}),
+                    new Namespace(new NamespaceName("Employees.Model"), new[] {CreateEmployeeNumberValueTypeDeclaration()})
                 });
 
             var dom = CodeDomGenerator.Compile(ast);
