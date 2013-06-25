@@ -26,6 +26,47 @@ namespace Test.Diesel.CodeGeneration
             Console.WriteLine(source);
         }
 
+
+        [Test]
+        public void ValueType_WithNestedValueTypes_ShouldCompile()
+        {
+            var employeeNumber = new ValueTypeDeclaration(
+                "EmployeeNumber",
+                new[]
+                    {
+                        new PropertyDeclaration("Value",
+                                                new SimpleType(typeof (int)))
+                    });
+            var employeeName = new ValueTypeDeclaration(
+                "EmployeeName",
+                new[]
+                    {
+                        new PropertyDeclaration("First",
+                                                new StringReferenceType()),
+                        new PropertyDeclaration("Last",
+                                                new StringReferenceType()),
+                    }
+                );
+            var employeeInfo = new ValueTypeDeclaration(
+                "EmployeeInfo",
+                new[]
+                    {
+                        new PropertyDeclaration("Number",
+                                                new TypeNameTypeNode(new TypeName("EmployeeNumber"))),
+                        new PropertyDeclaration("Name",
+                                                new TypeNameTypeNode(new TypeName("EmployeeName"))),
+                    }
+                );
+            var model = CreateAbstractSyntaxTreeWith(employeeNumber, employeeName, employeeInfo);
+            var actual = CodeDomGenerator.Compile(model);
+            var source = CompileToSource(actual);
+            Assert.That(source, Is.StringMatching(@"public\s+EmployeeNumber\s+Number"));
+            Assert.That(source, Is.StringMatching(@"public\s+EmployeeName\s+Name"));
+            Console.WriteLine(source);
+        }
+
+
+
         [Test]
         public void ValueType_ValidDeclarationMultipleProperties_ShouldCompile()
         {
