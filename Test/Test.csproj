@@ -62,6 +62,7 @@
     <Compile Include="GeneratedCommandNestedTypesTest.cs" />
     <Compile Include="GeneratedCommandTest.cs" />
     <Compile Include="GeneratedDomainEventTest.cs" />
+    <Compile Include="GeneratedDomainEventWithArrayTest.cs" />
     <Compile Include="GeneratedDtoTest.cs" />
     <Compile Include="GeneratedEnumTest.cs" />
     <Compile Include="GeneratedValueTypeMultiplePropertiesTest.cs" />

@@ -776,4 +776,67 @@ namespace Test.Diesel.Generated {
             return (typeof(ImportEmployeeNestedTypes).IsAssignableFrom(obj.GetType()) && this.Equals(((ImportEmployeeNestedTypes)(obj))));
         }
     }
+    
+    [System.Runtime.Serialization.DataContractAttribute(Name="DepartmentImported")]
+    [System.SerializableAttribute()]
+    public sealed partial class DepartmentImported : System.IEquatable<DepartmentImported>, Test.Diesel.IDomainEvent {
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Name="Id", Order=1)]
+        private System.Guid _id;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Name="Employees", Order=2)]
+        private Name[] _employees;
+        
+        public DepartmentImported(System.Guid id, Name[] employees) {
+            this._id = id;
+            this._employees = employees;
+        }
+        
+        public System.Guid Id {
+            get {
+                return this._id;
+            }
+        }
+        
+        public Name[] Employees {
+            get {
+                return this._employees;
+            }
+        }
+        
+        public static bool operator ==(DepartmentImported left, DepartmentImported right) {
+            if (object.ReferenceEquals(null, left)) {
+                return object.ReferenceEquals(null, right);
+            }
+            return left.Equals(right);
+        }
+        
+        public static bool operator !=(DepartmentImported left, DepartmentImported right) {
+            if (object.ReferenceEquals(null, left)) {
+                return (false == object.ReferenceEquals(null, right));
+            }
+            return (false == left.Equals(right));
+        }
+        
+        public override int GetHashCode() {
+            return (0 + this.Id.GetHashCode());
+        }
+        
+        public bool Equals(DepartmentImported other) {
+            return (((false == object.ReferenceEquals(null, other)) 
+                        && object.Equals(this.Id, other.Id)) 
+                        && ((object.ReferenceEquals(null, this.Employees) && object.ReferenceEquals(null, other.Employees)) 
+                        || (((false == object.ReferenceEquals(null, this.Employees)) 
+                        && (false == object.ReferenceEquals(null, other.Employees))) 
+                        && ((this.Employees.Length == other.Employees.Length) 
+                        && System.Linq.Enumerable.All(System.Linq.Enumerable.Zip(this.Employees, other.Employees, (a, b) => Object.Equals(a,b)), areEqual => areEqual)))));
+        }
+        
+        public override bool Equals(object obj) {
+            if (object.ReferenceEquals(null, obj)) {
+                return false;
+            }
+            return (typeof(DepartmentImported).IsAssignableFrom(obj.GetType()) && this.Equals(((DepartmentImported)(obj))));
+        }
+    }
 }
