@@ -231,6 +231,37 @@ namespace Test.Diesel.CodeGeneration
             Assert.That(source, Is.StringMatching(@"EmployeeName\s+Name"));
         }
 
+        [Test]
+        public void DomainEventDeclaration_WithNestedDto_DtoArray_ShouldCompile()
+        {
+            var dtoDeclaration = new DtoDeclaration(
+                "EmployeeName",
+                new[]
+                    {
+                        new PropertyDeclaration("First", new StringReferenceType()),
+                        new PropertyDeclaration("Last", new StringReferenceType()),
+                    });
+            var eventDeclaration = new DomainEventDeclaration(
+                "DepartmentImported",
+                new[]
+                    {
+                        new PropertyDeclaration(
+                            "DepartmentNumber", new SimpleType(typeof (int))),
+                        new PropertyDeclaration(
+                            "Employees", 
+                            new ArrayType(new TypeNameTypeNode(new TypeName("EmployeeName")),
+                                new RankSpecifiers(new [] {new RankSpecifier(1)}))
+                            )
+                    });
+            var model = CreateAbstractSyntaxTreeWith(dtoDeclaration, eventDeclaration);
+            var actual = CodeDomGenerator.Compile(model);
+            var source = CompileToSource(actual);
+
+            Assert.That(source, Is.StringMatching(@"EmployeeName\s+Name"));
+        }
+
+
+
 
         [Test]
         public void DomainEventDeclaration_ValidDeclaration_ShouldProduceSealedClass()
