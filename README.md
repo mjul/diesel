@@ -22,7 +22,7 @@ Create a model in the Diesel DSL language:
         (defdto Name (string FirstName, string LastName))
         (defapplicationService ImportService
             (defcommand ImportEmployee (int EmployeeNumber, Name Name))
-        (defdomainevent EmployeeImported (Guid Id, int EmployeeNumber, string FirstName, string LastName)))
+        (defdomainevent EmployeeImported (Guid Id, int EmployeeNumber, Name Name)))
 ```
 
 Use the Visual Studio T4 template to automatically generate the code (see below) or compile it the model source 
