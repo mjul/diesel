@@ -1,26 +1,33 @@
 ﻿using System;
 using System.CodeDom;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using Diesel.Parsing;
 using Diesel.Parsing.CSharp;
 
 namespace Diesel.CodeGeneration
 {
-    public class EqualityMethodsGenerator
+    /// <summary>
+    /// Functions to generate equality methods.
+    /// </summary>
+    public static class EqualityMethodsGenerator
     {
         /// <summary>
         /// Produce an expression that compares two properties by value.
         /// </summary>
+        [Pure]
         public static CodeExpression ComparePropertyValueEqualityExpression(PropertyDeclaration property, string otherVariableName)
         {
             return ComparePropertyValueEqualityExpression((dynamic)property.Type, property.Name, otherVariableName);
         }
 
+        [Pure]
         private static CodeBinaryOperatorExpression ComparePropertyValueEqualityExpression(SimpleType propertyType, String propertyName, String otherVariableName)
         {
             return CompareValueEquality(propertyName, otherVariableName);
         }
 
+        [Pure]
         private static CodeBinaryOperatorExpression ComparePropertyValueEqualityExpression(StringReferenceType propertyType, String propertyName, String otherVariableName)
         {
             return CompareValueEquality(propertyName, otherVariableName);
@@ -29,6 +36,7 @@ namespace Diesel.CodeGeneration
         /// <summary>
         /// this.PropertyName == other.PropertyName
         /// </summary>
+        [Pure]
         private static CodeBinaryOperatorExpression CompareValueEquality(string propertyName, string otherVariableName)
         {
             return new CodeBinaryOperatorExpression(
@@ -40,12 +48,14 @@ namespace Diesel.CodeGeneration
         /// <summary>
         /// Object.Equals(a.Property, b.Property)
         /// </summary>
+        [Pure]
         private static CodeExpression CompareObjectEquality(string propertyName, string otherVariableName)
         {
             return ExpressionBuilder.ObjectEquals(ExpressionBuilder.ThisPropertyReference(propertyName),
                                                   OtherPropertyReference(propertyName, otherVariableName));
         }
 
+        [Pure]
         private static CodeBinaryOperatorExpression ComparePropertyValueEqualityExpression(NullableType propertyType, String propertyName, String otherVariableName)
         {
             return CompareValueEquality(propertyName, otherVariableName);
@@ -57,6 +67,7 @@ namespace Diesel.CodeGeneration
         /// || ((this.Property.Length == other.Property.Length) 
         ///      && Enumerable.Zip(a, b, (a, b) => Object.Equals(a, b)).All(areEqual => areEqual)));
         /// </summary>
+        [Pure]
         private static CodeBinaryOperatorExpression ComparePropertyValueEqualityExpression(ArrayType propertyType,
                                                                                            String propertyName,
                                                                                            String otherVariableName)
@@ -117,16 +128,19 @@ namespace Diesel.CodeGeneration
                                                      CodeBinaryOperatorType.BooleanAnd, zipPairwiseEquality)));
         }
 
+        [Pure]
         private static CodeExpression CompareToNull(CodePropertyReferenceExpression propertyReference)
         {
             return ExpressionBuilder.ObjectReferenceEqualsNull(propertyReference);
         }
 
+        [Pure]
         private static CodePropertyReferenceExpression OtherPropertyReference(string propertyName, string otherVariableName)
         {
             return ExpressionBuilder.VariablePropertyReference(otherVariableName, propertyName);
         }
 
+        [Pure]
         private static CodeExpression ComparePropertyValueEqualityExpression(TypeNameTypeNode propertyType, String propertyName, String otherVariableName)
         {
             return CompareObjectEquality(propertyName, otherVariableName);
