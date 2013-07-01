@@ -12,8 +12,8 @@ namespace Diesel.CodeGeneration
     {
         public static CodeTypeDeclaration CreateValueTypeDeclaration(ValueTypeDeclaration declaration)
         {
-            const bool isValueType = true;
-            var result = CreateTypeWithValueSemantics(new ValueObjectSpecification(isValueType, declaration.Name, declaration.Properties.ToArray(), false, isValueType));
+            var result = CreateTypeWithValueSemantics(
+                ValueObjectSpecification.CreateStruct(declaration.Name, declaration.Properties.ToArray(), false));
             if (declaration.Properties.Count() == 1)
             {
                 var displayTemplate = String.Format("{{{0}}}", declaration.Properties.Single().Name);

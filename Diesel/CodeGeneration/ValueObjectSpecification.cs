@@ -1,4 +1,5 @@
-﻿using Diesel.Parsing;
+﻿using System.Diagnostics.Contracts;
+using Diesel.Parsing;
 
 namespace Diesel.CodeGeneration
 {
@@ -10,7 +11,7 @@ namespace Diesel.CodeGeneration
         public bool IsDataContract { get; private set; }
         public bool IsSealed { get; private set; }
 
-        public ValueObjectSpecification(bool isValueType, string name, PropertyDeclaration[] properties, bool isDataContract, bool isSealed)
+        private ValueObjectSpecification(bool isValueType, string name, PropertyDeclaration[] properties, bool isDataContract, bool isSealed)
         {
             IsValueType = isValueType;
             Name = name;
@@ -18,5 +19,22 @@ namespace Diesel.CodeGeneration
             IsDataContract = isDataContract;
             IsSealed = isSealed;
         }
+
+        [Pure]
+        public static ValueObjectSpecification CreateStruct(
+            string name, PropertyDeclaration[] properties,
+            bool isDataContract)
+        {
+            return new ValueObjectSpecification(true, name, properties, isDataContract, true);
+        }
+
+        [Pure]
+        public static ValueObjectSpecification CreateClass(
+            string name, PropertyDeclaration[] properties, 
+            bool isDataContract, bool isSealed)
+        {
+            return new ValueObjectSpecification(false, name, properties, isDataContract, isSealed);
+        }
+
     }
 }

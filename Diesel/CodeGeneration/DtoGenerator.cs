@@ -8,8 +8,8 @@ namespace Diesel.CodeGeneration
     {
         public static CodeTypeDeclaration CreateCommandDeclaration(DtoDeclaration declaration)
         {
-            const bool isValueType = false;
-            return CreateTypeWithValueSemantics(new ValueObjectSpecification(isValueType, declaration.Name, declaration.Properties.ToArray(), true, true));
+            return CreateTypeWithValueSemantics(
+                ValueObjectSpecification.CreateClass(declaration.Name, declaration.Properties.ToArray(), true, true));
         } 
     }
 }
