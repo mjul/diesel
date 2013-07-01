@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using Diesel.Parsing.CSharp;
 
 namespace Diesel.CodeGeneration
@@ -15,15 +17,21 @@ namespace Diesel.CodeGeneration
         /// corresponding <see cref="MemberType"/>.
         /// </summary>
         [Pure]
-        public static MemberType MemberTypeFor(TypeNode type)
+        public static MemberType MemberTypeFor(TypeNode type, IEnumerable<KnownType> knownTypes)
         {
-            var visitor = new MemberTypeMapperTypeNodeVisitor();
+            var visitor = new MemberTypeMapperTypeNodeVisitor(knownTypes);
             type.Accept(visitor);
             return visitor.MemberType;
         }
 
         private class MemberTypeMapperTypeNodeVisitor : ITypeNodeVisitor
         {
+            private readonly List<KnownType> _knownTypes;
+            public MemberTypeMapperTypeNodeVisitor(IEnumerable<KnownType> knownTypes)
+            {
+                _knownTypes = knownTypes.ToList();
+            }
+
             public MemberType MemberType { get; private set; }
 
             public void Visit(TypeNameTypeNode typeNameTypeNode)
@@ -40,8 +48,9 @@ namespace Diesel.CodeGeneration
 
             private void ReturnNamedMember(TypeNameTypeNode typeNameTypeNode)
             {
-                // TODO : look up the actual value type info 
-                var isValueType = false;
+                var typeName = typeNameTypeNode.TypeName;
+                var knownType = _knownTypes.SingleOrDefault(x => x.FullName == typeName.Name);
+                var isValueType = knownType != null && knownType.IsValueType;
                 MemberType = MemberType.CreateForTypeName(typeNameTypeNode.TypeName, isValueType);
             }
 
@@ -57,7 +66,7 @@ namespace Diesel.CodeGeneration
 
             public void Visit(ArrayType arrayType)
             {
-                var elementMemberType = MemberTypeFor(arrayType.Type);
+                var elementMemberType = MemberTypeFor(arrayType.Type, _knownTypes);
                 MemberType = MemberType.CreateForArray(elementMemberType, arrayType.RankSpecifiers);
             }
 
@@ -77,6 +86,21 @@ namespace Diesel.CodeGeneration
                     throw new NotImplementedException("Nullable Type members not implemented for non-system types.");
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// Represents a known type in the model.
+    /// </summary>
+    public class KnownType
+    {
+        public string FullName { get; private set; }
+        public bool IsValueType { get; private set; }
+
+        public KnownType(string fullName, bool isValueType)
+        {
+            FullName = fullName;
+            IsValueType = isValueType;
         }
     }
 }

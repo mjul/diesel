@@ -144,7 +144,9 @@ namespace Diesel.CodeGeneration
 
         private static MemberType MemberTypeFor(TypeNode type)
         {
-            return MemberTypeMapper.MemberTypeFor(type);
+            // TODO:
+            var knownTypes = new List<KnownType>();
+            return MemberTypeMapper.MemberTypeFor(type, knownTypes);
         }
 
 
