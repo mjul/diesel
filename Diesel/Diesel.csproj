@@ -54,6 +54,7 @@
     <Compile Include="CodeGeneration\MemberTypeMapper.cs" />
     <Compile Include="CodeGeneration\ReadOnlyProperty.cs" />
     <Compile Include="CodeGeneration\SystemTypeMapper.cs" />
+    <Compile Include="CodeGeneration\ValueObjectSpecification.cs" />
     <Compile Include="CodeGeneration\ValueTypeGenerator.cs" />
     <Compile Include="Parsing\AbstractSyntaxTree.cs" />
     <Compile Include="Parsing\ApplicationServiceDeclaration.cs" />

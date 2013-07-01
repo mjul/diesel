@@ -86,37 +86,36 @@ namespace Diesel.CodeGeneration
         }
 
 
-        protected static CodeTypeDeclaration CreateTypeWithValueSemantics(bool isValueType, string name, 
-            PropertyDeclaration[] properties, bool isDataContract, bool isSealed)
+        protected static CodeTypeDeclaration CreateTypeWithValueSemantics(ValueObjectSpecification specification)
         {
-            var result = new CodeTypeDeclaration(name)
+            var result = new CodeTypeDeclaration(specification.Name)
                 {
-                    IsStruct = isValueType,
+                    IsStruct = specification.IsValueType,
                     IsPartial = true,
-                    IsClass = !isValueType,
+                    IsClass = !specification.IsValueType,
                     TypeAttributes = TypeAttributes.Public
                 };
 
-            if (isSealed)
+            if (specification.IsSealed)
             {
                 result.TypeAttributes |= TypeAttributes.Sealed;
             }
 
 
-            if (isDataContract)
+            if (specification.IsDataContract)
             {
-                result.CustomAttributes.Add(CreateDataContractAttribute(name));
+                result.CustomAttributes.Add(CreateDataContractAttribute(specification.Name));
             }
             result.CustomAttributes.Add(CreateAttribute(typeof (SerializableAttribute)));
 
-            var readOnlyProperties = ReadOnlyProperties(properties, isDataContract).ToList();
+            var readOnlyProperties = ReadOnlyProperties(specification.Properties, specification.IsDataContract).ToList();
 
-            result.BaseTypes.AddRange(CreateImplementsIEquatableOf(name));
+            result.BaseTypes.AddRange(CreateImplementsIEquatableOf(specification.Name));
             result.Members.AddRange(CreateConstructorAssigningBackingFieldsFor(readOnlyProperties));
             result.Members.AddRange(CreateReadOnlyProperties(readOnlyProperties));
-            result.Members.AddRange(CreateEqualityOperatorOverloading(name, isValueType));
-            result.Members.AddRange(CreateGetHashCode(properties));
-            result.Members.AddRange(CreateEqualsOverloadingUsingEqualityOperator(name, isValueType, properties));
+            result.Members.AddRange(CreateEqualityOperatorOverloading(specification.Name, specification.IsValueType));
+            result.Members.AddRange(CreateGetHashCode(specification.Properties));
+            result.Members.AddRange(CreateEqualsOverloadingUsingEqualityOperator(specification.Name, specification.IsValueType, specification.Properties));
             return result;
         }
 
