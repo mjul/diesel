@@ -1,11 +1,22 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using Diesel.Parsing.CSharp;
 
 namespace Diesel.CodeGeneration
 {
-    public class SystemTypeMapper 
+    /// <summary>
+    /// Responsible for mapping <see cref="TypeNode"/> instances to <see cref="System.Type"/> instances.
+    /// </summary>
+    [Pure]
+    public static class SystemTypeMapper 
     {
+        /// <summary>
+        /// Get the <see cref="System.Type"/> for a given <see cref="TypeNode"/>.
+        /// Throws an exception if no corresponding type exists. Use <see cref="SystemTypeMapper.IsSystemType"/>
+        /// check if the mapping will succeed.
+        /// </summary>
+        [Pure]
         public static System.Type SystemTypeFor(TypeNode node)
         {
             var visitor = Visit(node);
@@ -13,11 +24,17 @@ namespace Diesel.CodeGeneration
             return visitor.Result;
         }
 
+        /// <summary>
+        /// Predicate function to check if a <see cref="TypeNode"/> instance
+        /// represents a system type.
+        /// </summary>
+        [Pure]
         public static bool IsSystemType(TypeNode node)
         {
             return Visit(node).FoundSystemType;
         }
 
+        [Pure]
         private static SystemTypeMapperVisitor Visit(TypeNode node)
         {
             var visitor = new SystemTypeMapperVisitor();
