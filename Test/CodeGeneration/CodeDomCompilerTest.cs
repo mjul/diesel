@@ -11,7 +11,7 @@ using NUnit.Framework;
 namespace Test.Diesel.CodeGeneration
 {
     [TestFixture]
-    public class CodeDomGeneratorTest
+    public class CodeDomCompilerTest
     {
         [Test]
         public void ValueType_ValidDeclaration_ShouldCompile()
@@ -19,7 +19,7 @@ namespace Test.Diesel.CodeGeneration
             var model = CreateAbstractSyntaxTreeWith(
                 new ValueTypeDeclaration("EmployeeNumber",
                                          new[] {new PropertyDeclaration("Value", new SimpleType(typeof (int)))}));
-            var actual = CodeDomGenerator.Compile(model);
+            var actual = CodeDomCompiler.Compile(model);
             Assert.That(actual, Is.Not.Null);
             var source = CompileToSource(actual);
             Assert.That(source, Is.StringContaining("public partial struct EmployeeNumber"));
@@ -58,7 +58,7 @@ namespace Test.Diesel.CodeGeneration
                     }
                 );
             var model = CreateAbstractSyntaxTreeWith(employeeNumber, employeeName, employeeInfo);
-            var actual = CodeDomGenerator.Compile(model);
+            var actual = CodeDomCompiler.Compile(model);
             var source = CompileToSource(actual);
             Assert.That(source, Is.StringMatching(@"public\s+EmployeeNumber\s+Number"));
             Assert.That(source, Is.StringMatching(@"public\s+EmployeeName\s+Name"));
@@ -77,7 +77,7 @@ namespace Test.Diesel.CodeGeneration
                                                  new PropertyDeclaration("X", new SimpleType(typeof (int))),
                                                  new PropertyDeclaration("Y", new SimpleType(typeof (int)))
                                              }));
-            var actual = CodeDomGenerator.Compile(model);
+            var actual = CodeDomCompiler.Compile(model);
             Assert.That(actual, Is.Not.Null);
             var source = CompileToSource(actual);
             Assert.That(source, Is.StringContaining("struct Point"));
@@ -91,7 +91,7 @@ namespace Test.Diesel.CodeGeneration
             var model = CreateAbstractSyntaxTreeWith(
                 new ValueTypeDeclaration("EmployeeNumber",
                                          new[] { new PropertyDeclaration("Value", new SimpleType(typeof (int))) }));
-            var actual = CodeDomGenerator.Compile(model);
+            var actual = CodeDomCompiler.Compile(model);
             var source = CompileToSource(actual);
             Assert.That(source, Is.Not.StringContaining("DataContractAttribute"));
             Assert.That(source, Is.Not.StringContaining("DataMemberAttribute"));
@@ -118,7 +118,7 @@ namespace Test.Diesel.CodeGeneration
                                                                     new PropertyDeclaration("Role", new TypeNameTypeNode(new TypeName("Role"))),
                                                                 });
             var model = CreateAbstractSyntaxTreeWith(enumDeclaration, commandDeclaration);
-            var actual = CodeDomGenerator.Compile(model);
+            var actual = CodeDomCompiler.Compile(model);
 
             Assert.That(actual, Is.Not.Null);
             var source = CompileToSource(actual);
@@ -138,7 +138,7 @@ namespace Test.Diesel.CodeGeneration
                                                                     new PropertyDeclaration("Salary", new TypeNameTypeNode(new TypeName("AmountDto")))
                                                                 });
             var model = CreateAbstractSyntaxTreeWith(dtoDeclaration, commandDeclaration);
-            var actual = CodeDomGenerator.Compile(model);
+            var actual = CodeDomCompiler.Compile(model);
 
             Assert.That(actual, Is.Not.Null);
             var source = CompileToSource(actual);
@@ -174,7 +174,7 @@ namespace Test.Diesel.CodeGeneration
                                                                     new PropertyDeclaration("LastName", new StringReferenceType())
                                                                 });
             var model = CreateAbstractSyntaxTreeWith(commandDeclaration);
-            return CodeDomGenerator.Compile(model);
+            return CodeDomCompiler.Compile(model);
         }
 
         [Test]
@@ -199,7 +199,7 @@ namespace Test.Diesel.CodeGeneration
                             "EmployeeRole", new TypeNameTypeNode(new TypeName("Role")))
                     });
             var model = CreateAbstractSyntaxTreeWith(enumDeclaration, eventDeclaration);
-            var actual = CodeDomGenerator.Compile(model);
+            var actual = CodeDomCompiler.Compile(model);
             var source = CompileToSource(actual);
 
             Assert.That(source, Is.StringMatching(@"Role\s+EmployeeRole"));
@@ -225,7 +225,7 @@ namespace Test.Diesel.CodeGeneration
                             "Name", new TypeNameTypeNode(new TypeName("EmployeeName")))
                     });
             var model = CreateAbstractSyntaxTreeWith(dtoDeclaration, eventDeclaration);
-            var actual = CodeDomGenerator.Compile(model);
+            var actual = CodeDomCompiler.Compile(model);
             var source = CompileToSource(actual);
 
             Assert.That(source, Is.StringMatching(@"EmployeeName\s+Name"));
@@ -254,7 +254,7 @@ namespace Test.Diesel.CodeGeneration
                             )
                     });
             var model = CreateAbstractSyntaxTreeWith(dtoDeclaration, eventDeclaration);
-            var actual = CodeDomGenerator.Compile(model);
+            var actual = CodeDomCompiler.Compile(model);
             var source = CompileToSource(actual);
 
             Assert.That(source, Is.StringMatching(@"EmployeeName\[\]\s+Employees"));
@@ -275,7 +275,7 @@ namespace Test.Diesel.CodeGeneration
             var conventions = new ConventionsDeclaration(
                 new DomainEventConventions(new[] {new TypeName("Test.Diesel.IDomainEvent")}));
             var model = CreateAbstractSyntaxTreeWith(conventions, declaration);
-            var source = CompileToSource(CodeDomGenerator.Compile(model));
+            var source = CompileToSource(CodeDomCompiler.Compile(model));
             Assert.That(source, Is.StringMatching(@"class EmployeeImported :.* Test.Diesel.IDomainEvent \{"));
         }
 
@@ -283,7 +283,7 @@ namespace Test.Diesel.CodeGeneration
         {
             var declaration = CreateEmployeeImportedEventDeclaration();
             var model = CreateAbstractSyntaxTreeWith(declaration);
-            return CodeDomGenerator.Compile(model);
+            return CodeDomCompiler.Compile(model);
         }
 
         private static DomainEventDeclaration CreateEmployeeImportedEventDeclaration()
@@ -319,7 +319,7 @@ namespace Test.Diesel.CodeGeneration
                         new PropertyDeclaration("EmployeeName", new TypeNameTypeNode(new TypeName("Name")))
                     }
                 );
-            var source = CompileToSource(CodeDomGenerator
+            var source = CompileToSource(CodeDomCompiler
                                              .Compile(CreateAbstractSyntaxTreeWith(nameDto, employeeInfoDto)));
             Assert.That(source, Is.StringMatching(@"public\s+Name\s+EmployeeName"));
         }
@@ -335,7 +335,7 @@ namespace Test.Diesel.CodeGeneration
                         new PropertyDeclaration("EmployeeRole", new TypeNameTypeNode(new TypeName("Role")))
                     }
                 );
-            var source = CompileToSource(CodeDomGenerator
+            var source = CompileToSource(CodeDomCompiler
                                              .Compile(CreateAbstractSyntaxTreeWith(enumDeclaration, employeeInfoDto)));
             Assert.That(source, Is.StringMatching(@"public\s+Role\s+EmployeeRole"));
         }
@@ -361,7 +361,7 @@ namespace Test.Diesel.CodeGeneration
         {
             var declaration = CreateNameDtoDeclaration();
             var model = CreateAbstractSyntaxTreeWith(declaration);
-            return CodeDomGenerator.Compile(model);
+            return CodeDomCompiler.Compile(model);
         }
 
         private static DtoDeclaration CreateNameDtoDeclaration()
@@ -401,7 +401,7 @@ namespace Test.Diesel.CodeGeneration
         {
             var declaration = new EnumDeclaration("State", new[] {"On", "Off"});
             var model = CreateAbstractSyntaxTreeWith(declaration);
-            return CodeDomGenerator.Compile(model);
+            return CodeDomCompiler.Compile(model);
         }
 
 
@@ -412,7 +412,7 @@ namespace Test.Diesel.CodeGeneration
 
         private AbstractSyntaxTree CreateAbstractSyntaxTreeWith(ConventionsDeclaration conventions, params TypeDeclaration[] typeDeclarations)
         {
-            var ns = new NamespaceName(typeof(CodeDomGeneratorTest).Namespace + ".Generated");
+            var ns = new NamespaceName(typeof(CodeDomCompilerTest).Namespace + ".Generated");
             return new AbstractSyntaxTree(conventions, new[] { new Namespace(ns, typeDeclarations) });
         }
 
@@ -492,7 +492,7 @@ namespace Test.Diesel.CodeGeneration
                     new Namespace(new NamespaceName("Employees.Model"), new[] {CreateEmployeeNumberValueTypeDeclaration()})
                 });
 
-            var dom = CodeDomGenerator.Compile(ast);
+            var dom = CodeDomCompiler.Compile(ast);
             var source = CompileToSource(dom);
 
             var expectedSnippets = new[]
@@ -510,9 +510,9 @@ namespace Test.Diesel.CodeGeneration
         private static void AssertNamespaceCompiledCodeShouldContain(IEnumerable<TypeDeclaration> declarations, 
             params string[] expectedTypeDeclarations)
         {
-            var ns = new NamespaceName(typeof (CodeDomGeneratorTest).Namespace + ".Generated");
+            var ns = new NamespaceName(typeof(CodeDomCompilerTest).Namespace + ".Generated");
             var model = new AbstractSyntaxTree(null, new[] { new Namespace(ns, declarations) });
-            var actual = CodeDomGenerator.Compile(model);
+            var actual = CodeDomCompiler.Compile(model);
             Assert.That(actual, Is.Not.Null);
             
             var source = CompileToSource(actual);

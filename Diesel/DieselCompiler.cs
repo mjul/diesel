@@ -13,14 +13,17 @@ using Sprache;
 
 namespace Diesel
 {
+    /// <summary>
+    /// Responsible for compiling Diesel source code to C#.
+    /// </summary>
     public static class DieselCompiler
     {
-
         public static string Compile(string modelSourceCode)
         {
             var ast = Grammar.Everything.Parse(modelSourceCode);
             var transformed = ModelTransformations.Transform(ast);
-            return CompileToSource(CodeDomGenerator.Compile(transformed), GetCSharpProvider());
+            var codeDom = CodeDomCompiler.Compile(transformed);
+            return CompileToSource(codeDom, GetCSharpProvider());
         }
 
         public static string CompileToSource(CodeCompileUnit actual, CodeDomProvider codeDomProvider)
