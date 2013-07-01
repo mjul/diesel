@@ -1,10 +1,20 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using Diesel.Parsing.CSharp;
 
 namespace Diesel.CodeGeneration
 {
+    /// <summary>
+    /// Responsible for mapping AST <see cref="TypeNode"/> instances to <see cref="MemberType"/>.
+    /// </summary>
+    [Pure]
     public class MemberTypeMapper
     {
+        /// <summary>
+        /// Map a <see cref="TypeNode"/> instance to the
+        /// corresponding <see cref="MemberType"/>.
+        /// </summary>
+        [Pure]
         public static MemberType MemberTypeFor(TypeNode type)
         {
             var visitor = new MemberTypeMapperTypeNodeVisitor();
