@@ -457,7 +457,7 @@ namespace Diesel.CodeGeneration
                     new CodeConditionStatement(
                         ExpressionBuilder.ObjectReferenceEqualsNull(new CodeArgumentReferenceExpression("left")),
                         new CodeMethodReturnStatement(
-                            CreateUnaryNegation(
+                            ExpressionBuilder.Negate(
                                 ExpressionBuilder.ObjectReferenceEqualsNull(
                                     new CodeArgumentReferenceExpression("right"))))));
             }
@@ -474,18 +474,6 @@ namespace Diesel.CodeGeneration
                             new CodeExpression[] {new CodeArgumentReferenceExpression("right")}))));
             
             return new CodeTypeMember[] { equality, disequality };
-        }
-
-        // TODO: to expression builder
-        private static CodeExpression CreateUnaryNegation(CodeExpression predicateExpression)
-        {
-            return CreateBinaryValueEquality(new CodePrimitiveExpression(false), predicateExpression);
-        }
-
-        // TODO: to expression builder
-        private static CodeExpression CreateBinaryValueEquality(CodeExpression a, CodeExpression b)
-        {
-            return new CodeBinaryOperatorExpression(a, CodeBinaryOperatorType.ValueEquality, b);
         }
 
 

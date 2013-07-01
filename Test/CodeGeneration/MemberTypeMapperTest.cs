@@ -19,7 +19,8 @@ namespace Test.Diesel.CodeGeneration
         [Test]
         public void MemberType_ForNamedType_ShouldBeNamedTypeMemberType()
         {
-            var actual = MemberTypeMapper.MemberTypeFor(new TypeNameTypeNode(new TypeName("Foo.Bar.SomeType")));
+            var actual = MemberTypeMapper.MemberTypeFor(
+                new TypeNameTypeNode(new TypeName("Foo.Bar.SomeType")));
             Assert.That(actual.FullName, Is.EqualTo("Foo.Bar.SomeType"));
         }
 
@@ -34,10 +35,19 @@ namespace Test.Diesel.CodeGeneration
         }
 
         [Test]
-        public void MemberType_ForNamedType_ShouldSetIsValueType()
+        public void MemberType_ForNamedType_KnownValueType_ShouldSetIsValueType()
         {
-            Assert.Inconclusive();
+            var actual = MemberTypeMapper.MemberTypeFor(
+                new TypeNameTypeNode(new TypeName("Foo.SomeType")));
+            Assert.That(actual.IsValueType, Is.True);
         }
 
+        [Test]
+        public void MemberType_ForNamedType_UnknownNamedType_ShouldNotSetIsValueType()
+        {
+            var actual = MemberTypeMapper.MemberTypeFor(
+                new TypeNameTypeNode(new TypeName("Foo.SomeType")));
+            Assert.That(actual.IsValueType, Is.False);
+        }
     }
 }
