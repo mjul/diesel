@@ -14,14 +14,6 @@ namespace Test.Diesel
         // for the GetHashCode calculation.
         
         [Test]
-        public void Debug()
-        {
-            DieselCompiler.Compile("(namespace Foo " +
-                                   "  (defenum Gender [Female Male]) " +
-                                   "  (defdto Foo (int Number, Gender Gender)))");
-        }
-
-        [Test]
         public void GetHashCode_OtherValueOfValueTypeField_ShouldChangeHashCode()
         {
             var id = Guid.NewGuid();
