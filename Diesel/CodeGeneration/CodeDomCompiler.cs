@@ -5,6 +5,9 @@ using Diesel.Transformations;
 
 namespace Diesel.CodeGeneration
 {
+    /// <summary>
+    /// Responsible for compiling a <see cref="SemanticModel"/> instance to CodeDom.
+    /// </summary>
     public class CodeDomCompiler
     {
         private static ConventionsDeclaration DefaultConventions
@@ -12,6 +15,9 @@ namespace Diesel.CodeGeneration
             get { return new ConventionsDeclaration(new DomainEventConventions(new TypeName[] { })); }
         }
 
+        /// <summary>
+        /// Compile the model into a CodeDom <see cref="CodeCompileUnit"/>.
+        /// </summary>
         public static CodeCompileUnit Compile(SemanticModel model)
         {
             var unit = new CodeCompileUnit();
