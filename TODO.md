@@ -1,5 +1,9 @@
 # Feature Requests
 
+## Add DataContract Namespace to generated DTO types
+In order to completely control the serialization, allow the user to
+specify the DataContract namespace for generated types.
+
 ## Reference out-of-namespace known types without qualification
 The DSL should know all declared types allowed, and be able
 to reference them without writing the fully qualified type name.
