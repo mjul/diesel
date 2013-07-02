@@ -65,7 +65,7 @@
     <Compile Include="GeneratedDomainEventWithArrayTest.cs" />
     <Compile Include="GeneratedDtoTest.cs" />
     <Compile Include="GeneratedEnumTest.cs" />
-    <Compile Include="GeneratedTypeWithValueSemanticsTest.cs" />
+    <Compile Include="GeneratedGetHashCodeIntegrationTest.cs" />
     <Compile Include="GeneratedValueTypeMultiplePropertiesTest.cs" />
     <Compile Include="GeneratedValueTypeNestedValueTypesTest.cs" />
     <Compile Include="GeneratedValueTypeTest.cs" />
