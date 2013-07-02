@@ -16,6 +16,11 @@ namespace Diesel.Parsing
         {
             get { return Commands; }
         }
+
+        public override void Accept(ITypeDeclarationVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
     }
 
     public abstract class TypeDeclaration : ITypeDeclaration
@@ -26,5 +31,12 @@ namespace Diesel.Parsing
             Name = name;
         }
         public abstract IEnumerable<ITreeNode> Children { get; }
+        
+        public void Accept(IDieselExpressionVisitor visitor)
+        {
+            Accept((ITypeDeclarationVisitor) visitor);
+        }
+
+        public abstract void Accept(ITypeDeclarationVisitor visitor);
     }
 }

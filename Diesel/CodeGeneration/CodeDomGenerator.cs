@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using Diesel.Parsing;
 using Diesel.Parsing.CSharp;
+using Diesel.Transformations;
 
 namespace Diesel.CodeGeneration
 {
@@ -71,7 +72,7 @@ namespace Diesel.CodeGeneration
 
         private static MemberType MemberTypeFor(TypeNode type)
         {
-            // TODO:
+            // TODO: get known types from the model
             var knownTypes = new List<KnownType>();
             return MemberTypeMapper.MemberTypeFor(type, knownTypes);
         }

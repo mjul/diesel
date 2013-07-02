@@ -19,6 +19,11 @@ namespace Diesel.Parsing
             get { return Properties; }
         }
 
+        public override void Accept(ITypeDeclarationVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
         [Obsolete("Move to semantic model")]
         public ValueTypeDeclaration ReplaceProperties(Func<PropertyDeclaration, PropertyDeclaration> function)
         {

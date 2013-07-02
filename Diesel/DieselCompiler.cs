@@ -21,8 +21,8 @@ namespace Diesel
         public static string Compile(string modelSourceCode)
         {
             var ast = Grammar.Everything.Parse(modelSourceCode);
-            var transformed = ModelTransformations.Transform(ast);
-            var codeDom = CodeDomCompiler.Compile(transformed);
+            var semanticModel = ModelTransformations.Transform(ast);
+            var codeDom = CodeDomCompiler.Compile(semanticModel);
             return CompileToSource(codeDom, GetCSharpProvider());
         }
 

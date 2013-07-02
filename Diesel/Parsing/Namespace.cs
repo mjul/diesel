@@ -3,7 +3,7 @@ using Diesel.Parsing.CSharp;
 
 namespace Diesel.Parsing
 {
-    public class Namespace : ITreeNode
+    public class Namespace : IDieselExpression
     {
         public NamespaceName Name { get; private set; }
         public IEnumerable<TypeDeclaration> Declarations;
@@ -17,6 +17,11 @@ namespace Diesel.Parsing
         public IEnumerable<ITreeNode> Children
         {
             get { return Declarations; }
+        }
+
+        public void Accept(IDieselExpressionVisitor visitor)
+        {
+            visitor.Visit(this);
         }
     }
 }

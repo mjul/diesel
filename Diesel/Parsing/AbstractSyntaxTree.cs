@@ -2,7 +2,7 @@
 
 namespace Diesel.Parsing
 {
-    public class AbstractSyntaxTree : ITreeNode
+    public class AbstractSyntaxTree : IDieselExpression
     {
         public ConventionsDeclaration Conventions { get; private set; }
         public IEnumerable<Namespace> Namespaces { get; private set; }
@@ -21,6 +21,11 @@ namespace Diesel.Parsing
                 foreach (var ns in Namespaces)
                     yield return ns;
             }
+        }
+
+        public void Accept(IDieselExpressionVisitor visitor)
+        {
+            visitor.Visit(this);
         }
     }
 }

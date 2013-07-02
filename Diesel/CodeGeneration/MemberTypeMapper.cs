@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using Diesel.Parsing.CSharp;
+using Diesel.Transformations;
 
 namespace Diesel.CodeGeneration
 {
@@ -86,21 +87,6 @@ namespace Diesel.CodeGeneration
                     throw new NotImplementedException("Nullable Type members not implemented for non-system types.");
                 }
             }
-        }
-    }
-
-    /// <summary>
-    /// Represents a known type in the model.
-    /// </summary>
-    public class KnownType
-    {
-        public string FullName { get; private set; }
-        public bool IsValueType { get; private set; }
-
-        public KnownType(string fullName, bool isValueType)
-        {
-            FullName = fullName;
-            IsValueType = isValueType;
         }
     }
 }

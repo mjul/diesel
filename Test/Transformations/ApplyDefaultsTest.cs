@@ -53,7 +53,7 @@ namespace Test.Diesel.Transformations
                                       new[] {valueTypeDeclaration})
                     });
             var actual = ModelTransformations.Transform(input);
-            var actualDeclaration = (ValueTypeDeclaration) actual.Namespaces.Single().Declarations.Single();
+            var actualDeclaration = (ValueTypeDeclaration) actual.AbstractSyntaxTree.Namespaces.Single().Declarations.Single();
             return actualDeclaration;
         }
     }

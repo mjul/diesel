@@ -6,6 +6,7 @@ using Diesel;
 using Diesel.CodeGeneration;
 using Diesel.Parsing;
 using Diesel.Parsing.CSharp;
+using Diesel.Transformations;
 using NUnit.Framework;
 
 namespace Test.Diesel.CodeGeneration
@@ -16,7 +17,7 @@ namespace Test.Diesel.CodeGeneration
         [Test]
         public void ValueType_ValidDeclaration_ShouldCompile()
         {
-            var model = CreateAbstractSyntaxTreeWith(
+            var model = CreateSemanticModelWith(
                 new ValueTypeDeclaration("EmployeeNumber",
                                          new[] {new PropertyDeclaration("Value", new SimpleType(typeof (int)))}));
             var actual = CodeDomCompiler.Compile(model);
@@ -57,7 +58,7 @@ namespace Test.Diesel.CodeGeneration
                                                 new TypeNameTypeNode(new TypeName("EmployeeName"))),
                     }
                 );
-            var model = CreateAbstractSyntaxTreeWith(employeeNumber, employeeName, employeeInfo);
+            var model = CreateSemanticModelWith(employeeNumber, employeeName, employeeInfo);
             var actual = CodeDomCompiler.Compile(model);
             var source = CompileToSource(actual);
             Assert.That(source, Is.StringMatching(@"public\s+EmployeeNumber\s+Number"));
@@ -70,7 +71,7 @@ namespace Test.Diesel.CodeGeneration
         [Test]
         public void ValueType_ValidDeclarationMultipleProperties_ShouldCompile()
         {
-            var model = CreateAbstractSyntaxTreeWith(
+            var model = CreateSemanticModelWith(
                 new ValueTypeDeclaration("Point",
                                          new[]
                                              {
@@ -88,7 +89,7 @@ namespace Test.Diesel.CodeGeneration
         [Test]
         public void ValueType_ValidDeclaration_ShouldNotHaveDataContractAttributes()
         {
-            var model = CreateAbstractSyntaxTreeWith(
+            var model = CreateSemanticModelWith(
                 new ValueTypeDeclaration("EmployeeNumber",
                                          new[] { new PropertyDeclaration("Value", new SimpleType(typeof (int))) }));
             var actual = CodeDomCompiler.Compile(model);
@@ -117,7 +118,7 @@ namespace Test.Diesel.CodeGeneration
                                                                     new PropertyDeclaration("EmployeeNumber", new SimpleType(typeof (int))),
                                                                     new PropertyDeclaration("Role", new TypeNameTypeNode(new TypeName("Role"))),
                                                                 });
-            var model = CreateAbstractSyntaxTreeWith(enumDeclaration, commandDeclaration);
+            var model = CreateSemanticModelWith(enumDeclaration, commandDeclaration);
             var actual = CodeDomCompiler.Compile(model);
 
             Assert.That(actual, Is.Not.Null);
@@ -137,7 +138,7 @@ namespace Test.Diesel.CodeGeneration
                                                                     new PropertyDeclaration("EmployeeNumber", new SimpleType(typeof (int))),
                                                                     new PropertyDeclaration("Salary", new TypeNameTypeNode(new TypeName("AmountDto")))
                                                                 });
-            var model = CreateAbstractSyntaxTreeWith(dtoDeclaration, commandDeclaration);
+            var model = CreateSemanticModelWith(dtoDeclaration, commandDeclaration);
             var actual = CodeDomCompiler.Compile(model);
 
             Assert.That(actual, Is.Not.Null);
@@ -173,7 +174,7 @@ namespace Test.Diesel.CodeGeneration
                                                                     new PropertyDeclaration("FirstName", new StringReferenceType()),
                                                                     new PropertyDeclaration("LastName", new StringReferenceType())
                                                                 });
-            var model = CreateAbstractSyntaxTreeWith(commandDeclaration);
+            var model = CreateSemanticModelWith(commandDeclaration);
             return CodeDomCompiler.Compile(model);
         }
 
@@ -198,7 +199,7 @@ namespace Test.Diesel.CodeGeneration
                         new PropertyDeclaration(
                             "EmployeeRole", new TypeNameTypeNode(new TypeName("Role")))
                     });
-            var model = CreateAbstractSyntaxTreeWith(enumDeclaration, eventDeclaration);
+            var model = CreateSemanticModelWith(enumDeclaration, eventDeclaration);
             var actual = CodeDomCompiler.Compile(model);
             var source = CompileToSource(actual);
 
@@ -224,7 +225,7 @@ namespace Test.Diesel.CodeGeneration
                         new PropertyDeclaration(
                             "Name", new TypeNameTypeNode(new TypeName("EmployeeName")))
                     });
-            var model = CreateAbstractSyntaxTreeWith(dtoDeclaration, eventDeclaration);
+            var model = CreateSemanticModelWith(dtoDeclaration, eventDeclaration);
             var actual = CodeDomCompiler.Compile(model);
             var source = CompileToSource(actual);
 
@@ -253,7 +254,7 @@ namespace Test.Diesel.CodeGeneration
                                 new RankSpecifiers(new [] {new RankSpecifier(1)}))
                             )
                     });
-            var model = CreateAbstractSyntaxTreeWith(dtoDeclaration, eventDeclaration);
+            var model = CreateSemanticModelWith(dtoDeclaration, eventDeclaration);
             var actual = CodeDomCompiler.Compile(model);
             var source = CompileToSource(actual);
 
@@ -274,7 +275,7 @@ namespace Test.Diesel.CodeGeneration
             var declaration = CreateEmployeeImportedEventDeclaration();
             var conventions = new ConventionsDeclaration(
                 new DomainEventConventions(new[] {new TypeName("Test.Diesel.IDomainEvent")}));
-            var model = CreateAbstractSyntaxTreeWith(conventions, declaration);
+            var model = CreateSemanticModelWith(conventions, declaration);
             var source = CompileToSource(CodeDomCompiler.Compile(model));
             Assert.That(source, Is.StringMatching(@"class EmployeeImported :.* Test.Diesel.IDomainEvent \{"));
         }
@@ -282,7 +283,7 @@ namespace Test.Diesel.CodeGeneration
         private CodeCompileUnit CompileEmployeeImportedEvent()
         {
             var declaration = CreateEmployeeImportedEventDeclaration();
-            var model = CreateAbstractSyntaxTreeWith(declaration);
+            var model = CreateSemanticModelWith(declaration);
             return CodeDomCompiler.Compile(model);
         }
 
@@ -320,7 +321,7 @@ namespace Test.Diesel.CodeGeneration
                     }
                 );
             var source = CompileToSource(CodeDomCompiler
-                                             .Compile(CreateAbstractSyntaxTreeWith(nameDto, employeeInfoDto)));
+                                             .Compile(CreateSemanticModelWith(nameDto, employeeInfoDto)));
             Assert.That(source, Is.StringMatching(@"public\s+Name\s+EmployeeName"));
         }
 
@@ -336,7 +337,7 @@ namespace Test.Diesel.CodeGeneration
                     }
                 );
             var source = CompileToSource(CodeDomCompiler
-                                             .Compile(CreateAbstractSyntaxTreeWith(enumDeclaration, employeeInfoDto)));
+                                             .Compile(CreateSemanticModelWith(enumDeclaration, employeeInfoDto)));
             Assert.That(source, Is.StringMatching(@"public\s+Role\s+EmployeeRole"));
         }
 
@@ -360,7 +361,7 @@ namespace Test.Diesel.CodeGeneration
         private CodeCompileUnit CompileNameDto()
         {
             var declaration = CreateNameDtoDeclaration();
-            var model = CreateAbstractSyntaxTreeWith(declaration);
+            var model = CreateSemanticModelWith(declaration);
             return CodeDomCompiler.Compile(model);
         }
 
@@ -400,20 +401,20 @@ namespace Test.Diesel.CodeGeneration
         private CodeCompileUnit CompileOnOffStateEnum()
         {
             var declaration = new EnumDeclaration("State", new[] {"On", "Off"});
-            var model = CreateAbstractSyntaxTreeWith(declaration);
+            var model = CreateSemanticModelWith(declaration);
             return CodeDomCompiler.Compile(model);
         }
 
 
-        private AbstractSyntaxTree CreateAbstractSyntaxTreeWith(params TypeDeclaration[] typeDeclaration)
+        private SemanticModel CreateSemanticModelWith(params TypeDeclaration[] typeDeclaration)
         {
-            return CreateAbstractSyntaxTreeWith(null, typeDeclaration);
+            return CreateSemanticModelWith(null, typeDeclaration);
         }
 
-        private AbstractSyntaxTree CreateAbstractSyntaxTreeWith(ConventionsDeclaration conventions, params TypeDeclaration[] typeDeclarations)
+        private SemanticModel CreateSemanticModelWith(ConventionsDeclaration conventions, params TypeDeclaration[] typeDeclarations)
         {
             var ns = new NamespaceName(typeof(CodeDomCompilerTest).Namespace + ".Generated");
-            return new AbstractSyntaxTree(conventions, new[] { new Namespace(ns, typeDeclarations) });
+            return new SemanticModel(new AbstractSyntaxTree(conventions, new[] {new Namespace(ns, typeDeclarations)}));
         }
 
 
@@ -492,7 +493,7 @@ namespace Test.Diesel.CodeGeneration
                     new Namespace(new NamespaceName("Employees.Model"), new[] {CreateEmployeeNumberValueTypeDeclaration()})
                 });
 
-            var dom = CodeDomCompiler.Compile(ast);
+            var dom = CodeDomCompiler.Compile(new SemanticModel(ast));
             var source = CompileToSource(dom);
 
             var expectedSnippets = new[]
@@ -511,7 +512,7 @@ namespace Test.Diesel.CodeGeneration
             params string[] expectedTypeDeclarations)
         {
             var ns = new NamespaceName(typeof(CodeDomCompilerTest).Namespace + ".Generated");
-            var model = new AbstractSyntaxTree(null, new[] { new Namespace(ns, declarations) });
+            var model = new SemanticModel(new AbstractSyntaxTree(null, new[] {new Namespace(ns, declarations)}));
             var actual = CodeDomCompiler.Compile(model);
             Assert.That(actual, Is.Not.Null);
             

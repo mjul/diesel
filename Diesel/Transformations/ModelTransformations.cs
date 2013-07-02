@@ -5,10 +5,11 @@ namespace Diesel.Transformations
 {
     public static class ModelTransformations
     {
-        public static AbstractSyntaxTree Transform(AbstractSyntaxTree ast)
+        public static SemanticModel Transform(AbstractSyntaxTree ast)
         {
             var transformations = new[] {new ApplyDefaults()};
-            return transformations.Aggregate(ast, (a, t) => t.Transform(a));
+            var transformedAst = transformations.Aggregate(ast, (a, t) => t.Transform(a));
+            return new SemanticModel(transformedAst);
         }         
     }
 }

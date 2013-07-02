@@ -18,5 +18,11 @@ namespace Diesel.Parsing
         {
             get { return Properties; }
         }
+
+        public override void Accept(ITypeDeclarationVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
     }
 }

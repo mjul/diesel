@@ -16,5 +16,10 @@ namespace Diesel.Parsing
         {
             get { yield break; }
         }
+
+        public override void Accept(ITypeDeclarationVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
     }
 }

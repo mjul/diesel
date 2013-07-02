@@ -1,6 +1,7 @@
 ﻿using System.CodeDom;
 using Diesel.Parsing;
 using Diesel.Parsing.CSharp;
+using Diesel.Transformations;
 
 namespace Diesel.CodeGeneration
 {
@@ -11,11 +12,11 @@ namespace Diesel.CodeGeneration
             get { return new ConventionsDeclaration(new DomainEventConventions(new TypeName[] { })); }
         }
 
-        public static CodeCompileUnit Compile(AbstractSyntaxTree ast)
+        public static CodeCompileUnit Compile(SemanticModel model)
         {
             var unit = new CodeCompileUnit();
             var conventions = DefaultConventions;
-            Add(unit, conventions, ast);
+            Add(unit, conventions, model.AbstractSyntaxTree);
             return unit;
         }
 

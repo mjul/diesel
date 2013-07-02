@@ -76,6 +76,11 @@
       <DependentUpon>GenerateExamples.tt</DependentUpon>
     </Compile>
     <Compile Include="IDomainEvent.cs" />
+    <Compile Include="ObjectMothers\CommandDeclarationObjectMother.cs" />
+    <Compile Include="ObjectMothers\DomainEventDeclarationObjectMother.cs" />
+    <Compile Include="ObjectMothers\DtoDeclarationObjectMother.cs" />
+    <Compile Include="ObjectMothers\EnumDeclarationObjectMother.cs" />
+    <Compile Include="ObjectMothers\ValueTypeDeclarationObjectMother.cs" />
     <Compile Include="Parsing\CSharp\ArrayTypeTest.cs" />
     <Compile Include="Parsing\CSharp\CSharpGrammarTest.cs" />
     <Compile Include="Parsing\CSharp\SimpleTypeTest.cs" />
@@ -86,6 +91,7 @@
     <Compile Include="Transformations\ApplyDefaultsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestHelpers\EqualityTesting.cs" />
+    <Compile Include="Transformations\KnownTypesHarvesterTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Examples\DieselCompilerIntegrationTestCase.txt" />

@@ -78,7 +78,10 @@
     <Compile Include="Parsing\DomainEventDeclaration.cs" />
     <Compile Include="Parsing\DtoDeclaration.cs" />
     <Compile Include="Parsing\EnumDeclaration.cs" />
+    <Compile Include="Parsing\IDieselExpression.cs" />
     <Compile Include="Parsing\ITreeNode.cs" />
+    <Compile Include="Parsing\IDieselExpressionVisitor.cs" />
+    <Compile Include="Parsing\ITypeDeclarationVisitor.cs" />
     <Compile Include="Parsing\Keyword.cs" />
     <Compile Include="Parsing\CSharp\NamespaceName.cs" />
     <Compile Include="Parsing\Symbol.cs" />
@@ -90,6 +93,8 @@
     <Compile Include="DieselCompiler.cs" />
     <Compile Include="Parsing\Grammar.cs" />
     <Compile Include="Parsing\ITypeDeclaration.cs" />
+    <Compile Include="Transformations\KnownType.cs" />
+    <Compile Include="Transformations\KnownTypesHarvester.cs" />
     <Compile Include="Transformations\ModelTransformation.cs" />
     <Compile Include="Transformations\ModelTransformations.cs" />
     <Compile Include="Parsing\Namespace.cs" />
@@ -97,6 +102,7 @@
     <Compile Include="Parsing\ValueTypeDeclaration.cs" />
     <Compile Include="CodeGeneration\CodeDomGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Transformations\SemanticModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Diesel.nuspec" />

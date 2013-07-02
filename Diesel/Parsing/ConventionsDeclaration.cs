@@ -3,7 +3,7 @@ using Diesel.Parsing.CSharp;
 
 namespace Diesel.Parsing
 {
-    public class ConventionsDeclaration : ITreeNode
+    public class ConventionsDeclaration : IDieselExpression
     {
         public DomainEventConventions DomainEventConventions { get; private set; }
 
@@ -17,6 +17,10 @@ namespace Diesel.Parsing
             get { yield return DomainEventConventions; }
         }
 
+        public void Accept(IDieselExpressionVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
         public ConventionsDeclaration ApplyOverridesFrom(ConventionsDeclaration other)
         {
             if (other != null)
