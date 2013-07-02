@@ -14,7 +14,7 @@ namespace Diesel.CodeGeneration
 {
     public abstract class CodeDomGenerator
     {
-        protected static CodeTypeDeclaration CreateTypeWithValueSemantics(ValueObjectSpecification specification)
+        protected static CodeTypeDeclaration CreateTypeWithValueSemantics(ValueObjectSpecification specification, IEnumerable<KnownType> knownTypes)
         {
             var result = new CodeTypeDeclaration(specification.Name)
                 {

@@ -22,11 +22,16 @@ namespace Diesel.CodeGeneration
         {
             var unit = new CodeCompileUnit();
             var conventions = DefaultConventions;
-            Add(unit, conventions, model.AbstractSyntaxTree);
+            Add(unit, conventions, model);
             return unit;
         }
 
-        private static void Add(CodeCompileUnit codeCompileUnit, ConventionsDeclaration conventions, AbstractSyntaxTree ast)
+        private static void Add(CodeCompileUnit codeCompileUnit, ConventionsDeclaration conventions, SemanticModel model)
+        {
+            Add(codeCompileUnit, conventions, model, model.AbstractSyntaxTree);
+        }
+
+        private static void Add(CodeCompileUnit codeCompileUnit, ConventionsDeclaration conventions, SemanticModel model, AbstractSyntaxTree ast)
         {
             var userConventions = conventions;
             if (ast.Conventions != null)
@@ -35,53 +40,53 @@ namespace Diesel.CodeGeneration
             }
             foreach (var ns in ast.Namespaces)
             {
-                Add(codeCompileUnit, userConventions, ns);
+                Add(codeCompileUnit, userConventions, model, ns);
             }
         }
 
 
-        private static void Add(CodeCompileUnit codeCompileUnit, ConventionsDeclaration conventions, Namespace declaration)
+        private static void Add(CodeCompileUnit codeCompileUnit, ConventionsDeclaration conventions, SemanticModel model, Namespace declaration)
         {
             var ns = new CodeNamespace(declaration.Name.Name);
             ns.Imports.Add(new CodeNamespaceImport("System"));
             codeCompileUnit.Namespaces.Add(ns);
             foreach (var typeDeclaration in declaration.Declarations)
             {
-                Add(ns, conventions, (dynamic)typeDeclaration);
+                Add(ns, conventions, model, (dynamic)typeDeclaration);
             }
         }
 
-        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, CommandDeclaration declaration)
+        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, SemanticModel model, CommandDeclaration declaration)
         {
-            ns.Types.Add(CommandGenerator.CreateCommandDeclaration(declaration));
+            ns.Types.Add(CommandGenerator.CreateCommandDeclaration(model, declaration));
         }
 
-        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, DomainEventDeclaration declaration)
+        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, SemanticModel model, DomainEventDeclaration declaration)
         {
-            ns.Types.Add(DomainEventGenerator.CreateDomainEventDeclaration(declaration, conventions.DomainEventConventions));
+            ns.Types.Add(DomainEventGenerator.CreateDomainEventDeclaration(model, declaration, conventions.DomainEventConventions));
         }
 
-        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, ValueTypeDeclaration declaration)
+        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, SemanticModel model, ValueTypeDeclaration declaration)
         {
-            ns.Types.Add(ValueTypeGenerator.CreateValueTypeDeclaration(declaration));
+            ns.Types.Add(ValueTypeGenerator.CreateValueTypeDeclaration(model, declaration));
         }
 
-        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, DtoDeclaration declaration)
+        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, SemanticModel model, DtoDeclaration declaration)
         {
-            ns.Types.Add(DtoGenerator.CreateCommandDeclaration(declaration));
+            ns.Types.Add(DtoGenerator.CreateCommandDeclaration(model, declaration));
         }
 
-        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, EnumDeclaration declaration)
+        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, SemanticModel model, EnumDeclaration declaration)
         {
             ns.Types.Add(EnumGenerator.CreateEnumDeclaration(declaration));
         }
 
-        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, ApplicationServiceDeclaration declaration)
+        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, SemanticModel model, ApplicationServiceDeclaration declaration)
         {
             ns.Types.Add(ApplicationServiceGenerator.CreateApplicationServiceInterface(declaration));
             foreach (var command in declaration.Commands)
             {
-                Add(ns, conventions, command);
+                Add(ns, conventions, model, command);
             }
         }
  

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using Diesel.Parsing;
+using Diesel.Transformations;
 
 namespace Diesel.CodeGeneration
 {
@@ -25,7 +26,6 @@ namespace Diesel.CodeGeneration
                     CustomAttributes = { CreateEnumMemberAttribute(memberName) }
                 });
             result.Members.AddRange(fields.ToArray());
-
             return result;
         }
     }
