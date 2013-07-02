@@ -5,16 +5,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Diesel.Parsing;
+using Diesel.Parsing.CSharp;
 using Diesel.Transformations;
 
 namespace Diesel.CodeGeneration
 {
     public class ValueTypeGenerator : CodeDomGenerator
     {
-        public static CodeTypeDeclaration CreateValueTypeDeclaration(SemanticModel model, ValueTypeDeclaration declaration)
+        public static CodeTypeDeclaration CreateValueTypeDeclaration(
+            SemanticModel model, NamespaceName namespaceName,
+            ValueTypeDeclaration declaration)
         {
             var result = CreateTypeWithValueSemantics(
-                ValueObjectSpecification.CreateStruct(declaration.Name, declaration.Properties.ToArray(), false),
+                ValueObjectSpecification.CreateStruct(
+                    namespaceName, declaration.Name,
+                    declaration.Properties.ToArray(), false),
                 model.KnownTypes);
             if (declaration.Properties.Count() == 1)
             {

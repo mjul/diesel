@@ -344,7 +344,9 @@ namespace Test.Diesel.Generated {
         }
         
         public override int GetHashCode() {
-            return 0;
+            return (((0 + this.Number.GetHashCode()) 
+                        + this.Name.GetHashCode()) 
+                        + this.Email.GetHashCode());
         }
         
         public bool Equals(EmployeeInfo other) {
@@ -757,8 +759,9 @@ namespace Test.Diesel.Generated {
         }
         
         public override int GetHashCode() {
-            return ((0 + this.CommandId.GetHashCode()) 
-                        + this.EmployeeNumber.GetHashCode());
+            return (((0 + this.CommandId.GetHashCode()) 
+                        + this.EmployeeNumber.GetHashCode()) 
+                        + this.Gender.GetHashCode());
         }
         
         public bool Equals(ImportEmployeeNestedTypes other) {

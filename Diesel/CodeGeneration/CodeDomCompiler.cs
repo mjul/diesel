@@ -52,41 +52,41 @@ namespace Diesel.CodeGeneration
             codeCompileUnit.Namespaces.Add(ns);
             foreach (var typeDeclaration in declaration.Declarations)
             {
-                Add(ns, conventions, model, (dynamic)typeDeclaration);
+                Add(ns, conventions, model, declaration.Name, (dynamic)typeDeclaration);
             }
         }
 
-        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, SemanticModel model, CommandDeclaration declaration)
+        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, SemanticModel model, NamespaceName namespaceName, CommandDeclaration declaration)
         {
-            ns.Types.Add(CommandGenerator.CreateCommandDeclaration(model, declaration));
+            ns.Types.Add(CommandGenerator.CreateCommandDeclaration(model, namespaceName, declaration));
         }
 
-        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, SemanticModel model, DomainEventDeclaration declaration)
+        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, SemanticModel model, NamespaceName namespaceName, DomainEventDeclaration declaration)
         {
-            ns.Types.Add(DomainEventGenerator.CreateDomainEventDeclaration(model, declaration, conventions.DomainEventConventions));
+            ns.Types.Add(DomainEventGenerator.CreateDomainEventDeclaration(model, namespaceName, declaration, conventions.DomainEventConventions));
         }
 
-        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, SemanticModel model, ValueTypeDeclaration declaration)
+        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, SemanticModel model, NamespaceName namespaceName, ValueTypeDeclaration declaration)
         {
-            ns.Types.Add(ValueTypeGenerator.CreateValueTypeDeclaration(model, declaration));
+            ns.Types.Add(ValueTypeGenerator.CreateValueTypeDeclaration(model, namespaceName, declaration));
         }
 
-        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, SemanticModel model, DtoDeclaration declaration)
+        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, SemanticModel model, NamespaceName namespaceName, DtoDeclaration declaration)
         {
-            ns.Types.Add(DtoGenerator.CreateCommandDeclaration(model, declaration));
+            ns.Types.Add(DtoGenerator.CreateCommandDeclaration(model, namespaceName, declaration));
         }
 
-        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, SemanticModel model, EnumDeclaration declaration)
+        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, SemanticModel model, NamespaceName namespaceName, EnumDeclaration declaration)
         {
             ns.Types.Add(EnumGenerator.CreateEnumDeclaration(declaration));
         }
 
-        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, SemanticModel model, ApplicationServiceDeclaration declaration)
+        private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, SemanticModel model, NamespaceName namespaceName, ApplicationServiceDeclaration declaration)
         {
             ns.Types.Add(ApplicationServiceGenerator.CreateApplicationServiceInterface(declaration));
             foreach (var command in declaration.Commands)
             {
-                Add(ns, conventions, model, command);
+                Add(ns, conventions, model, namespaceName, command);
             }
         }
  

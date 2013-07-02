@@ -14,8 +14,11 @@ namespace Diesel.CodeGeneration
 {
     public abstract class CodeDomGenerator
     {
-        protected static CodeTypeDeclaration CreateTypeWithValueSemantics(ValueObjectSpecification specification, IEnumerable<KnownType> knownTypes)
+        protected static CodeTypeDeclaration CreateTypeWithValueSemantics(ValueObjectSpecification specification, 
+            IEnumerable<KnownType> knownTypes)
         {
+            var knownTypesList = knownTypes.ToList();
+
             var result = new CodeTypeDeclaration(specification.Name)
                 {
                     IsStruct = specification.IsValueType,
@@ -29,25 +32,30 @@ namespace Diesel.CodeGeneration
                 result.TypeAttributes |= TypeAttributes.Sealed;
             }
 
-
             if (specification.IsDataContract)
             {
                 result.CustomAttributes.Add(CreateDataContractAttribute(specification.Name));
             }
             result.CustomAttributes.Add(CreateAttribute(typeof (SerializableAttribute)));
 
-            var readOnlyProperties = ReadOnlyProperties(specification.Properties, specification.IsDataContract).ToList();
+            var readOnlyProperties = ReadOnlyProperties(
+                specification.Properties, specification.IsDataContract, 
+                specification.Namespace, 
+                knownTypesList).ToList();
 
             result.BaseTypes.AddRange(CreateImplementsIEquatableOf(specification.Name));
             result.Members.AddRange(CreateConstructorAssigningBackingFieldsFor(readOnlyProperties));
             result.Members.AddRange(CreateReadOnlyProperties(readOnlyProperties));
             result.Members.AddRange(CreateEqualityOperatorOverloading(specification.Name, specification.IsValueType));
-            result.Members.AddRange(CreateGetHashCode(specification.Properties));
+            result.Members.AddRange(CreateGetHashCode(specification.Properties, specification.Namespace, knownTypesList));
             result.Members.AddRange(CreateEqualsOverloadingUsingEqualityOperator(specification.Name, specification.IsValueType, specification.Properties));
             return result;
         }
 
-        private static IEnumerable<ReadOnlyProperty> ReadOnlyProperties(PropertyDeclaration[] declarations, bool isDataContract)
+        private static IEnumerable<ReadOnlyProperty> ReadOnlyProperties(
+            PropertyDeclaration[] declarations, bool isDataContract, 
+            NamespaceName namespaceName,
+            IEnumerable<KnownType> knownTypes)
         {
             var noAttributes = new CodeAttributeDeclaration[] {};
             return Enumerable.Zip(
@@ -55,7 +63,7 @@ namespace Diesel.CodeGeneration
                 Enumerable.Range(1, declarations.Length),
                 (p, dataMemberOrder) =>
                     {
-                        var memberType = MemberTypeFor(p.Type);
+                        var memberType = MemberTypeFor(namespaceName, p.Type, knownTypes);
                         return new ReadOnlyProperty(p.Name, memberType,
                                                     new BackingField(BackingFieldName(p.Name), memberType,
                                                                      isDataContract
@@ -70,11 +78,9 @@ namespace Diesel.CodeGeneration
                     });
         }
 
-        private static MemberType MemberTypeFor(TypeNode type)
+        private static MemberType MemberTypeFor(NamespaceName namespaceName, TypeNode type, IEnumerable<KnownType> knownTypes)
         {
-            // TODO: get known types from the model
-            var knownTypes = new List<KnownType>();
-            return MemberTypeMapper.MemberTypeFor(type, knownTypes);
+            return MemberTypeMapper.MemberTypeFor(namespaceName, type, knownTypes);
         }
 
 
@@ -228,13 +234,13 @@ namespace Diesel.CodeGeneration
         }
 
 
-        private static CodeTypeMember[] CreateGetHashCode(IEnumerable<PropertyDeclaration> properties)
+        private static CodeTypeMember[] CreateGetHashCode(IEnumerable<PropertyDeclaration> properties, NamespaceName namespaceName, IEnumerable<KnownType> knownTypes)
         {
             // Use value types for GetHashCode only to save writing null guards when accessing
             // Hash code just needs to be the same if the objects are Equal, 
             // not different if they are not Equal
             var hashCodeExpressions = properties
-                .Where(p => MemberTypeFor(p.Type).IsValueType)
+                .Where(p => MemberTypeFor(namespaceName, p.Type, knownTypes).IsValueType)
                 .Select(p =>
                     new CodeMethodInvokeExpression(
                         new CodePropertyReferenceExpression(

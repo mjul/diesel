@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.Contracts;
 using Diesel.Parsing;
+using Diesel.Parsing.CSharp;
 
 namespace Diesel.CodeGeneration
 {
@@ -7,13 +8,17 @@ namespace Diesel.CodeGeneration
     {
         public bool IsValueType { get; private set; }
         public string Name { get; private set; }
+        public NamespaceName Namespace { get; private set; }
         public PropertyDeclaration[] Properties { get; private set; }
         public bool IsDataContract { get; private set; }
         public bool IsSealed { get; private set; }
 
-        private ValueObjectSpecification(bool isValueType, string name, PropertyDeclaration[] properties, bool isDataContract, bool isSealed)
+        private ValueObjectSpecification(bool isValueType, 
+            NamespaceName namespaceName, string name, 
+            PropertyDeclaration[] properties, bool isDataContract, bool isSealed)
         {
             IsValueType = isValueType;
+            Namespace = namespaceName;
             Name = name;
             Properties = properties;
             IsDataContract = isDataContract;
@@ -22,18 +27,20 @@ namespace Diesel.CodeGeneration
 
         [Pure]
         public static ValueObjectSpecification CreateStruct(
-            string name, PropertyDeclaration[] properties,
+            NamespaceName namespaceName, string name, 
+            PropertyDeclaration[] properties,
             bool isDataContract)
         {
-            return new ValueObjectSpecification(true, name, properties, isDataContract, true);
+            return new ValueObjectSpecification(true, namespaceName, name, properties, isDataContract, true);
         }
 
         [Pure]
         public static ValueObjectSpecification CreateClass(
-            string name, PropertyDeclaration[] properties, 
+            NamespaceName namespaceName, string name,
+            PropertyDeclaration[] properties, 
             bool isDataContract, bool isSealed)
         {
-            return new ValueObjectSpecification(false, name, properties, isDataContract, isSealed);
+            return new ValueObjectSpecification(false, namespaceName, name, properties, isDataContract, isSealed);
         }
 
     }

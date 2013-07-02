@@ -18,18 +18,20 @@ namespace Diesel.CodeGeneration
         /// corresponding <see cref="MemberType"/>.
         /// </summary>
         [Pure]
-        public static MemberType MemberTypeFor(TypeNode type, IEnumerable<KnownType> knownTypes)
+        public static MemberType MemberTypeFor(NamespaceName namespaceName, TypeNode type, IEnumerable<KnownType> knownTypes)
         {
-            var visitor = new MemberTypeMapperTypeNodeVisitor(knownTypes);
+            var visitor = new MemberTypeMapperTypeNodeVisitor(namespaceName, knownTypes);
             type.Accept(visitor);
             return visitor.MemberType;
         }
 
         private class MemberTypeMapperTypeNodeVisitor : ITypeNodeVisitor
         {
+            private readonly NamespaceName _namespaceName;
             private readonly List<KnownType> _knownTypes;
-            public MemberTypeMapperTypeNodeVisitor(IEnumerable<KnownType> knownTypes)
+            public MemberTypeMapperTypeNodeVisitor(NamespaceName namespaceName, IEnumerable<KnownType> knownTypes)
             {
+                _namespaceName = namespaceName;
                 _knownTypes = knownTypes.ToList();
             }
 
@@ -49,8 +51,8 @@ namespace Diesel.CodeGeneration
 
             private void ReturnNamedMember(TypeNameTypeNode typeNameTypeNode)
             {
-                var typeName = typeNameTypeNode.TypeName;
-                var knownType = _knownTypes.SingleOrDefault(x => x.FullName == typeName.Name);
+                var fullName = FullyQualifiedNameRule.For(_namespaceName, typeNameTypeNode.TypeName);
+                var knownType = _knownTypes.SingleOrDefault(x => x.FullName == fullName);
                 var isValueType = knownType != null && knownType.IsValueType;
                 MemberType = MemberType.CreateForTypeName(typeNameTypeNode.TypeName, isValueType);
             }
@@ -67,7 +69,7 @@ namespace Diesel.CodeGeneration
 
             public void Visit(ArrayType arrayType)
             {
-                var elementMemberType = MemberTypeFor(arrayType.Type, _knownTypes);
+                var elementMemberType = MemberTypeFor(_namespaceName, arrayType.Type, _knownTypes);
                 MemberType = MemberType.CreateForArray(elementMemberType, arrayType.RankSpecifiers);
             }
 

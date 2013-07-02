@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Diesel.Parsing;
+using Diesel.Parsing.CSharp;
 using Diesel.Transformations;
 
 namespace Diesel.CodeGeneration
@@ -9,12 +10,14 @@ namespace Diesel.CodeGeneration
     internal class DomainEventGenerator : CodeDomGenerator
     {
         public static CodeTypeDeclaration CreateDomainEventDeclaration(
-            SemanticModel model,
+            SemanticModel model, NamespaceName namespaceName,
             DomainEventDeclaration declaration, 
             DomainEventConventions conventions)
         {
             var type = CreateTypeWithValueSemantics(
-                ValueObjectSpecification.CreateClass(declaration.Name, declaration.Properties.ToArray(), true, true),
+                ValueObjectSpecification.CreateClass(
+                    namespaceName, declaration.Name, 
+                    declaration.Properties.ToArray(), true, true),
                 model.KnownTypes);
             ApplyConventions(conventions, type);
             return type;

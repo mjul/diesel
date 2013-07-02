@@ -93,6 +93,7 @@
     <Compile Include="DieselCompiler.cs" />
     <Compile Include="Parsing\Grammar.cs" />
     <Compile Include="Parsing\ITypeDeclaration.cs" />
+    <Compile Include="Transformations\FullyQualifiedNameRule.cs" />
     <Compile Include="Transformations\KnownType.cs" />
     <Compile Include="Transformations\KnownTypesHarvester.cs" />
     <Compile Include="Transformations\ModelTransformation.cs" />

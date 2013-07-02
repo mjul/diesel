@@ -56,19 +56,7 @@ namespace Diesel.Transformations
 
         private string FullName(string name)
         {
-            String result;
-            var isQualifiedName = name.Contains(".");
-            if (isQualifiedName)
-            {
-                result = name;
-            }
-            else
-            {
-                var ns = _namespaceStack.Peek();
-                var fullName = String.Format("{0}.{1}", ns.Name.Name, name);
-                result = fullName;
-            }
-            return result;
+            return FullyQualifiedNameRule.For(_namespaceStack.Peek().Name, name);
         }
 
         public void Visit(CommandDeclaration node)
