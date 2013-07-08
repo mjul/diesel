@@ -11,7 +11,7 @@
     <!--<iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>-->
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Alpha version.</releaseNotes>
+    <releaseNotes>Please refer to the CHANGELOG.md file at the project web site.</releaseNotes>
     <copyright>Copyright 2013</copyright>
     <tags>DDD DSL CodeDom Compiler Generator</tags>
   </metadata>
