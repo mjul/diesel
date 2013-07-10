@@ -165,6 +165,18 @@ namespace Test.Diesel.CodeGeneration
             Assert.That(source, Is.StringContaining(@"DataContractAttribute(Name=""ImportEmployeeCommand"")"));
         }
 
+        [Test]
+        public void CommandDeclaration_WithConventionInheritICommand_ShouldProduceClassInheritingICommand()
+        {
+            var declaration = CreateImportEmployeeCommandDeclaration();
+            var conventions = new ConventionsDeclaration(
+                new DomainEventConventions(new BaseTypes(new TypeName[0])),
+                new CommandConventions(new BaseTypes(new[] { new TypeName("Test.Diesel.ICommand") })));
+            var model = CreateSemanticModelWith(conventions, declaration);
+            var source = CompileToSource(CodeDomCompiler.Compile(model));
+            Assert.That(source, Is.StringMatching(@"class ImportEmployeeCommand :.* Test.Diesel.ICommand \{"));
+        }
+
         private CodeCompileUnit CompileImportEmployeeCommand()
         {
             var commandDeclaration = new CommandDeclaration("ImportEmployeeCommand",

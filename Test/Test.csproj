@@ -74,6 +74,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>GenerateExamples.tt</DependentUpon>
     </Compile>
+    <Compile Include="ICommand.cs" />
     <Compile Include="IDomainEvent.cs" />
     <Compile Include="ObjectMothers\CommandDeclarationObjectMother.cs" />
     <Compile Include="ObjectMothers\DomainEventDeclarationObjectMother.cs" />

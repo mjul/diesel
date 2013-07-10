@@ -584,15 +584,31 @@ namespace Test.Diesel.Parsing
         }
 
         [Test]
-        public void ConventionDeclarations_ValidWithEverything_ShouldParse()
+        public void ConventionDeclarations_DomainEventsThenCommands_SectionOrderShouldNotMatter()
         {
             var actual = Grammar.ConventionsDeclaration.Parse(
                     "(defconventions " +
                     "  :domainevents {:inherit [SomeNamespace.IDomainEvent]}" +
                     "  :commands {:inherit [SomeNamespace.ICommand]})");
             Assert.That(actual, Is.Not.Null);
-            Assert.That(actual.DomainEventConventions, Is.Not.Null);
-            Assert.That(actual.CommandConventions, Is.Not.Null);
+            Assert.That(actual.DomainEventConventions.BaseTypes.TypeNames.Single().Name,
+                        Is.EqualTo("SomeNamespace.IDomainEvent"));
+            Assert.That(actual.CommandConventions.BaseTypes.TypeNames.Single().Name,
+                        Is.EqualTo("SomeNamespace.ICommand"));
+        }
+
+        [Test]
+        public void ConventionDeclarations_CommandsThenDomainEvents_SectionOrderShouldNotMatter()
+        {
+            var actual = Grammar.ConventionsDeclaration.Parse(
+                "(defconventions " +
+                "  :commands {:inherit [SomeNamespace.ICommand]}" +
+                "  :domainevents {:inherit [SomeNamespace.IDomainEvent]})");
+            Assert.That(actual, Is.Not.Null);
+            Assert.That(actual.DomainEventConventions.BaseTypes.TypeNames.Single().Name,
+                        Is.EqualTo("SomeNamespace.IDomainEvent"));
+            Assert.That(actual.CommandConventions.BaseTypes.TypeNames.Single().Name,
+                        Is.EqualTo("SomeNamespace.ICommand"));
         }
 
         [Test]

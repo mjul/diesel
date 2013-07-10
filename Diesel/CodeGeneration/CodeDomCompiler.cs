@@ -63,7 +63,7 @@ namespace Diesel.CodeGeneration
 
         private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, SemanticModel model, NamespaceName namespaceName, CommandDeclaration declaration)
         {
-            ns.Types.Add(CommandGenerator.CreateCommandDeclaration(model, namespaceName, declaration));
+            ns.Types.Add(CommandGenerator.CreateCommandDeclaration(model, namespaceName, declaration, conventions.CommandConventions));
         }
 
         private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, SemanticModel model, NamespaceName namespaceName, DomainEventDeclaration declaration)

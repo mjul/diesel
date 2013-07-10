@@ -105,5 +105,12 @@ namespace Test.Diesel
                                                     .Single(a => a.AttributeType == typeof (DataMemberAttribute));
             return dataMemberAttribute.NamedArguments.Single(a => a.MemberName == "Order").TypedValue.Value;
         }
+
+        [Test]
+        public void Instance_WhenConventionsDeclareABaseInterface_MustImplementTheInterface()
+        {
+            var instance = new ImportEmployee(CommandId, EmployeeNumber, FirstName, Lastname, null);
+            Assert.That(instance, Is.AssignableTo<ICommand>());
+        }
     }
 }

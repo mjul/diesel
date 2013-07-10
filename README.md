@@ -144,12 +144,41 @@ and equals and equality operators are implemented with value semantics.
 Commands are DTOs (Data Transfer Objects), so they are also decorated with attributes
 to allow them to be serializable with the BinarySerializer and the DataContractSerializer.
 
+Command can be generated with base types, see `defconventions` for a description of 
+how to configure this. 
+
+Do note, however, that since Commands are contracts it is generally best to declare base
+ __interfaces__ only so that the risk of breaking contracts by modifying a base is 
+minimal.
+
+
 ## Example
 
     (defcommand ImportEmployee (int EmployeeNumber, string FirstName, string LastName, int? SourceId))
 
 This generates a class with properties `EmployeeNumber`, `FirstName` and `LastName` and `SourceId`.
 Nullable types are supported in properties with C# short syntax, i.e. "int?" denotes a nullable Int32.
+
+
+## Adding Base Classes or Interfaces to Domain Events 
+
+The code generator reads conventions from the optional `defconventions` declaration
+at the top of the Diesel source file.
+
+You can use this to add base types to the generated Commands. 
+For example, to have all Commands derive from the `GreatApp.ICommand` interface, 
+just add this declaration:
+
+    (defconventions :commands {:inherit [GreatApp.IDomainEvent]})
+
+Note that since Commands are contracts it is generally best to 
+declare base __interfaces__ only so that the risk of breaking contracts by modifying a base is 
+minimal.
+
+See the section on defining conventions for a full description of `defconventions`.
+
+
+
 
 
 # Defining Domain Events
@@ -170,16 +199,22 @@ to allow them to be serializable with the BinarySerializer and the DataContractS
 This generates a class with properties `Id`, `EmployeeNumber`, `FirstName` and `LastName` and `SourceId`.
 
 
-## Adding Base Classes or Interfaces to Domain Events
+## Adding Base Classes or Interfaces to Domain Events 
 
 The code generator reads conventions from the optional `defconventions` declaration
 at the top of the Diesel source file.
 
-You can use this to add base types to the generated Domain Events.
+You can use this to add base types to the generated Domain Events. 
 For example, to have all Domain Events derive from the `GreatApp.IDomainEvent` interface, 
 just add this declaration:
 
     (defconventions :domainevents {:inherit [GreatApp.IDomainEvent]})
+
+Note that since Domain Events are contracts it is generally best to 
+declare base __interfaces__ only so that the risk of breaking contracts by modifying a base is 
+minimal.
+
+See the section on defining conventions for a full description of `defconventions`.
 
 
 # Defining Data Transfer Objects (DTOs)
@@ -269,17 +304,36 @@ and `Employees.EmployeeImported`.
 
 # Defining Conventions for Code-Generation
 
-    (defconventions :domainevents {:inherit <list-of-base-types>})
+    (defconventions :domainevents {:inherit <list-of-base-types>}
+                    :commands {:inherit <list-of-base-types>})
 
 The code-generation conventions can be controlled through the `defconventions` declaration.
-It must be placed first in the source file.
-For now, it only controls the list of interfaces and base classes for the Domain Events.
+For now, it only controls the list of interfaces and base classes for the Domain Events and Commands.
+
+The declaration must be placed first in the source file. The `:domainevents` and `:commands`
+declarations inside are both optional and can be in any order, but they can not occur more than
+once.
 
 ## Example
+
+    (defconventions :domainevents {:inherit [Test.Diesel.IDomainEvent]}
+                    :commands {:inherit [Test.Diesel.ICommand]})
+
+This causes the code generator to add the `Test.Diesel.IDomainEvent` interface 
+as a base on all Domain Events, and the `Test.Diesel.ICommand` interface to all Commands.
+
+
+## Example: Adding interfaces to Domain Events
 
     (defconventions :domainevents {:inherit [Test.Diesel.IDomainEvent]})
 
 This adds the `Test.Diesel.IDomainEvent` as a base on all generated Domain Events.
+
+## Example: Adding interfaces to Commands
+
+    (defconventions :commands {:inherit [Test.Diesel.ICommand]})
+
+This adds the `Test.Diesel.ICommand` as a base on all generated Domain Events.
 
 
 # Comments

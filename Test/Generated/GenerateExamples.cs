@@ -535,7 +535,7 @@ namespace Test.Diesel.Generated {
     
     [System.Runtime.Serialization.DataContractAttribute(Name="ImportEmployee")]
     [System.SerializableAttribute()]
-    public partial class ImportEmployee : System.IEquatable<ImportEmployee> {
+    public partial class ImportEmployee : System.IEquatable<ImportEmployee>, Test.Diesel.ICommand {
         
         [System.Runtime.Serialization.DataMemberAttribute(Name="CommandId", Order=1)]
         private System.Guid _commandId;
@@ -629,7 +629,7 @@ namespace Test.Diesel.Generated {
     
     [System.Runtime.Serialization.DataContractAttribute(Name="ImportConsultant")]
     [System.SerializableAttribute()]
-    public partial class ImportConsultant : System.IEquatable<ImportConsultant> {
+    public partial class ImportConsultant : System.IEquatable<ImportConsultant>, Test.Diesel.ICommand {
         
         [System.Runtime.Serialization.DataMemberAttribute(Name="FirstName", Order=1)]
         private string _firstName;
@@ -699,7 +699,7 @@ namespace Test.Diesel.Generated {
     
     [System.Runtime.Serialization.DataContractAttribute(Name="ImportEmployeeNestedTypes")]
     [System.SerializableAttribute()]
-    public partial class ImportEmployeeNestedTypes : System.IEquatable<ImportEmployeeNestedTypes> {
+    public partial class ImportEmployeeNestedTypes : System.IEquatable<ImportEmployeeNestedTypes>, Test.Diesel.ICommand {
         
         [System.Runtime.Serialization.DataMemberAttribute(Name="CommandId", Order=1)]
         private System.Guid _commandId;

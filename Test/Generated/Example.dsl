@@ -1,4 +1,6 @@
-﻿(defconventions :domainevents {:inherit [Test.Diesel.IDomainEvent]})
+﻿(defconventions 
+	:commands {:inherit [Test.Diesel.ICommand]}
+	:domainevents {:inherit [Test.Diesel.IDomainEvent]})
 
 (namespace Test.Diesel.Generated 
 
