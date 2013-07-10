@@ -11,7 +11,7 @@ namespace Test.Diesel.CodeGeneration
         [Test]
         public void Override_WithNull_ShouldReturnSameInstance()
         {
-            var instance = new DomainEventConventions(new TypeName[] {});
+            var instance = new DomainEventConventions(new BaseTypes(new TypeName[] {}));
             var actual = instance.ApplyOverridesFrom(null);
             Assert.That(actual, Is.SameAs(instance));
         }
@@ -19,23 +19,30 @@ namespace Test.Diesel.CodeGeneration
         [Test]
         public void Override_WithEmptyBaseTypes_ShouldReturnInstanceWithEmptyBaseTypes()
         {
-            var instance = new DomainEventConventions(new[] { new TypeName("Foo.EventBase")  });
-            var actual = instance.ApplyOverridesFrom(new DomainEventConventions(new TypeName[] {}));
-            Assert.That(actual.BaseTypes, Is.Empty);
+            var instance = new DomainEventConventions(
+                new BaseTypes(new[] {new TypeName("Foo.EventBase")}));
+            var actual = instance.ApplyOverridesFrom(
+                new DomainEventConventions(new BaseTypes(new TypeName[] {})));
+            Assert.That(actual.BaseTypes, Is.EqualTo(new BaseTypes(new TypeName[0])));
         }
 
         [Test]
         public void Override_WithNewBaseTypes_ShouldReturnInstanceWithNewBaseTypes()
         {
-            var instance = new DomainEventConventions(new[] { new TypeName("Foo.EventBase") });
-            var actual = instance.ApplyOverridesFrom(new DomainEventConventions(new[]
-                {
-                    new TypeName("Bar.EventBase"),
-                    new TypeName("Bar.IDomainEvent")
-                }));
-            Assert.That(actual.BaseTypes.Count(), Is.EqualTo(2));
-            Assert.That(actual.BaseTypes.SingleOrDefault(x => x.Name == "Bar.EventBase"), Is.Not.Null);
-            Assert.That(actual.BaseTypes.SingleOrDefault(x => x.Name == "Bar.IDomainEvent"), Is.Not.Null);
+            var instance = new DomainEventConventions(
+                new BaseTypes(new[] { new TypeName("Foo.EventBase") }));
+
+            var actual = instance.ApplyOverridesFrom(
+                new DomainEventConventions(
+                    new BaseTypes(
+                        new[]
+                            {
+                                new TypeName("Bar.EventBase"),
+                                new TypeName("Bar.IDomainEvent")
+                            })));
+            Assert.That(actual.BaseTypes.TypeNames.Count(), Is.EqualTo(2));
+            Assert.That(actual.BaseTypes.TypeNames.SingleOrDefault(x => x.Name == "Bar.EventBase"), Is.Not.Null);
+            Assert.That(actual.BaseTypes.TypeNames.SingleOrDefault(x => x.Name == "Bar.IDomainEvent"), Is.Not.Null);
         }
 
     }

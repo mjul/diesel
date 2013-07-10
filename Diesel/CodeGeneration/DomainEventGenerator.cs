@@ -25,7 +25,7 @@ namespace Diesel.CodeGeneration
 
         private static void ApplyConventions(DomainEventConventions conventions, CodeTypeDeclaration typeDeclaration)
         {
-            foreach (var typeName in conventions.BaseTypes)
+            foreach (var typeName in conventions.BaseTypes.TypeNames)
             {
                 typeDeclaration.BaseTypes.Add(typeName.Name);
             }

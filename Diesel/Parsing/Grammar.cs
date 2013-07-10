@@ -192,21 +192,51 @@ namespace Diesel.Parsing
                 .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen);
 
 
-
-        // This can be expanded to generalized nested key-value maps later
-        public static readonly Parser<ConventionsDeclaration> ConventionsDeclaration
-            = (from declaration in Symbol("defconventions").Token()
-               from name in Keyword("domainevents").Token()
-               from lcurly in TokenGrammar.LeftCurlyBrace.Token()
+        private static readonly Parser<BaseTypes> SetWithBaseTypes
+            = (from lcurly in TokenGrammar.LeftCurlyBrace.Token()
                from inherits in Keyword("inherit").Token()
                from lbracket in TokenGrammar.LeftSquareBracket.Token()
                from baseTypes in CSharpGrammar.TypeName().Token().Many()
                from rbracket in TokenGrammar.RightSquareBracket.Token()
                from rcurly in TokenGrammar.RightCurlyBrace.Token()
-               let domainEventConventions = new DomainEventConventions(baseTypes)
-               select new ConventionsDeclaration(domainEventConventions))
+               select new BaseTypes(baseTypes));
+
+        private static readonly Parser<KeyValuePair<Keyword, DomainEventConventions>> DomainEventConventions
+            = (from name in Keyword("domainevents").Token()
+               from baseTypes in SetWithBaseTypes
+               select new KeyValuePair<Keyword, DomainEventConventions>(
+                   name, new DomainEventConventions(baseTypes)));
+
+        private static readonly Parser<KeyValuePair<Keyword, CommandConventions>> CommandConventions
+            = (from name in Keyword("commands").Token()
+               from baseTypes in SetWithBaseTypes
+               select new KeyValuePair<Keyword, CommandConventions>(
+                   name, new CommandConventions(baseTypes)));
+
+        private static readonly Parser<KeyValuePair<Keyword, IConventionsNode>> ConventionsNode
+            = CommandConventions
+                .Select(x => new KeyValuePair<Keyword, IConventionsNode>(x.Key, x.Value))
+                .Or(DomainEventConventions
+                        .Select(x => new KeyValuePair<Keyword, IConventionsNode>(x.Key, x.Value)));
+
+
+        // This can be expanded to generalized nested key-value maps later
+        public static readonly Parser<ConventionsDeclaration> ConventionsDeclaration
+            = (from declaration in Symbol("defconventions").Token()
+               from nodes in ConventionsNode.Many()
+               where KeysAreUnique(nodes)
+               let de = (DomainEventConventions)nodes.SingleOrDefault(x => x.Value is DomainEventConventions).Value
+               let cmd = (CommandConventions)nodes.SingleOrDefault(x => x.Value is CommandConventions).Value
+               select new ConventionsDeclaration(de, cmd))
                 .Contained(TokenGrammar.LeftParen, TokenGrammar.RightParen)
                 .Named("ConventionsDeclaration");
+
+        private static bool KeysAreUnique(IEnumerable<KeyValuePair<Keyword, IConventionsNode>> nodes)
+        {
+            var keys = nodes.Select(x => x.Key).ToList();
+            var uniqueKeys = keys.Distinct();
+            return (keys.Count() == uniqueKeys.Count());
+        }
 
         public static readonly Parser<AbstractSyntaxTree> AbstractSyntaxTree
             = (from conventions in ConventionsDeclaration.Optional().TokenAllowingComments()

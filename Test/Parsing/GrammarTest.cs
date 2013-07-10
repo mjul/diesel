@@ -562,13 +562,47 @@ namespace Test.Diesel.Parsing
 
 
         [Test]
-        public void ConventionDeclarations_Valid_ShouldParse()
+        public void ConventionDeclarations_ValidWithDomainEventsInheritance_ShouldParse()
         {
             var actual = Grammar.ConventionsDeclaration.Parse(
                     "(defconventions :domainevents {:inherit [SomeNamespace.IDomainEvent]})");
             Assert.That(actual, Is.Not.Null);
             Assert.That(actual.DomainEventConventions, Is.Not.Null);
+            Assert.That(actual.DomainEventConventions.BaseTypes.TypeNames.Single(),
+                        Is.EqualTo(new TypeName("SomeNamespace.IDomainEvent")));
+        }
+
+        [Test]
+        public void ConventionDeclarations_ValidWithCommandInheritance_ShouldParse()
+        {
+            var actual = Grammar.ConventionsDeclaration.Parse(
+                    "(defconventions :commands {:inherit [SomeNamespace.ICommand]})");
+            Assert.That(actual, Is.Not.Null);
+            Assert.That(actual.CommandConventions, Is.Not.Null);
+            Assert.That(actual.CommandConventions.BaseTypes.TypeNames.Single(),
+                        Is.EqualTo(new TypeName("SomeNamespace.ICommand")));
+        }
+
+        [Test]
+        public void ConventionDeclarations_ValidWithEverything_ShouldParse()
+        {
+            var actual = Grammar.ConventionsDeclaration.Parse(
+                    "(defconventions " +
+                    "  :domainevents {:inherit [SomeNamespace.IDomainEvent]}" +
+                    "  :commands {:inherit [SomeNamespace.ICommand]})");
+            Assert.That(actual, Is.Not.Null);
             Assert.That(actual.DomainEventConventions, Is.Not.Null);
+            Assert.That(actual.CommandConventions, Is.Not.Null);
+        }
+
+        [Test]
+        public void ConventionDeclarations_InvalidDuplicateSection_ShouldNotParse()
+        {
+            var actual = Grammar.ConventionsDeclaration.TryParse(
+                "(defconventions " +
+                "  :domainevents {:inherit [SomeNamespace.IDomainEvent]}" +
+                "  :domainevents {:inherit [SomeNamespace.ISomeOther]})");
+            Assert.That(actual.WasSuccessful, Is.False);
         }
 
 

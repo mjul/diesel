@@ -59,6 +59,7 @@
     <Compile Include="CodeGeneration\ValueTypeGenerator.cs" />
     <Compile Include="Parsing\AbstractSyntaxTree.cs" />
     <Compile Include="Parsing\ApplicationServiceDeclaration.cs" />
+    <Compile Include="Parsing\CommandConventions.cs" />
     <Compile Include="Parsing\CSharp\ArrayType.cs" />
     <Compile Include="Parsing\ConventionsDeclaration.cs" />
     <Compile Include="Parsing\CSharp\CSharpGrammar.cs" />
@@ -78,12 +79,14 @@
     <Compile Include="Parsing\DomainEventDeclaration.cs" />
     <Compile Include="Parsing\DtoDeclaration.cs" />
     <Compile Include="Parsing\EnumDeclaration.cs" />
+    <Compile Include="Parsing\IConventionsNode.cs" />
     <Compile Include="Parsing\IDieselExpression.cs" />
     <Compile Include="Parsing\ITreeNode.cs" />
     <Compile Include="Parsing\IDieselExpressionVisitor.cs" />
     <Compile Include="Parsing\ITypeDeclarationVisitor.cs" />
     <Compile Include="Parsing\Keyword.cs" />
     <Compile Include="Parsing\CSharp\NamespaceName.cs" />
+    <Compile Include="Parsing\BaseTypes.cs" />
     <Compile Include="Parsing\Symbol.cs" />
     <Compile Include="Parsing\Terminal.cs" />
     <Compile Include="Parsing\TokenGrammar.cs" />

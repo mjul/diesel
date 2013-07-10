@@ -12,7 +12,12 @@ namespace Diesel.CodeGeneration
     {
         private static ConventionsDeclaration DefaultConventions
         {
-            get { return new ConventionsDeclaration(new DomainEventConventions(new TypeName[] { })); }
+            get
+            {
+                return new ConventionsDeclaration(
+                    new DomainEventConventions(new BaseTypes(new TypeName[] {})),
+                    new CommandConventions(new BaseTypes(new TypeName[] {})));
+            }
         }
 
         /// <summary>

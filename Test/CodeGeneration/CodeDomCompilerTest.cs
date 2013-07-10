@@ -274,7 +274,9 @@ namespace Test.Diesel.CodeGeneration
         {
             var declaration = CreateEmployeeImportedEventDeclaration();
             var conventions = new ConventionsDeclaration(
-                new DomainEventConventions(new[] {new TypeName("Test.Diesel.IDomainEvent")}));
+                new DomainEventConventions(
+                    new BaseTypes(new[] {new TypeName("Test.Diesel.IDomainEvent")})),
+                new CommandConventions(new BaseTypes(new TypeName[0])));
             var model = CreateSemanticModelWith(conventions, declaration);
             var source = CompileToSource(CodeDomCompiler.Compile(model));
             Assert.That(source, Is.StringMatching(@"class EmployeeImported :.* Test.Diesel.IDomainEvent \{"));
