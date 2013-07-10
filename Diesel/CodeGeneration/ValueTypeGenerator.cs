@@ -19,7 +19,9 @@ namespace Diesel.CodeGeneration
             var result = CreateTypeWithValueSemantics(
                 ValueObjectSpecification.CreateStruct(
                     namespaceName, declaration.Name,
-                    declaration.Properties.ToArray(), false),
+                    declaration.Properties.ToArray(),
+                    new BaseTypes(new TypeName[0]), 
+                    false),
                 model.KnownTypes);
             if (declaration.Properties.Count() == 1)
             {

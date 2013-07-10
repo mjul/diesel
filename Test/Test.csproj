@@ -56,6 +56,7 @@
     <Compile Include="CodeGeneration\EqualityMethodsGeneratorTest.cs" />
     <Compile Include="CodeGeneration\MemberTypeMapperTest.cs" />
     <Compile Include="CodeGeneration\SystemTypeMapperTest.cs" />
+    <Compile Include="CodeGeneration\ValueObjectSpecificationTest.cs" />
     <Compile Include="DieselCompilerIntegrationTest.cs" />
     <Compile Include="GeneratedCommandNestedTypesTest.cs" />
     <Compile Include="GeneratedCommandTest.cs" />
@@ -76,10 +77,12 @@
     </Compile>
     <Compile Include="ICommand.cs" />
     <Compile Include="IDomainEvent.cs" />
+    <Compile Include="ObjectMothers\BaseTypesObjectMother.cs" />
     <Compile Include="ObjectMothers\CommandDeclarationObjectMother.cs" />
     <Compile Include="ObjectMothers\DomainEventDeclarationObjectMother.cs" />
     <Compile Include="ObjectMothers\DtoDeclarationObjectMother.cs" />
     <Compile Include="ObjectMothers\EnumDeclarationObjectMother.cs" />
+    <Compile Include="ObjectMothers\PropertyDeclarationObjectMother.cs" />
     <Compile Include="ObjectMothers\ValueTypeDeclarationObjectMother.cs" />
     <Compile Include="Parsing\BaseTypesTest.cs" />
     <Compile Include="Parsing\CommandConventionsTest.cs" />

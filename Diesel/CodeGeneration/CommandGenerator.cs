@@ -16,18 +16,11 @@ namespace Diesel.CodeGeneration
             var type = CreateTypeWithValueSemantics(
                 ValueObjectSpecification.CreateClass(
                 namespaceName, declaration.Name, 
-                declaration.Properties.ToArray(), true, false),
+                declaration.Properties.ToArray(), 
+                conventions.BaseTypes,
+                true, false),
                 model.KnownTypes);
-            ApplyConventions(conventions, type);
             return type;
-        }
-
-        private static void ApplyConventions(CommandConventions conventions, CodeTypeDeclaration typeDeclaration)
-        {
-            foreach (var typeName in conventions.BaseTypes.TypeNames)
-            {
-                typeDeclaration.BaseTypes.Add(typeName.Name);
-            }
         }
     }
 }

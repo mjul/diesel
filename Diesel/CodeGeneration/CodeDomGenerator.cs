@@ -43,7 +43,12 @@ namespace Diesel.CodeGeneration
                 specification.Namespace, 
                 knownTypesList).ToList();
 
+            foreach (var baseType in specification.BaseTypes.TypeNames)
+            {
+                result.BaseTypes.Add(baseType.Name);
+            }
             result.BaseTypes.AddRange(CreateImplementsIEquatableOf(specification.Name));
+
             result.Members.AddRange(CreateConstructorAssigningBackingFieldsFor(readOnlyProperties));
             result.Members.AddRange(CreateReadOnlyProperties(readOnlyProperties));
             result.Members.AddRange(CreateEqualityOperatorOverloading(specification.Name, specification.IsValueType));

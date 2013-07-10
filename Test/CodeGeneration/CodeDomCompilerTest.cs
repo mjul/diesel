@@ -174,7 +174,7 @@ namespace Test.Diesel.CodeGeneration
                 new CommandConventions(new BaseTypes(new[] { new TypeName("Test.Diesel.ICommand") })));
             var model = CreateSemanticModelWith(conventions, declaration);
             var source = CompileToSource(CodeDomCompiler.Compile(model));
-            Assert.That(source, Is.StringMatching(@"class ImportEmployeeCommand :.* Test.Diesel.ICommand \{"));
+            Assert.That(source, Is.StringMatching(@"class ImportEmployeeCommand : Test.Diesel.ICommand"));
         }
 
         private CodeCompileUnit CompileImportEmployeeCommand()
@@ -291,7 +291,7 @@ namespace Test.Diesel.CodeGeneration
                 new CommandConventions(new BaseTypes(new TypeName[0])));
             var model = CreateSemanticModelWith(conventions, declaration);
             var source = CompileToSource(CodeDomCompiler.Compile(model));
-            Assert.That(source, Is.StringMatching(@"class EmployeeImported :.* Test.Diesel.IDomainEvent \{"));
+            Assert.That(source, Is.StringMatching(@"class EmployeeImported : Test.Diesel.IDomainEvent"));
         }
 
         private CodeCompileUnit CompileEmployeeImportedEvent()

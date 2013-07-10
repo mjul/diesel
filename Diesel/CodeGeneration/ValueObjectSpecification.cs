@@ -10,17 +10,21 @@ namespace Diesel.CodeGeneration
         public string Name { get; private set; }
         public NamespaceName Namespace { get; private set; }
         public PropertyDeclaration[] Properties { get; private set; }
+        public BaseTypes BaseTypes { get; private set; }
         public bool IsDataContract { get; private set; }
         public bool IsSealed { get; private set; }
 
         private ValueObjectSpecification(bool isValueType, 
             NamespaceName namespaceName, string name, 
-            PropertyDeclaration[] properties, bool isDataContract, bool isSealed)
+            PropertyDeclaration[] properties, 
+            BaseTypes baseTypes,
+            bool isDataContract, bool isSealed)
         {
             IsValueType = isValueType;
             Namespace = namespaceName;
             Name = name;
             Properties = properties;
+            BaseTypes = baseTypes;
             IsDataContract = isDataContract;
             IsSealed = isSealed;
         }
@@ -29,18 +33,20 @@ namespace Diesel.CodeGeneration
         public static ValueObjectSpecification CreateStruct(
             NamespaceName namespaceName, string name, 
             PropertyDeclaration[] properties,
+            BaseTypes baseTypes,
             bool isDataContract)
         {
-            return new ValueObjectSpecification(true, namespaceName, name, properties, isDataContract, true);
+            return new ValueObjectSpecification(true, namespaceName, name, properties, baseTypes, isDataContract, true);
         }
 
         [Pure]
         public static ValueObjectSpecification CreateClass(
             NamespaceName namespaceName, string name,
             PropertyDeclaration[] properties, 
+            BaseTypes baseTypes,
             bool isDataContract, bool isSealed)
         {
-            return new ValueObjectSpecification(false, namespaceName, name, properties, isDataContract, isSealed);
+            return new ValueObjectSpecification(false, namespaceName, name, properties, baseTypes, isDataContract, isSealed);
         }
 
     }
