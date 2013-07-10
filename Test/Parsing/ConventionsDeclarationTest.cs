@@ -1,4 +1,5 @@
-﻿using Diesel.Parsing;
+﻿using System.Linq;
+using Diesel.Parsing;
 using Diesel.Parsing.CSharp;
 using NUnit.Framework;
 using Test.Diesel.TestHelpers;

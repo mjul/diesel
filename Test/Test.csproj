@@ -53,8 +53,6 @@
       <DependentUpon>CodeExamples.resx</DependentUpon>
     </Compile>
     <Compile Include="CodeGeneration\TypeNameMapperTest.cs" />
-    <Compile Include="CodeGeneration\ConventionsDeclarationTest.cs" />
-    <Compile Include="CodeGeneration\DomainEventConventionsDeclarationTest.cs" />
     <Compile Include="CodeGeneration\EqualityMethodsGeneratorTest.cs" />
     <Compile Include="CodeGeneration\MemberTypeMapperTest.cs" />
     <Compile Include="CodeGeneration\SystemTypeMapperTest.cs" />
