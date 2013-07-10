@@ -1,3 +1,7 @@
+# Version 1.11
+* `defconventions` extended to enable configurable base classes and interfaces on Commands.
+* Known value type fields are now included in GetHashCode calculation.
+
 # Version 1.10
 * Added support for properties that are uni-dimensional arrays of named types (e.g. `EmployeeNumber[]`).
 
