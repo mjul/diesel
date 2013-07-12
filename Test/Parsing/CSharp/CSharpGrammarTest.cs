@@ -299,7 +299,7 @@ namespace Test.Diesel.Parsing.CSharp
             Assert.That(actual.Underlying, Is.EqualTo(expectedUnderlying));
         }
 
-        [Test, Ignore]
+        [Test]
         public void StructType_TypeName_ShouldParse()
         {
             var actual = SystemUnderTest.StructType().Parse("System.DateTime");

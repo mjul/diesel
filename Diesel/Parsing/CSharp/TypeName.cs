@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace Diesel.Parsing.CSharp
 {
     [DebuggerDisplay("{Name}")]
-    public class TypeName : Terminal, IEquatable<TypeName>, ITypeNode
+    public class TypeName : Terminal, IEquatable<TypeName>, ITypeNode, IStructType
     {
         public string Name { get; private set; }
         public TypeName(string name)

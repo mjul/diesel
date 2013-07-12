@@ -115,11 +115,10 @@ namespace Diesel.Parsing.CSharp
 
         public Parser<IStructType> StructType(bool includeNullableTypes)
         {
-            var parser = SimpleType();
-                // TODO: .Or<StructType>(TypeNameStructType());
+            var parser = TypeName().Or<IStructType>(SimpleType());
 
             return includeNullableTypes
-                       ? NullableType().Or<IStructType>(parser)
+                       ? NullableType().Or(parser)
                        : parser;
         }
 
