@@ -320,7 +320,7 @@ namespace Test.Diesel.Parsing.CSharp
             Assert.That(actual, Is.EqualTo(new NullableType(new SimpleType(typeof (int)))));
         }
 
-        [Test, Ignore]
+        [Test]
         public void StructType_NullableNamedType_ShouldParse()
         {
             var actual = SystemUnderTest.StructType().Parse("DateTime?");
