@@ -1,3 +1,6 @@
+# Version 1.12
+* Adds support for named nullable types in properties, e.g. `DateTime? EndDate`.
+
 # Version 1.11
 * `defconventions` extended to enable configurable base classes and interfaces on Commands.
 * Known value type fields are now included in GetHashCode calculation.
