@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Diesel.Parsing.CSharp
 {
-    public class TypeName : Terminal, IEquatable<TypeName>
+    [DebuggerDisplay("{Name}")]
+    public class TypeName : Terminal, IEquatable<TypeName>, ITypeNode
     {
         public string Name { get; private set; }
         public TypeName(string name)
@@ -28,6 +30,12 @@ namespace Diesel.Parsing.CSharp
         public override int GetHashCode()
         {
             return (Name != null ? Name.GetHashCode() : 0);
+        }
+
+        public void Accept(ITypeNodeVisitor visitor)
+        {
+            throw new NotImplementedException();
+            // TODO: return visitor.Visit(this);
         }
 
         public static bool operator ==(TypeName left, TypeName right)

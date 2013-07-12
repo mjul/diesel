@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using Test.Diesel.TestHelpers;
 
-namespace Test.Diesel.Parsing
+namespace Test.Diesel.Parsing.CSharp
 {
     [TestFixture]
     public class TypeNameTest

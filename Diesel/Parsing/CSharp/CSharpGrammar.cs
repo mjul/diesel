@@ -115,9 +115,8 @@ namespace Diesel.Parsing.CSharp
 
         public Parser<StructType> StructType(bool includeNullableTypes)
         {
-            var parser = 
-                // TODO: type-name 
-                SimpleType();
+            var parser = SimpleType();
+                // TODO: .Or<StructType>(TypeNameStructType());
 
             return includeNullableTypes
                        ? NullableType().Or<StructType>(parser)
@@ -146,7 +145,7 @@ namespace Diesel.Parsing.CSharp
             return ValueTypeNode(false);
         }
 
-        public Parser<TypeNode> TypeNode(bool includeNullableTypes, bool includeArrayTypes)
+        public Parser<ITypeNode> TypeNode(bool includeNullableTypes, bool includeArrayTypes)
         {
             return ReferenceType(includeArrayTypes)
                 .Or(ValueTypeNode(includeNullableTypes))
@@ -154,13 +153,13 @@ namespace Diesel.Parsing.CSharp
                 ;
         }
 
-        public Parser<TypeNode> TypeNode()
+        public Parser<ITypeNode> TypeNode()
         {
             return TypeNode(true, true);
         }
 
 
-        private Parser<TypeNode> NonArrayType()
+        private Parser<ITypeNode> NonArrayType()
         {
             return TypeNode(true, false);
         }
@@ -180,12 +179,12 @@ namespace Diesel.Parsing.CSharp
                     select new TypeNameTypeNode(t));
         }
 
-        public Parser<TypeNode> ReferenceType()
+        public Parser<ITypeNode> ReferenceType()
         {
             return ReferenceType(true);
         }
 
-        private Parser<TypeNode> ReferenceType(bool includeArrayTypes)
+        private Parser<ITypeNode> ReferenceType(bool includeArrayTypes)
         {
             var parser = 
                 // interface-type not implemented
@@ -198,10 +197,11 @@ namespace Diesel.Parsing.CSharp
         }
 
 
-        public Parser<TypeNode> ClassType()
+        public Parser<ITypeNode> ClassType()
         {
             return StringType()
-                .Or<TypeNode>(TypeNameTypeNode());
+                .Or<ITypeNode>(TypeNameTypeNode()
+                );
         }
 
         public Parser<StringReferenceType> StringType()

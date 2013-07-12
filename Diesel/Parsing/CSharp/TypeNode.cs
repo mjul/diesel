@@ -2,9 +2,8 @@
 
 namespace Diesel.Parsing.CSharp
 {
-    public abstract class TypeNode : ITreeNode
+    public interface ITypeNode : ITreeNode
     {
-        public abstract void Accept(ITypeNodeVisitor visitor);
-        public abstract IEnumerable<ITreeNode> Children { get; }
+        void Accept(ITypeNodeVisitor visitor);
     }
 }

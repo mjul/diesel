@@ -18,7 +18,7 @@ namespace Diesel.CodeGeneration
         /// corresponding <see cref="MemberType"/>.
         /// </summary>
         [Pure]
-        public static MemberType MemberTypeFor(NamespaceName namespaceName, TypeNode type, IEnumerable<KnownType> knownTypes)
+        public static MemberType MemberTypeFor(NamespaceName namespaceName, ITypeNode type, IEnumerable<KnownType> knownTypes)
         {
             var visitor = new MemberTypeMapperTypeNodeVisitor(namespaceName, knownTypes);
             type.Accept(visitor);
@@ -57,7 +57,7 @@ namespace Diesel.CodeGeneration
                 MemberType = MemberType.CreateForTypeName(typeNameTypeNode.TypeName, isValueType);
             }
 
-            private void ReturnSystemMemberType(TypeNode node)
+            private void ReturnSystemMemberType(ITypeNode node)
             {
                 MemberType = MemberType.CreateForSystemType(SystemTypeMapper.SystemTypeFor(node));
             }

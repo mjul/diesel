@@ -95,7 +95,7 @@
     <Compile Include="CodeGeneration\CodeDomCompilerTest.cs" />
     <Compile Include="Parsing\KeywordTest.cs" />
     <Compile Include="Parsing\TokenGrammarTest.cs" />
-    <Compile Include="Parsing\TypeNameTest.cs" />
+    <Compile Include="Parsing\CSharp\TypeNameTest.cs" />
     <Compile Include="TestHelpers\SerializationTesting.cs" />
     <Compile Include="Transformations\ApplyDefaultsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

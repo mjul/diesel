@@ -7,9 +7,9 @@ namespace Diesel.Parsing
     public class PropertyDeclaration : ITreeNode
     {
         public string Name { get; private set; }
-        public TypeNode Type { get; private set; }
+        public ITypeNode Type { get; private set; }
 
-        public PropertyDeclaration(string name, TypeNode type)
+        public PropertyDeclaration(string name, ITypeNode type)
         {
             Name = name;
             Type = type;
@@ -21,7 +21,7 @@ namespace Diesel.Parsing
         }
 
         [Obsolete("Move to semantic model")]
-        public PropertyDeclaration OverrideType(TypeNode type)
+        public PropertyDeclaration OverrideType(ITypeNode type)
         {
             return new PropertyDeclaration(Name, type);
         }

@@ -2,8 +2,9 @@
 
 namespace Diesel.Parsing.CSharp
 {
-    public abstract class ReferenceType : TypeNode
+    public abstract class ReferenceType : ITypeNode
     {
-        public abstract override IEnumerable<ITreeNode> Children { get; }
+        public abstract IEnumerable<ITreeNode> Children { get; }
+        public abstract void Accept(ITypeNodeVisitor visitor);
     }
 }

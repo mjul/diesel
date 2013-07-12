@@ -382,6 +382,15 @@ namespace Test.Diesel.Parsing
             Assert.That(actual.Properties.Count(), Is.EqualTo(1));
         }
 
+        [Test, Ignore]
+        public void CommandDeclaration_ValidDeclarationSingleNullableNamedProperty_ShouldParseProperty()
+        {
+            var actual = Grammar.CommandDeclaration.Parse("(defcommand ImportEmployee (DateTime? StartDate))");
+            Assert.That(actual.Properties.Count(), Is.EqualTo(1));
+            Assert.That(actual.Properties.Single().Type, 
+                Is.EqualTo(new NullableType(new TypeName("DateTime"))));
+        }
+
         [Test]
         public void PropertyDeclaration_SingleProperty_ShouldSetNameAndType()
         {
@@ -395,6 +404,14 @@ namespace Test.Diesel.Parsing
         {
             var actual = Grammar.PropertyDeclaration.Parse("int? Optional");
             Assert.That(actual.Type, Is.EqualTo(AstNullableOf<int>()));
+        }
+
+        [Test, Ignore]
+        public void PropertyDeclaration_NullableNamedType_ShouldSetType()
+        {
+            var actual = Grammar.PropertyDeclaration.Parse("DateTime? Optional");
+            Assert.That(actual.Type,
+                        Is.EqualTo(new NullableType(new TypeName("DateTime"))));
         }
 
         [Test]
@@ -476,7 +493,8 @@ namespace Test.Diesel.Parsing
         }
 
 
-        private void AssertPropertyEquals(PropertyDeclaration actual, string expectedName, TypeNode expectedType)
+        private void AssertPropertyEquals(PropertyDeclaration actual, 
+            string expectedName, ITypeNode expectedType)
         {
             Assert.That(actual.Name, Is.EqualTo(expectedName));
             Assert.That(actual.Type, Is.EqualTo(expectedType));

@@ -5,10 +5,10 @@ namespace Diesel.Parsing.CSharp
 {
     public class ArrayType : ReferenceType, IEquatable<ArrayType>
     {
-        public TypeNode Type { get; private set; }
+        public ITypeNode Type { get; private set; }
         public RankSpecifiers RankSpecifiers { get; set; }
 
-        public ArrayType(TypeNode nonArrayType, RankSpecifiers rankSpecifiers)
+        public ArrayType(ITypeNode nonArrayType, RankSpecifiers rankSpecifiers)
         {
             Type = nonArrayType;
             RankSpecifiers = rankSpecifiers;

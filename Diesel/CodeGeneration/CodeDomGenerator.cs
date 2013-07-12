@@ -83,7 +83,7 @@ namespace Diesel.CodeGeneration
                     });
         }
 
-        private static MemberType MemberTypeFor(NamespaceName namespaceName, TypeNode type, IEnumerable<KnownType> knownTypes)
+        private static MemberType MemberTypeFor(NamespaceName namespaceName, ITypeNode type, IEnumerable<KnownType> knownTypes)
         {
             return MemberTypeMapper.MemberTypeFor(namespaceName, type, knownTypes);
         }

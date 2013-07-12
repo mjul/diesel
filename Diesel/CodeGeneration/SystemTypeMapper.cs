@@ -17,7 +17,7 @@ namespace Diesel.CodeGeneration
         /// check if the mapping will succeed.
         /// </summary>
         [Pure]
-        public static System.Type SystemTypeFor(TypeNode node)
+        public static System.Type SystemTypeFor(ITypeNode node)
         {
             var visitor = Visit(node);
             if (!visitor.FoundSystemType) throw new ArgumentOutOfRangeException("node", node, "No System type found for TypeNode.");
@@ -29,13 +29,13 @@ namespace Diesel.CodeGeneration
         /// represents a system type.
         /// </summary>
         [Pure]
-        public static bool IsSystemType(TypeNode node)
+        public static bool IsSystemType(ITypeNode node)
         {
             return Visit(node).FoundSystemType;
         }
 
         [Pure]
-        private static SystemTypeMapperVisitor Visit(TypeNode node)
+        private static SystemTypeMapperVisitor Visit(ITypeNode node)
         {
             var visitor = new SystemTypeMapperVisitor();
             node.Accept(visitor);

@@ -8,9 +8,9 @@ namespace Diesel.Parsing.CSharp
     /// </summary>
     public class NullableType : StructType, IEquatable<NullableType>
     {
-        public TypeNode Underlying { get; private set; }
+        public ITypeNode Underlying { get; private set; }
 
-        public NullableType(TypeNode underlying)
+        public NullableType(ITypeNode underlying)
         {
             Underlying = underlying;
         }

@@ -286,16 +286,25 @@ namespace Test.Diesel.Parsing.CSharp
             Assert.That(actual.WasSuccessful, Is.False);
         }
 
-        private void AssertNullableTypeParsesAs(string input, TypeNode expectedUnderlying)
+        [Test, Ignore]
+        public void NullableType_TypeName_ShouldParse()
+        {
+            AssertNullableTypeParsesAs("DateTime?",
+                                       new TypeName("DateTime"));
+        }
+
+        private void AssertNullableTypeParsesAs(string input, ITypeNode expectedUnderlying)
         {
             var actual = SystemUnderTest.NullableType().Parse(input);
             Assert.That(actual.Underlying, Is.EqualTo(expectedUnderlying));
         }
 
-        [Test]
+        [Test, Ignore]
         public void StructType_TypeName_ShouldParse()
         {
-            Assert.Inconclusive();            
+            AssertNullableTypeParsesAs("System.DateTime?", new TypeName("System.DateTime"));
+            AssertNullableTypeParsesAs("DateTime?", new TypeName("DateTime"));
+            AssertNullableTypeParsesAs("Guid?", new TypeName("Guid"));
         }
 
         [Test]
@@ -378,6 +387,14 @@ namespace Test.Diesel.Parsing.CSharp
             Assert.That(actual, Is.EqualTo(new SimpleType(typeof(int))));
         }
 
+        [Test, Ignore]
+        public void TypeNode_NullableNamedType_ShouldParse()
+        {
+            var actual = SystemUnderTest.TypeNode().Token().Parse("System.DateTime?");
+            Assert.That(actual, Is.EqualTo(new NullableType(new TypeName("System.DateTime"))));
+        }
+
+
         [Test]
         public void TypeNode_ReferenceTypeString_ShouldParse()
         {
@@ -410,9 +427,17 @@ namespace Test.Diesel.Parsing.CSharp
         [Test]
         public void TypeNode_TypeName_ShouldParse()
         {
-            
             var actual = SystemUnderTest.TypeNode().Parse("Diesel.Test.Parsing.CSharpGrammarTest");
             Assert.That(actual, Is.EqualTo(new TypeNameTypeNode(new TypeName("Diesel.Test.Parsing.CSharpGrammarTest"))));
+        }
+
+
+        [Test, Ignore]
+        public void ValueType_NamedNullableStructType_ShouldParse()
+        {
+            var actual = SystemUnderTest.ValueTypeNode().Parse("System.DateTime?");
+            Assert.That(actual, Is.EqualTo(
+                new NullableType(new TypeName("System.DateTime"))));
         }
     }
 }

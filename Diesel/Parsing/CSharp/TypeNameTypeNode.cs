@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 namespace Diesel.Parsing.CSharp
 {
-    public class TypeNameTypeNode : TypeNode, IEquatable<TypeNameTypeNode>
+    [Obsolete]
+    public class TypeNameTypeNode : ITypeNode, IEquatable<TypeNameTypeNode>
     {
         public TypeName TypeName { get; private set; }
 
@@ -12,12 +13,12 @@ namespace Diesel.Parsing.CSharp
             TypeName = typeName;
         }
 
-        public override void Accept(ITypeNodeVisitor visitor)
+        public void Accept(ITypeNodeVisitor visitor)
         {
             visitor.Visit(this);
         }
 
-        public override IEnumerable<ITreeNode> Children
+        public IEnumerable<ITreeNode> Children
         {
             get { yield return TypeName; }
         }

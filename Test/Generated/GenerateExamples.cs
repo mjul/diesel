@@ -365,7 +365,7 @@ namespace Test.Diesel.Generated {
     
     [System.Runtime.Serialization.DataContractAttribute(Name="EmployeeImported")]
     [System.SerializableAttribute()]
-    public sealed partial class EmployeeImported : System.IEquatable<EmployeeImported>, Test.Diesel.IDomainEvent {
+    public sealed partial class EmployeeImported : Test.Diesel.IDomainEvent, System.IEquatable<EmployeeImported> {
         
         [System.Runtime.Serialization.DataMemberAttribute(Name="Id", Order=1)]
         private System.Guid _id;
@@ -535,7 +535,7 @@ namespace Test.Diesel.Generated {
     
     [System.Runtime.Serialization.DataContractAttribute(Name="ImportEmployee")]
     [System.SerializableAttribute()]
-    public partial class ImportEmployee : System.IEquatable<ImportEmployee>, Test.Diesel.ICommand {
+    public partial class ImportEmployee : Test.Diesel.ICommand, System.IEquatable<ImportEmployee> {
         
         [System.Runtime.Serialization.DataMemberAttribute(Name="CommandId", Order=1)]
         private System.Guid _commandId;
@@ -629,7 +629,7 @@ namespace Test.Diesel.Generated {
     
     [System.Runtime.Serialization.DataContractAttribute(Name="ImportConsultant")]
     [System.SerializableAttribute()]
-    public partial class ImportConsultant : System.IEquatable<ImportConsultant>, Test.Diesel.ICommand {
+    public partial class ImportConsultant : Test.Diesel.ICommand, System.IEquatable<ImportConsultant> {
         
         [System.Runtime.Serialization.DataMemberAttribute(Name="FirstName", Order=1)]
         private string _firstName;
@@ -699,7 +699,7 @@ namespace Test.Diesel.Generated {
     
     [System.Runtime.Serialization.DataContractAttribute(Name="ImportEmployeeNestedTypes")]
     [System.SerializableAttribute()]
-    public partial class ImportEmployeeNestedTypes : System.IEquatable<ImportEmployeeNestedTypes>, Test.Diesel.ICommand {
+    public partial class ImportEmployeeNestedTypes : Test.Diesel.ICommand, System.IEquatable<ImportEmployeeNestedTypes> {
         
         [System.Runtime.Serialization.DataMemberAttribute(Name="CommandId", Order=1)]
         private System.Guid _commandId;
@@ -782,7 +782,7 @@ namespace Test.Diesel.Generated {
     
     [System.Runtime.Serialization.DataContractAttribute(Name="DepartmentImported")]
     [System.SerializableAttribute()]
-    public sealed partial class DepartmentImported : System.IEquatable<DepartmentImported>, Test.Diesel.IDomainEvent {
+    public sealed partial class DepartmentImported : Test.Diesel.IDomainEvent, System.IEquatable<DepartmentImported> {
         
         [System.Runtime.Serialization.DataMemberAttribute(Name="Id", Order=1)]
         private System.Guid _id;
