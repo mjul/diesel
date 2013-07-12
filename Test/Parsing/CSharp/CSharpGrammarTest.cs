@@ -302,9 +302,8 @@ namespace Test.Diesel.Parsing.CSharp
         [Test, Ignore]
         public void StructType_TypeName_ShouldParse()
         {
-            AssertNullableTypeParsesAs("System.DateTime?", new TypeName("System.DateTime"));
-            AssertNullableTypeParsesAs("DateTime?", new TypeName("DateTime"));
-            AssertNullableTypeParsesAs("Guid?", new TypeName("Guid"));
+            var actual = SystemUnderTest.StructType().Parse("System.DateTime");
+            Assert.That(actual, Is.EqualTo(new TypeName("System.DateTime")));
         }
 
         [Test]
@@ -319,6 +318,13 @@ namespace Test.Diesel.Parsing.CSharp
         {
             var actual = SystemUnderTest.StructType().Parse("int?");
             Assert.That(actual, Is.EqualTo(new NullableType(new SimpleType(typeof (int)))));
+        }
+
+        [Test, Ignore]
+        public void StructType_NullableNamedType_ShouldParse()
+        {
+            var actual = SystemUnderTest.StructType().Parse("DateTime?");
+            Assert.That(actual, Is.EqualTo(new NullableType(new TypeName("DateTime"))));
         }
 
 
