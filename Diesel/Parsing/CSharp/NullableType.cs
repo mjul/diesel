@@ -6,7 +6,7 @@ namespace Diesel.Parsing.CSharp
     /// <summary>
     /// C# "nullable-type" production
     /// </summary>
-    public class NullableType : StructType, IEquatable<NullableType>
+    public class NullableType : IStructType, IEquatable<NullableType>
     {
         public ITypeNode Underlying { get; private set; }
 
@@ -15,12 +15,12 @@ namespace Diesel.Parsing.CSharp
             Underlying = underlying;
         }
 
-        public override void Accept(ITypeNodeVisitor visitor)
+        public void Accept(ITypeNodeVisitor visitor)
         {
             visitor.Visit(this);
         }
 
-        public override IEnumerable<ITreeNode> Children
+        public IEnumerable<ITreeNode> Children
         {
             get { yield return Underlying; }
         }

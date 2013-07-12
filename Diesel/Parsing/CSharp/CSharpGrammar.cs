@@ -108,27 +108,27 @@ namespace Diesel.Parsing.CSharp
                    select new RankSpecifier(commas.Count() + 1);
         } 
 
-        public Parser<StructType> StructType()
+        public Parser<IStructType> StructType()
         {
             return StructType(true);
         }
 
-        public Parser<StructType> StructType(bool includeNullableTypes)
+        public Parser<IStructType> StructType(bool includeNullableTypes)
         {
             var parser = SimpleType();
                 // TODO: .Or<StructType>(TypeNameStructType());
 
             return includeNullableTypes
-                       ? NullableType().Or<StructType>(parser)
+                       ? NullableType().Or<IStructType>(parser)
                        : parser;
         }
 
-        public Parser<ValueTypeNode> ValueTypeNode()
+        public Parser<IValueTypeNode> ValueTypeNode()
         {
             return ValueTypeNode(true);
         }
 
-        private Parser<ValueTypeNode> ValueTypeNode(bool includeNullableTypes)
+        private Parser<IValueTypeNode> ValueTypeNode(bool includeNullableTypes)
         {
             return StructType(includeNullableTypes)
                 // TODO: .Or(EnumType)
@@ -140,7 +140,7 @@ namespace Diesel.Parsing.CSharp
         /// A bit more restricted than the C# version we allow nullables only of explicit value types.
         /// C# would also allow generic types with the right type constraints to fit.
         /// </summary>
-        private Parser<ValueTypeNode> NonNullableValueType()
+        private Parser<IValueTypeNode> NonNullableValueType()
         {
             return ValueTypeNode(false);
         }

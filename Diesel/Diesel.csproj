@@ -71,9 +71,9 @@
     <Compile Include="Parsing\CSharp\ReferenceType.cs" />
     <Compile Include="Parsing\CSharp\SimpleType.cs" />
     <Compile Include="Parsing\CSharp\StringReferenceType.cs" />
-    <Compile Include="Parsing\CSharp\StructType.cs" />
-    <Compile Include="Parsing\CSharp\TypeNode.cs" />
-    <Compile Include="Parsing\CSharp\ValueTypeNode.cs" />
+    <Compile Include="Parsing\CSharp\IStructType.cs" />
+    <Compile Include="Parsing\CSharp\ITypeNode.cs" />
+    <Compile Include="Parsing\CSharp\IValueTypeNode.cs" />
     <Compile Include="Parsing\DomainEventConventions.cs" />
     <Compile Include="Parsing\DomainEventDeclaration.cs" />
     <Compile Include="Parsing\DtoDeclaration.cs" />

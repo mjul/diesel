@@ -6,7 +6,7 @@ namespace Diesel.Parsing.CSharp
     /// <summary>
     /// The C# "simple-type" production (simplified, no subtypes for bool, integral and floating)
     /// </summary>
-    public class SimpleType : StructType, IEquatable<SimpleType>
+    public class SimpleType : IStructType, IEquatable<SimpleType>
     {
         public Type Type { get; set; }
 
@@ -15,12 +15,12 @@ namespace Diesel.Parsing.CSharp
             Type = type;
         }
 
-        public override void Accept(ITypeNodeVisitor visitor)
+        public void Accept(ITypeNodeVisitor visitor)
         {
             visitor.Visit(this);
         }
 
-        public override IEnumerable<ITreeNode> Children
+        public IEnumerable<ITreeNode> Children
         {
             get { yield break; }
         }
