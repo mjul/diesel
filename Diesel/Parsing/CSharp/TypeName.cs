@@ -34,8 +34,7 @@ namespace Diesel.Parsing.CSharp
 
         public void Accept(ITypeNodeVisitor visitor)
         {
-            throw new NotImplementedException();
-            // TODO: return visitor.Visit(this);
+            visitor.Visit(this);
         }
 
         public static bool operator ==(TypeName left, TypeName right)

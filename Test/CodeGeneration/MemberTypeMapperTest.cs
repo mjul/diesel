@@ -26,7 +26,7 @@ namespace Test.Diesel.CodeGeneration
         {
             var actual = MemberTypeMapper.MemberTypeFor(
                 new NamespaceName("MyNamespace"),
-                new TypeNameTypeNode(new TypeName("Foo.Bar.SomeType")),
+                new TypeName("Foo.Bar.SomeType"),
                 new KnownType[0]);
             Assert.That(actual.FullName, Is.EqualTo("Foo.Bar.SomeType"));
         }
@@ -35,7 +35,7 @@ namespace Test.Diesel.CodeGeneration
         [Test]
         public void MemberType_ForArrayOfNamedType_ShouldBeArrayOfNamedTypeMemberType()
         {
-            var elementType = new TypeNameTypeNode(new TypeName("Foo.Bar.SomeType"));
+            var elementType = new TypeName("Foo.Bar.SomeType");
             var actual = MemberTypeMapper.MemberTypeFor(
                 new NamespaceName("MyNamespace"),
                 new ArrayType(elementType, new RankSpecifiers(new[] { new RankSpecifier(1) })),
@@ -48,7 +48,7 @@ namespace Test.Diesel.CodeGeneration
         {
             var actual = MemberTypeMapper.MemberTypeFor(
                 new NamespaceName("MyNamespace"),
-                new TypeNameTypeNode(new TypeName("Foo.SomeType")),
+                new TypeName("Foo.SomeType"),
                 new[] { new KnownType("Foo.SomeType", true) });
             Assert.That(actual.IsValueType, Is.True);
         }
@@ -58,7 +58,7 @@ namespace Test.Diesel.CodeGeneration
         {
             var actual = MemberTypeMapper.MemberTypeFor(
                 new NamespaceName("MyNamespace"),
-                new TypeNameTypeNode(new TypeName("SomeType")),
+                new TypeName("SomeType"),
                 new[] { new KnownType("MyNamespace.SomeType", true) });
             Assert.That(actual.IsValueType, Is.True);
         }
@@ -69,7 +69,7 @@ namespace Test.Diesel.CodeGeneration
         {
             var actual = MemberTypeMapper.MemberTypeFor(
                 new NamespaceName("MyNamespace"),
-                new TypeNameTypeNode(new TypeName("Foo.SomeType")),
+                new TypeName("Foo.SomeType"),
                 new[] { new KnownType("Foo.SomeType", false) });
             Assert.That(actual.IsValueType, Is.False);
         }
@@ -79,7 +79,7 @@ namespace Test.Diesel.CodeGeneration
         {
             var actual = MemberTypeMapper.MemberTypeFor(
                 new NamespaceName("MyNamespace"),
-                new TypeNameTypeNode(new TypeName("Foo.SomeType")),
+                new TypeName("Foo.SomeType"),
                 new KnownType[] {});
         }
     }

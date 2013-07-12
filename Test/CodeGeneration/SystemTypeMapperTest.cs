@@ -76,28 +76,28 @@ namespace Test.Diesel.CodeGeneration
         [Test]
         public void SystemTypeFor_NamedTypeFromSystemNamespaceDateTime_ShouldMapToType()
         {
-            var actual = SystemTypeMapper.SystemTypeFor(new TypeNameTypeNode(new TypeName("DateTime")));
+            var actual = SystemTypeMapper.SystemTypeFor(new TypeName("DateTime"));
             Assert.That(actual, Is.EqualTo(typeof(DateTime)));
         }
 
         [Test]
         public void SystemTypeFor_NamedTypeFromSystemNamespaceGuid_ShouldMapToType()
         {
-            var actual = SystemTypeMapper.SystemTypeFor(new TypeNameTypeNode(new TypeName("Guid")));
+            var actual = SystemTypeMapper.SystemTypeFor(new TypeName("Guid"));
             Assert.That(actual, Is.EqualTo(typeof(Guid)));
         }
 
         [Test]
         public void IsSystemType_ForTypeNameTypeNodeKnownType_ShouldBeTrue()
         {
-            var actual = SystemTypeMapper.IsSystemType(new TypeNameTypeNode(new TypeName("Guid")));
+            var actual = SystemTypeMapper.IsSystemType(new TypeName("Guid"));
             Assert.That(actual, Is.True);
         }
 
         [Test]
         public void IsSystemType_NonSystemTypes_ShouldBeTrue()
         {
-            var actual = SystemTypeMapper.IsSystemType(new TypeNameTypeNode(new TypeName("Foo.Bar.NotSystemType")));
+            var actual = SystemTypeMapper.IsSystemType(new TypeName("Foo.Bar.NotSystemType"));
             Assert.That(actual, Is.False);
         }
     }

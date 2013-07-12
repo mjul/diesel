@@ -212,9 +212,9 @@ namespace Test.Diesel.Parsing
                 new RankSpecifiers(new[] { new RankSpecifier(1) }));
         }
 
-        private static TypeNameTypeNode AstGuidType()
+        private static TypeName AstGuidType()
         {
-            return new TypeNameTypeNode(new TypeName(typeof(Guid).Name));
+            return new TypeName(typeof(Guid).Name);
         }
 
         private static StringReferenceType AstStringType()
@@ -442,21 +442,21 @@ namespace Test.Diesel.Parsing
             var actual = Grammar.PropertyDeclaration.Parse("MyDomain.Name[] Names");
             Assert.That(actual.Type, Is.InstanceOf(typeof (ArrayType)));
             var actualType = ((ArrayType) actual.Type).Type;
-            Assert.That(actualType, Is.EqualTo(new TypeNameTypeNode(new TypeName("MyDomain.Name"))));
+            Assert.That(actualType, Is.EqualTo(new TypeName("MyDomain.Name")));
         }
 
         [Test]
         public void PropertyDeclaration_UnqualifiedSystemTypeDateTime_ShouldSetType()
         {
             var actual = Grammar.PropertyDeclaration.Parse("DateTime OccurredOn");
-            Assert.That(actual.Type, Is.EqualTo(new TypeNameTypeNode(new TypeName("DateTime"))));
+            Assert.That(actual.Type, Is.EqualTo(new TypeName("DateTime")));
         }
 
         [Test]
         public void PropertyDeclaration_UnqualifiedSystemTypeGuid_ShouldSetType()
         {
             var actual = Grammar.PropertyDeclaration.Parse("Guid CommandId");
-            Assert.That(actual.Type, Is.EqualTo(new TypeNameTypeNode(new TypeName("Guid"))));
+            Assert.That(actual.Type, Is.EqualTo(new TypeName("Guid")));
         }
 
 

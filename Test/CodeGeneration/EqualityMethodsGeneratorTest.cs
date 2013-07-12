@@ -37,7 +37,7 @@ namespace Test.Diesel.CodeGeneration
         public void ComparePropertyValueEqualityExpression_NamedDateTime_ShouldGenerateExpression()
         {
             var actual = EqualityMethodsGenerator.ComparePropertyValueEqualityExpression(
-                new PropertyDeclaration("Value", new TypeNameTypeNode(new TypeName("System.DateTime"))), "other");
+                new PropertyDeclaration("Value", new TypeName("System.DateTime")), "other");
             Assert.That(actual, Is.Not.Null);
         }
 

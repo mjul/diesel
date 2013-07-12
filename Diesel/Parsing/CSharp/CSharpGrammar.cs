@@ -172,13 +172,6 @@ namespace Diesel.Parsing.CSharp
                     select new NullableType(underlyingType));
         }
 
-
-        public Parser<TypeNameTypeNode> TypeNameTypeNode()
-        {
-            return (from t in TypeName()
-                    select new TypeNameTypeNode(t));
-        }
-
         public Parser<ITypeNode> ReferenceType()
         {
             return ReferenceType(true);
@@ -190,7 +183,7 @@ namespace Diesel.Parsing.CSharp
                 // interface-type not implemented
                 // delegate-type not implemented 
                 ClassType()
-                .Or(TypeNameTypeNode());
+                .Or(TypeName());
             return includeArrayTypes
                        ? ArrayType().Or(parser)
                        : parser;
@@ -200,7 +193,7 @@ namespace Diesel.Parsing.CSharp
         public Parser<ITypeNode> ClassType()
         {
             return StringType()
-                .Or<ITypeNode>(TypeNameTypeNode()
+                .Or<ITypeNode>(TypeName()
                 );
         }
 

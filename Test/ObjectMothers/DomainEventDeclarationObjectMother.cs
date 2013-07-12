@@ -15,9 +15,8 @@ namespace Test.Diesel.ObjectMothers
                  "EmployeeImported",
                  new[]
                      {
-                         new PropertyDeclaration("Id",
-                                                 new TypeNameTypeNode(
-                                                     new TypeName("System.Guid"))),
+                         new PropertyDeclaration("Id", 
+                                                 new TypeName("System.Guid")),
                          new PropertyDeclaration("EmployeeNumber",
                                                  new SimpleType(typeof (Int32))),
                          new PropertyDeclaration("FirstName", new StringReferenceType()),

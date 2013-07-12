@@ -53,9 +53,9 @@ namespace Test.Diesel.CodeGeneration
                 new[]
                     {
                         new PropertyDeclaration("Number",
-                                                new TypeNameTypeNode(new TypeName("EmployeeNumber"))),
+                                                new TypeName("EmployeeNumber")),
                         new PropertyDeclaration("Name",
-                                                new TypeNameTypeNode(new TypeName("EmployeeName"))),
+                                                new TypeName("EmployeeName")),
                     }
                 );
             var model = CreateSemanticModelWith(employeeNumber, employeeName, employeeInfo);
@@ -116,7 +116,7 @@ namespace Test.Diesel.CodeGeneration
                                                 new[]
                                                                 {
                                                                     new PropertyDeclaration("EmployeeNumber", new SimpleType(typeof (int))),
-                                                                    new PropertyDeclaration("Role", new TypeNameTypeNode(new TypeName("Role"))),
+                                                                    new PropertyDeclaration("Role", new TypeName("Role")),
                                                                 });
             var model = CreateSemanticModelWith(enumDeclaration, commandDeclaration);
             var actual = CodeDomCompiler.Compile(model);
@@ -136,7 +136,7 @@ namespace Test.Diesel.CodeGeneration
                                                 new[]
                                                                 {
                                                                     new PropertyDeclaration("EmployeeNumber", new SimpleType(typeof (int))),
-                                                                    new PropertyDeclaration("Salary", new TypeNameTypeNode(new TypeName("AmountDto")))
+                                                                    new PropertyDeclaration("Salary", new TypeName("AmountDto"))
                                                                 });
             var model = CreateSemanticModelWith(dtoDeclaration, commandDeclaration);
             var actual = CodeDomCompiler.Compile(model);
@@ -209,7 +209,7 @@ namespace Test.Diesel.CodeGeneration
                         new PropertyDeclaration(
                             "EmployeeNumber", new SimpleType(typeof (int))),
                         new PropertyDeclaration(
-                            "EmployeeRole", new TypeNameTypeNode(new TypeName("Role")))
+                            "EmployeeRole", new TypeName("Role"))
                     });
             var model = CreateSemanticModelWith(enumDeclaration, eventDeclaration);
             var actual = CodeDomCompiler.Compile(model);
@@ -235,7 +235,7 @@ namespace Test.Diesel.CodeGeneration
                         new PropertyDeclaration(
                             "EmployeeNumber", new SimpleType(typeof (int))),
                         new PropertyDeclaration(
-                            "Name", new TypeNameTypeNode(new TypeName("EmployeeName")))
+                            "Name", new TypeName("EmployeeName"))
                     });
             var model = CreateSemanticModelWith(dtoDeclaration, eventDeclaration);
             var actual = CodeDomCompiler.Compile(model);
@@ -262,7 +262,7 @@ namespace Test.Diesel.CodeGeneration
                             "DepartmentNumber", new SimpleType(typeof (int))),
                         new PropertyDeclaration(
                             "Employees", 
-                            new ArrayType(new TypeNameTypeNode(new TypeName("EmployeeName")),
+                            new ArrayType(new TypeName("EmployeeName"),
                                 new RankSpecifiers(new [] {new RankSpecifier(1)}))
                             )
                     });
@@ -306,7 +306,7 @@ namespace Test.Diesel.CodeGeneration
             var declaration = new DomainEventDeclaration("EmployeeImported",
                                                          new[]
                                                              {
-                                                                 new PropertyDeclaration("Id", new TypeNameTypeNode(new TypeName(typeof (Guid).FullName))),
+                                                                 new PropertyDeclaration("Id", new TypeName(typeof (Guid).FullName)),
                                                                  new PropertyDeclaration("EmployeeNumber", new SimpleType(typeof (Int32))),
                                                                  new PropertyDeclaration("FirstName", new StringReferenceType()),
                                                                  new PropertyDeclaration("LastName", new StringReferenceType())
@@ -331,7 +331,7 @@ namespace Test.Diesel.CodeGeneration
                 "EmployeeInfo",
                 new[]
                     {
-                        new PropertyDeclaration("EmployeeName", new TypeNameTypeNode(new TypeName("Name")))
+                        new PropertyDeclaration("EmployeeName", new TypeName("Name"))
                     }
                 );
             var source = CompileToSource(CodeDomCompiler
@@ -347,7 +347,7 @@ namespace Test.Diesel.CodeGeneration
                 "EmployeeInfo",
                 new[]
                     {
-                        new PropertyDeclaration("EmployeeRole", new TypeNameTypeNode(new TypeName("Role")))
+                        new PropertyDeclaration("EmployeeRole", new TypeName("Role"))
                     }
                 );
             var source = CompileToSource(CodeDomCompiler

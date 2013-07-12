@@ -141,7 +141,7 @@ namespace Diesel.CodeGeneration
         }
 
         [Pure]
-        private static CodeExpression ComparePropertyValueEqualityExpression(TypeNameTypeNode propertyType, String propertyName, String otherVariableName)
+        private static CodeExpression ComparePropertyValueEqualityExpression(TypeName propertyType, String propertyName, String otherVariableName)
         {
             return CompareObjectEquality(propertyName, otherVariableName);
         }

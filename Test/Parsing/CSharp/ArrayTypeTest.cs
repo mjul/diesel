@@ -10,38 +10,38 @@ namespace Test.Diesel.Parsing.CSharp
          [Test, Ignore("Move Name to Code-gen phase")]
          public void Constructor_UnidimensionalQualifiedType_ShouldSetType()
          {
-             var typeNameTypeNode = new TypeNameTypeNode(new TypeName("System.Guid"));
-             var actual = new ArrayType(typeNameTypeNode, 
+             var typeName = new TypeName("System.Guid");
+             var actual = new ArrayType(typeName, 
                  new RankSpecifiers(new[] { new RankSpecifier(1) }));
-             Assert.That(actual.Type, Is.EqualTo(typeNameTypeNode));
+             Assert.That(actual.Type, Is.EqualTo(typeName));
          }
 
          [Test, Ignore("Move Name to Code-gen phase")]
          public void Constructor_UnidimensionalSimpleType_ShouldSetName()
          {
              var actual = new ArrayType(new SimpleType(typeof (int)), new RankSpecifiers(new[] {new RankSpecifier(1)}));
-             //Assert.That(actual.Name, Is.EqualTo("System.Int32[]"));
+             // TODO: Assert.That(actual.Name, Is.EqualTo("System.Int32[]"));
          }
 
          [Test, Ignore("Move Name to Code-gen phase")]
          public void Constructor_Bidimensional_ShouldSetName()
          {
-             var actual = new ArrayType(new TypeNameTypeNode(new TypeName("System.Guid")), 
+             var actual = new ArrayType(new TypeName("System.Guid"), 
                  new RankSpecifiers(new[] {new RankSpecifier(2)}));
-             //Assert.That(actual.Name, Is.EqualTo("System.Guid[,]"));
+             // TODO: Assert.That(actual.Name, Is.EqualTo("System.Guid[,]"));
          }
 
          [Test, Ignore("Move Name to Code-gen phase")]
          public void Constructor_HigherOrder_ShouldSetName()
          {
-             var actual = new ArrayType(new TypeNameTypeNode(new TypeName("System.Guid")),
+             var actual = new ArrayType(new TypeName("System.Guid"),
                                         new RankSpecifiers(new[]
                                             {
                                                 new RankSpecifier(1),
                                                 new RankSpecifier(2), 
                                                 new RankSpecifier(3)
                                             }));
-             //Assert.That(actual.Name, Is.EqualTo("System.Int32[][,][,,]"));
+             // TODO: Assert.That(actual.Name, Is.EqualTo("System.Int32[][,][,,]"));
          }
 
 

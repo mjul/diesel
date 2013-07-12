@@ -5,7 +5,7 @@
     /// </summary>
     public interface ITypeNodeVisitor
     {
-        void Visit(TypeNameTypeNode typeNameTypeNode);
+        void Visit(TypeName typeName);
         void Visit(StringReferenceType stringReferenceType);
         void Visit(ArrayType arrayType);
         void Visit(SimpleType simpleType);

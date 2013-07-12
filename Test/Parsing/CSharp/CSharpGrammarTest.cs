@@ -104,7 +104,7 @@ namespace Test.Diesel.Parsing.CSharp
         public  void ArrayType_UnidimensionalQualifiedName_ShouldParse()
         {
             var actual = SystemUnderTest.ArrayType().Parse("System.Int32[]");
-            Assert.That(actual.Type, Is.EqualTo(new TypeNameTypeNode(new TypeName("System.Int32"))));
+            Assert.That(actual.Type, Is.EqualTo(new TypeName("System.Int32")));
             Assert.That(actual.RankSpecifiers, Is.EqualTo(new RankSpecifiers(new[] { new RankSpecifier(1)})));
         }
 
@@ -112,7 +112,7 @@ namespace Test.Diesel.Parsing.CSharp
         public void ArrayType_UnidimensionalMultiPartQualifiedName_ShouldParse()
         {
             var actual = SystemUnderTest.ArrayType().Parse("Test.Namespaces.Number[]");
-            Assert.That(actual.Type, Is.EqualTo(new TypeNameTypeNode(new TypeName("Test.Namespaces.Number"))));
+            Assert.That(actual.Type, Is.EqualTo(new TypeName("Test.Namespaces.Number")));
             Assert.That(actual.RankSpecifiers, Is.EqualTo(new RankSpecifiers(new[] { new RankSpecifier(1)})));
         }
 
@@ -120,7 +120,7 @@ namespace Test.Diesel.Parsing.CSharp
         public void ArrayType_UnidimensionalUnqualifiedName_ShouldParse()
         {
             var actual = SystemUnderTest.ArrayType().Parse("Guid[]");
-            Assert.That(actual.Type, Is.EqualTo(new TypeNameTypeNode(new TypeName("Guid"))));
+            Assert.That(actual.Type, Is.EqualTo(new TypeName("Guid")));
             Assert.That(actual.RankSpecifiers, Is.EqualTo(new RankSpecifiers(new[] { new RankSpecifier(1) })));
         }
 
@@ -334,7 +334,7 @@ namespace Test.Diesel.Parsing.CSharp
         public void ClassType_TypeName_ShouldParse()
         {
             var actual = SystemUnderTest.ClassType().Parse("Test.Diesel.Parsing.CSharp.CSharpGrammarTest");
-            Assert.That(actual, Is.EqualTo(new TypeNameTypeNode(new TypeName("Test.Diesel.Parsing.CSharp.CSharpGrammarTest"))));
+            Assert.That(actual, Is.EqualTo(new TypeName("Test.Diesel.Parsing.CSharp.CSharpGrammarTest")));
         }
 
         [Test, Ignore("Not implemented")]
@@ -366,7 +366,7 @@ namespace Test.Diesel.Parsing.CSharp
         public void ReferenceType_ClassTypeTypeName_ShouldParse()
         {
             var actual = SystemUnderTest.ReferenceType().Parse("Diesel.Test.Parsing.CSharpGrammarTest");
-            Assert.That(actual, Is.EqualTo(new TypeNameTypeNode(new TypeName("Diesel.Test.Parsing.CSharpGrammarTest"))));
+            Assert.That(actual, Is.EqualTo(new TypeName("Diesel.Test.Parsing.CSharpGrammarTest")));
         }
 
         [Test]
@@ -428,7 +428,7 @@ namespace Test.Diesel.Parsing.CSharp
         public void TypeNode_TypeName_ShouldParse()
         {
             var actual = SystemUnderTest.TypeNode().Parse("Diesel.Test.Parsing.CSharpGrammarTest");
-            Assert.That(actual, Is.EqualTo(new TypeNameTypeNode(new TypeName("Diesel.Test.Parsing.CSharpGrammarTest"))));
+            Assert.That(actual, Is.EqualTo(new TypeName("Diesel.Test.Parsing.CSharpGrammarTest")));
         }
 
 

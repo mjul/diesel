@@ -14,7 +14,7 @@ namespace Diesel.CodeGeneration
     public class MemberTypeMapper
     {
         /// <summary>
-        /// Map a <see cref="TypeNode"/> instance to the
+        /// Map a <see cref="ITypeNode"/> instance to the
         /// corresponding <see cref="MemberType"/>.
         /// </summary>
         [Pure]
@@ -37,24 +37,24 @@ namespace Diesel.CodeGeneration
 
             public MemberType MemberType { get; private set; }
 
-            public void Visit(TypeNameTypeNode typeNameTypeNode)
+            public void Visit(TypeName typeName)
             {
-                if (SystemTypeMapper.IsSystemType(typeNameTypeNode))
+                if (SystemTypeMapper.IsSystemType(typeName))
                 {
-                    ReturnSystemMemberType(typeNameTypeNode);
+                    ReturnSystemMemberType(typeName);
                 }
                 else
                 {
-                    ReturnNamedMember(typeNameTypeNode);
+                    ReturnNamedMember(typeName);
                 }
             }
 
-            private void ReturnNamedMember(TypeNameTypeNode typeNameTypeNode)
+            private void ReturnNamedMember(TypeName typeName)
             {
-                var fullName = FullyQualifiedNameRule.For(_namespaceName, typeNameTypeNode.TypeName);
+                var fullName = FullyQualifiedNameRule.For(_namespaceName, typeName);
                 var knownType = _knownTypes.SingleOrDefault(x => x.FullName == fullName);
                 var isValueType = knownType != null && knownType.IsValueType;
-                MemberType = MemberType.CreateForTypeName(typeNameTypeNode.TypeName, isValueType);
+                MemberType = MemberType.CreateForTypeName(typeName, isValueType);
             }
 
             private void ReturnSystemMemberType(ITypeNode node)

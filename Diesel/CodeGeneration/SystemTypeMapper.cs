@@ -72,17 +72,18 @@ namespace Diesel.CodeGeneration
                 Result = Type.GetType(String.Format("System.Nullable`1[{0}]", underlying.FullName));
             }
 
-            public void Visit(TypeNameTypeNode typeNode)
+            public void Visit(TypeName typeNode)
             {
                 var knownSystemType = TryGetSystemTypeFor(typeNode);
                 Result = knownSystemType;
             }
 
-            private Type TryGetSystemTypeFor(TypeNameTypeNode node)
+            private Type TryGetSystemTypeFor(TypeName node)
             {
-                var knownType = Type.GetType(node.TypeName.Name, false);
+                var knownType = Type.GetType(node.Name, false);
                 if (knownType != null) return knownType;
-                var asQualifiedSystemType = String.Format("System.{0}", node.TypeName.Name);
+                // TODO: prefix with known imports
+                var asQualifiedSystemType = String.Format("System.{0}", node.Name);
                 var knownSystemType = Type.GetType(asQualifiedSystemType, false);
                 return knownSystemType;
             }
