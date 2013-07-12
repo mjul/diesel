@@ -21,6 +21,7 @@
 	(defcommand PrintNamedTypeQualifiedGuid (System.Guid Value))
 	(defcommand PrintNamedTypeUnqualifiedGuid (Guid Value))
 	(defcommand PrintNamedTypeUnqualifiedDecimal (Decimal Value))
+	(defcommand PrintNullableNamedTypes (Guid? CorrelationId, System.DateTime? EndDate))
 	(defcommand PrintMulti (string Text, int? NullableNumber, string[] SingleDimArray, decimal Decimal, DateTime When)))
 
 

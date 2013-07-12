@@ -393,10 +393,10 @@ namespace Test.Diesel.Parsing.CSharp
             Assert.That(actual, Is.EqualTo(new SimpleType(typeof(int))));
         }
 
-        [Test, Ignore]
+        [Test]
         public void TypeNode_NullableNamedType_ShouldParse()
         {
-            var actual = SystemUnderTest.TypeNode().Token().Parse("System.DateTime?");
+            var actual = SystemUnderTest.TypeNode().Parse("System.DateTime?");
             Assert.That(actual, Is.EqualTo(new NullableType(new TypeName("System.DateTime"))));
         }
 

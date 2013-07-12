@@ -26,6 +26,9 @@
 	;; Verify that we can use nested DTOs and enums in commands:
 	(defcommand ImportEmployeeNestedTypes (Guid CommandId, int EmployeeNumber, Name Name, Gender Gender))
 
+	(defcommand Foo (DateTime? When))
+
 	;; Named array members
 	(defdomainevent DepartmentImported (Guid Id, Name[] Employees)))
+
 

@@ -780,6 +780,54 @@ namespace Test.Diesel.Generated {
         }
     }
     
+    [System.Runtime.Serialization.DataContractAttribute(Name="Foo")]
+    [System.SerializableAttribute()]
+    public partial class Foo : Test.Diesel.ICommand, System.IEquatable<Foo> {
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Name="When", Order=1)]
+        private System.Nullable<System.DateTime> _when;
+        
+        public Foo(System.Nullable<System.DateTime> when) {
+            this._when = when;
+        }
+        
+        public System.Nullable<System.DateTime> When {
+            get {
+                return this._when;
+            }
+        }
+        
+        public static bool operator ==(Foo left, Foo right) {
+            if (object.ReferenceEquals(null, left)) {
+                return object.ReferenceEquals(null, right);
+            }
+            return left.Equals(right);
+        }
+        
+        public static bool operator !=(Foo left, Foo right) {
+            if (object.ReferenceEquals(null, left)) {
+                return (false == object.ReferenceEquals(null, right));
+            }
+            return (false == left.Equals(right));
+        }
+        
+        public override int GetHashCode() {
+            return (0 + this.When.GetHashCode());
+        }
+        
+        public bool Equals(Foo other) {
+            return ((false == object.ReferenceEquals(null, other)) 
+                        && (this.When == other.When));
+        }
+        
+        public override bool Equals(object obj) {
+            if (object.ReferenceEquals(null, obj)) {
+                return false;
+            }
+            return (typeof(Foo).IsAssignableFrom(obj.GetType()) && this.Equals(((Foo)(obj))));
+        }
+    }
+    
     [System.Runtime.Serialization.DataContractAttribute(Name="DepartmentImported")]
     [System.SerializableAttribute()]
     public sealed partial class DepartmentImported : Test.Diesel.IDomainEvent, System.IEquatable<DepartmentImported> {
