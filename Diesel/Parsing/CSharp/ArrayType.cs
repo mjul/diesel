@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Diesel.Parsing.CSharp
 {
-    public class ArrayType : ReferenceType, IEquatable<ArrayType>
+    public class ArrayType : IReferenceType, IEquatable<ArrayType>
     {
         public ITypeNode Type { get; private set; }
         public RankSpecifiers RankSpecifiers { get; set; }
@@ -14,12 +14,12 @@ namespace Diesel.Parsing.CSharp
             RankSpecifiers = rankSpecifiers;
         }
 
-        public override void Accept(ITypeNodeVisitor visitor)
+        public void Accept(ITypeNodeVisitor visitor)
         {
             visitor.Visit(this);
         }
 
-        public override IEnumerable<ITreeNode> Children
+        public IEnumerable<ITreeNode> Children
         {
             get 
             { 

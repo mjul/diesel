@@ -3,18 +3,14 @@ using System.Collections.Generic;
 
 namespace Diesel.Parsing.CSharp
 {
-    public class StringReferenceType : ReferenceType, IEquatable<StringReferenceType>
+    public class StringReferenceType : IReferenceType, IEquatable<StringReferenceType>
     {
-        public StringReferenceType()
-        {
-        }
-
-        public override void Accept(ITypeNodeVisitor visitor)
+        public void Accept(ITypeNodeVisitor visitor)
         {
             visitor.Visit(this);
         }
 
-        public override IEnumerable<ITreeNode> Children
+        public IEnumerable<ITreeNode> Children
         {
             get { yield break; }
         }

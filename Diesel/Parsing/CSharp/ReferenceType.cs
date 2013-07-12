@@ -2,9 +2,10 @@
 
 namespace Diesel.Parsing.CSharp
 {
-    public abstract class ReferenceType : ITypeNode
+    /// <summary>
+    /// Marker interface for C# grammar reference-type production nodes.
+    /// </summary>
+    public interface IReferenceType : ITypeNode
     {
-        public abstract IEnumerable<ITreeNode> Children { get; }
-        public abstract void Accept(ITypeNodeVisitor visitor);
     }
 }
