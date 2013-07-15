@@ -150,6 +150,10 @@ namespace Test.Diesel.Generated {
             }
             return (typeof(EmployeeName).IsAssignableFrom(obj.GetType()) && this.Equals(((EmployeeName)(obj))));
         }
+        
+        public override string ToString() {
+            return string.Format("{0} {1}", this.FirstName, this.LastName);
+        }
     }
     
     [System.SerializableAttribute()]
@@ -199,6 +203,10 @@ namespace Test.Diesel.Generated {
                 return false;
             }
             return (typeof(EmployeeMetadata).IsAssignableFrom(obj.GetType()) && this.Equals(((EmployeeMetadata)(obj))));
+        }
+        
+        public override string ToString() {
+            return string.Format("{0} {1}", this.Source, this.SourceId);
         }
     }
     
@@ -254,6 +262,10 @@ namespace Test.Diesel.Generated {
             }
             return (typeof(EmployeeRatings).IsAssignableFrom(obj.GetType()) && this.Equals(((EmployeeRatings)(obj))));
         }
+        
+        public override string ToString() {
+            return string.Format("{0} {1}", this.EmployeeNumber, this.Ratings);
+        }
     }
     
     [System.SerializableAttribute()]
@@ -307,6 +319,10 @@ namespace Test.Diesel.Generated {
                 return false;
             }
             return (typeof(EmployeeRoles).IsAssignableFrom(obj.GetType()) && this.Equals(((EmployeeRoles)(obj))));
+        }
+        
+        public override string ToString() {
+            return string.Format("{0} {1}", this.EmployeeNumber, this.Roles);
         }
     }
     
@@ -368,6 +384,10 @@ namespace Test.Diesel.Generated {
                 return false;
             }
             return (typeof(EmployeeInfo).IsAssignableFrom(obj.GetType()) && this.Equals(((EmployeeInfo)(obj))));
+        }
+        
+        public override string ToString() {
+            return string.Format("{0} {1} {2}", this.Number, this.Name, this.Email);
         }
     }
     

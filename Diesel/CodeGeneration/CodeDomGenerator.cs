@@ -453,7 +453,7 @@ namespace Diesel.CodeGeneration
             var props = valueProperties.ToList();
             var formatString = String.Join(" ",
                                            Enumerable.Range(0, props.Count())
-                                                     .Select(i => String.Format("{{0}}", i)));
+                                                     .Select(i => String.Format("{{{0}}}", i)));
             return CreateToString(formatString, props);
         }
 

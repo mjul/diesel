@@ -26,8 +26,8 @@ namespace Diesel.CodeGeneration
             if (declaration.Properties.Count() == 1)
             {
                 AddDebuggerDisplayAttribute(declaration, result);
-                AddToString(declaration, result);
             }
+            AddToString(declaration, result);
             return result;
         }
 

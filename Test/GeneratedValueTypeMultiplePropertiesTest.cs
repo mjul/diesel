@@ -41,11 +41,20 @@ namespace Test.Diesel
         {
             const int number = 1;
             var actual = new Generated.EmployeeNumber(number);
-            
+
             var deserialized = SerializationTesting.SerializeDeserializeWithBinaryFormatter(actual);
-            
+
             Assert.That(deserialized, Is.EqualTo(actual));
             Assert.That(actual.Value, Is.EqualTo(number));
+        }
+
+        [Test]
+        public void ToString_MultipleProperties_ShouldReturnAllPropertiesToStringed()
+        {
+            const string first = "Joe";
+            const string last = "User";
+            var actual = new Generated.EmployeeName(first, last).ToString();
+            Assert.That(actual, Is.EqualTo("Joe User"));
         }
     }
 }
