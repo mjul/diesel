@@ -44,5 +44,20 @@ namespace Test.Diesel
             
             Assert.That(deserialized, Is.EqualTo(actual));
         }
+
+        [Test]
+        public void ToString_NotNull_ShouldFormatValue()
+        {
+            var actual = new Generated.EmployeeMetadata("Source", 1).ToString();
+            Assert.That(actual, Is.EqualTo("Source 1"));
+        }
+
+        [Test]
+        public void ToString_NullableFieldIsNull_ShouldFormatNullValueAsEmpty()
+        {
+            var actual = new Generated.EmployeeMetadata("Source", null).ToString();
+            Assert.That(actual, Is.EqualTo("Source "));
+        }   
+
     }
 }
