@@ -444,5 +444,51 @@ namespace Diesel.CodeGeneration
                         new CodeAttributeArgument("Value", new CodePrimitiveExpression(name))
                     });
         }
+
+        /// <summary>
+        /// Create a ToString override with the values of the properties ToString'ed and joined with spaces.
+        /// </summary>
+        protected static CodeMemberMethod CreateToString(IEnumerable<PropertyDeclaration> valueProperties)
+        {
+            var props = valueProperties.ToList();
+            var formatString = String.Join(" ",
+                                           Enumerable.Range(0, props.Count())
+                                                     .Select(i => String.Format("{{0}}", i)));
+            return CreateToString(formatString, props);
+        }
+
+        /// <summary>
+        /// Create a ToString method override with the given formatString
+        /// and the values of the named properties as format parameter {0}, {1}, ... etc.
+        /// </summary>
+        private static CodeMemberMethod CreateToString(string formatString, IEnumerable<PropertyDeclaration> valueProperties)
+        {
+            var valueReferences =
+                valueProperties.Select(
+                    p => (CodeExpression)
+                         new CodePropertyReferenceExpression(
+                             new CodeThisReferenceExpression(), p.Name))
+                               .ToArray();
+
+            var stringFormatParameters = new List<CodeExpression>();
+            stringFormatParameters.Add(new CodePrimitiveExpression(formatString));
+            stringFormatParameters.AddRange(valueReferences);
+
+            var toString = new CodeMemberMethod()
+                {
+                    Attributes = MemberAttributes.Override | MemberAttributes.Public,
+                    Name = "ToString",
+                    ReturnType = new CodeTypeReference(typeof (System.String)),
+                };
+            toString.Statements
+                    .Add(new CodeMethodReturnStatement(
+                             new CodeMethodInvokeExpression(
+                                 new CodeTypeReferenceExpression(
+                                     typeof (String)),
+                                 "Format",
+                                 stringFormatParameters.ToArray())));
+
+            return toString;
+        }
     }
 }

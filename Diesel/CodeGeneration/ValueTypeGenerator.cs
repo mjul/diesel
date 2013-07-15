@@ -31,27 +31,9 @@ namespace Diesel.CodeGeneration
             return result;
         }
 
-        // TODO: generalize (move to base)
         private static void AddToString(ValueTypeDeclaration declaration, CodeTypeDeclaration result)
         {
-            var valueProperty = declaration.Properties.Single().Name;
-            var toString = new CodeMemberMethod()
-                {
-                    Attributes = MemberAttributes.Override | MemberAttributes.Public,
-                    Name = "ToString",
-                    ReturnType = new CodeTypeReference(typeof (System.String)),
-                };
-            toString.Statements
-                    .Add(new CodeMethodReturnStatement(
-                             new CodeMethodInvokeExpression(
-                                 new CodeTypeReferenceExpression(
-                                     typeof (String)),
-                                     "Format",
-                                     new CodePrimitiveExpression("{0}"),
-                                     new CodePropertyReferenceExpression(
-                                         new CodeThisReferenceExpression(),
-                                         valueProperty))));
-            result.Members.Add(toString);
+            result.Members.Add(CreateToString(declaration.Properties));
         }
 
         private static void AddDebuggerDisplayAttribute(ValueTypeDeclaration declaration, CodeTypeDeclaration result)
