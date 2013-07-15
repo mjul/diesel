@@ -73,5 +73,19 @@ namespace Test.Diesel
             Assert.That(actual.Roles, Is.EquivalentTo(roles));
         }
 
+
+        [Test, Ignore("Not supported yet - the generator just prints System.String[] when ToString'ing the array")]
+        public void ToString_ArrayNotNull_ShouldFormatValues()
+        {
+            const int number = 1;
+            var roles = new[] { "tester", "developer" };
+            var instance = new Generated.EmployeeRoles(number, roles);
+
+            var actual = instance.ToString();
+
+            // TODO: update generator to pretty-print array values
+            Assert.That(actual, Is.EqualTo("1 [tester developer]"));
+        }
+
     }
 }

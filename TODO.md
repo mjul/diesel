@@ -40,3 +40,8 @@ Implement these, too:
 		(namespace TestCases.TypeDeclarations
 			(defcommand PrintArraySimple2D (int[,] Value))
 			(defcommand PrintArraySimpleMulti (int[][,] Value))
+
+## ToString Generation on Value Types for Array properties
+Currently, the ToString does not expand and print the values of arrays in the generated ToString
+method. Add this (see GeneratedValueTypeWithArrayTest for ToString).
+
