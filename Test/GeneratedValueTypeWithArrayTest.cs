@@ -63,12 +63,15 @@ namespace Test.Diesel
         public void Instance_WhenSerializedWithBinaryFormatter_ShouldBeSerializable()
         {
             const int number = 1;
-            var actual = new Generated.EmployeeNumber(number);
+            var roles = new[] { "tester", "developer" };
+            var actual = new Generated.EmployeeRoles(number, roles);
             
             var deserialized = SerializationTesting.SerializeDeserializeWithBinaryFormatter(actual);
             
             Assert.That(deserialized, Is.EqualTo(actual));
-            Assert.That(actual.Value, Is.EqualTo(number));
+            Assert.That(actual.EmployeeNumber, Is.EqualTo(number));
+            Assert.That(actual.Roles, Is.EquivalentTo(roles));
         }
+
     }
 }
