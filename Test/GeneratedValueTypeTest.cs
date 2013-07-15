@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -47,5 +48,31 @@ namespace Test.Diesel
             Assert.That(deserialized, Is.EqualTo(actual));
             Assert.That(actual.Value, Is.EqualTo(number));
         }
+
+
+        [Test]
+        public void Instance_WithSingleField_ShouldHaveDebuggerDisplayAttribute()
+        {
+            var actual = typeof (Generated.EmployeeNumber).GetCustomAttribute<DebuggerDisplayAttribute>();
+            Assert.That(actual, Is.Not.Null);
+            Assert.That(actual.Value, Is.EqualTo("{Value}"));
+        }
+
+        [Test]
+        public void Instance_WithSingleField_ShouldHaveToString()
+        {
+            var actual = typeof(Generated.EmployeeNumber).GetMethod("ToString", BindingFlags.Instance | BindingFlags.Public);
+            Assert.That(actual, Is.Not.Null);
+        }
+
+
+        [Test]
+        public void ToString_WithSingleField_ShouldReturnValueAsString()
+        {
+            const int number = 1;
+            var actual = new Generated.EmployeeNumber(number).ToString();
+            Assert.That(actual, Is.EqualTo("1"));
+        }
+
     }
 }
