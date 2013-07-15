@@ -1,3 +1,6 @@
+# Version 1.13
+* Generates a ToString method on Value Types returning the value of simple (non-array) properties.
+
 # Version 1.12
 * Adds support for named nullable types in properties, e.g. `DateTime? EndDate`.
 
