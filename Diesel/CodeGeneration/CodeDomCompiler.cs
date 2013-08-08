@@ -78,7 +78,7 @@ namespace Diesel.CodeGeneration
 
         private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, SemanticModel model, NamespaceName namespaceName, DtoDeclaration declaration)
         {
-            ns.Types.Add(DtoGenerator.CreateCommandDeclaration(model, namespaceName, declaration));
+            ns.Types.Add(DtoGenerator.CreateDtoDeclaration(model, namespaceName, declaration));
         }
 
         private static void Add(CodeNamespace ns, ConventionsDeclaration conventions, SemanticModel model, NamespaceName namespaceName, EnumDeclaration declaration)

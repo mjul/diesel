@@ -8,8 +8,7 @@ namespace Diesel.CodeGeneration
 {
     public class DtoGenerator : CodeDomGenerator
     {
-        // TODO: Rename
-        public static CodeTypeDeclaration CreateCommandDeclaration(
+        public static CodeTypeDeclaration CreateDtoDeclaration(
             SemanticModel model, NamespaceName namespaceName,
             DtoDeclaration declaration)
         {
