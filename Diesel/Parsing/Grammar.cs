@@ -51,8 +51,9 @@ namespace Diesel.Parsing
         }
 
         /// <summary>
-        /// Recognize a specific keyword.
+        /// Recognize a specific Keyword.
         /// </summary>
+        /// <param name="name">The name (not including the colon prefix), e.g. "key" matches the token ":key"</param>
         public static Parser<Keyword> Keyword(string name)
         {
             return Keyword().Where(k => k.Name == name);
