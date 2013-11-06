@@ -1,3 +1,6 @@
+# Version 1.14
+* Added support for user-defined (non-system) nullable value type members on data contracts (Commands, Domain Events etc.)
+
 # Version 1.13
 * Generates a ToString method on Value Types returning the value of simple (non-array) properties.
 
