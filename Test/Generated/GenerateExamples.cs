@@ -554,6 +554,65 @@ namespace Test.Diesel.Generated {
         Male,
     }
     
+    [System.Runtime.Serialization.DataContractAttribute(Name="NamedPerson")]
+    [System.SerializableAttribute()]
+    public sealed partial class NamedPerson : System.IEquatable<NamedPerson> {
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Name="Name", Order=1)]
+        private Name _name;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Name="Gender", Order=2)]
+        private System.Nullable<Test.Diesel.Generated.Gender> _gender;
+        
+        public NamedPerson(Name name, System.Nullable<Test.Diesel.Generated.Gender> gender) {
+            this._name = name;
+            this._gender = gender;
+        }
+        
+        public Name Name {
+            get {
+                return this._name;
+            }
+        }
+        
+        public System.Nullable<Test.Diesel.Generated.Gender> Gender {
+            get {
+                return this._gender;
+            }
+        }
+        
+        public static bool operator ==(NamedPerson left, NamedPerson right) {
+            if (object.ReferenceEquals(null, left)) {
+                return object.ReferenceEquals(null, right);
+            }
+            return left.Equals(right);
+        }
+        
+        public static bool operator !=(NamedPerson left, NamedPerson right) {
+            if (object.ReferenceEquals(null, left)) {
+                return (false == object.ReferenceEquals(null, right));
+            }
+            return (false == left.Equals(right));
+        }
+        
+        public override int GetHashCode() {
+            return (0 + this.Gender.GetHashCode());
+        }
+        
+        public bool Equals(NamedPerson other) {
+            return (((false == object.ReferenceEquals(null, other)) 
+                        && object.Equals(this.Name, other.Name)) 
+                        && (this.Gender == other.Gender));
+        }
+        
+        public override bool Equals(object obj) {
+            if (object.ReferenceEquals(null, obj)) {
+                return false;
+            }
+            return (typeof(NamedPerson).IsAssignableFrom(obj.GetType()) && this.Equals(((NamedPerson)(obj))));
+        }
+    }
+    
     public partial interface IImportService {
         
         void Execute(ImportEmployee command);

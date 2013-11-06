@@ -17,6 +17,7 @@
 
 	(defdto Name (string First, string Last))
 	(defenum Gender [Female Male])
+	(defdto NamedPerson (Name Name, Gender? Gender))
 
 	;; Service
 	(defapplicationservice ImportService

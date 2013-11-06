@@ -57,6 +57,13 @@ namespace Diesel.CodeGeneration
                 MemberType = MemberType.CreateForTypeName(typeName, isValueType);
             }
 
+            private void ReturnNullableMember(TypeName underlyingTypeName)
+            {
+                var fullName = FullyQualifiedNameRule.For(_namespaceName, underlyingTypeName);
+                var nullableTypeName = new TypeName(TypeNameMapper.TypeNameForNullableType(fullName));
+                MemberType = MemberType.CreateForTypeName(nullableTypeName, true);
+            }
+            
             private void ReturnSystemMemberType(ITypeNode node)
             {
                 MemberType = MemberType.CreateForSystemType(SystemTypeMapper.SystemTypeFor(node));
@@ -86,7 +93,61 @@ namespace Diesel.CodeGeneration
                 }
                 else
                 {
-                    throw new NotImplementedException("Nullable Type members not implemented for non-system types.");
+                    var hasResult = false;
+                    var underlyingTypeName = GetUnderlyingTypeName(nullableType);
+                    if (underlyingTypeName != null)
+                    {
+                       if (IsKnownValueType(underlyingTypeName))
+                       {
+                           ReturnNullableMember(underlyingTypeName);
+                           hasResult = true;
+                       }
+                    }
+                    if (!hasResult)
+                    {
+                        throw new NotImplementedException("Nullable Type members not implemented for unknown, non-system types.");
+                    }
+
+                }
+            }
+
+            private TypeName GetUnderlyingTypeName(NullableType nullableType)
+            {
+                var visitor = new NullableTypeUnderlyingTypeNameVisitor();
+                nullableType.Underlying.Accept(visitor);
+                var underlyingName = visitor.UnderlyingTypeName;
+                return underlyingName;
+            }
+
+            private bool IsKnownValueType(TypeName typeName)
+            {
+                var fullyQualifiedTypeName = FullyQualifiedNameRule.For(_namespaceName, typeName);
+                return _knownTypes.Where(x => x.IsValueType).Any(x => x.FullName == fullyQualifiedTypeName);
+            }
+
+            private class NullableTypeUnderlyingTypeNameVisitor : ITypeNodeVisitor
+            {
+                public TypeName UnderlyingTypeName;
+
+                public void Visit(TypeName typeName)
+                {
+                    UnderlyingTypeName = typeName;
+                }
+
+                public void Visit(StringReferenceType stringReferenceType)
+                {
+                }
+
+                public void Visit(ArrayType arrayType)
+                {
+                }
+
+                public void Visit(SimpleType simpleType)
+                {
+                }
+
+                public void Visit(NullableType nullableType)
+                {
                 }
             }
         }

@@ -17,5 +17,11 @@ namespace Diesel.CodeGeneration
                                   select rankSpec);
             return String.Concat(elementTypeFullName, String.Concat(rankSpecifiers));
         }
+
+        [Pure]
+        public static string TypeNameForNullableType(string underlyingTypeFullName)
+        {
+            return String.Format("System.Nullable`1[{0}]", underlyingTypeFullName);
+        }
     }
 }

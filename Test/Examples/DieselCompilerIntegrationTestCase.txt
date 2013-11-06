@@ -77,6 +77,7 @@
 	(defdto PersonName (string First, string Last))
 	(defdto DtoNestedEnum (Guid Id, Role Role))
 	(defdto DtoNestedDto (Guid Id, PersonName Name))
+	(defdto DtoNestedNullableEnum (Guid Id, Role? Role))
 	(defcommand ImportPersonNestedEnum (string Name, Role Role))
 	(defdomainevent PersonImportedNestedEnum (Guid Id, string Name, Role Role))
 	(defcommand ImportPersonNestedDto (PersonName Name, Role Role))

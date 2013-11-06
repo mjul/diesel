@@ -55,5 +55,13 @@ namespace Test.Diesel.CodeGeneration
             Assert.That(correspondingType, Is.EqualTo(typeof (float[][,][,,])));
         }
 
+        [Test]
+        public void TypeNameForNullable_NamedType_ShouldMapToType()
+        {
+            var actual = TypeNameMapper.TypeNameForNullableType(typeof(int).FullName);
+            var actualCorrespondingType = Type.GetType(actual);
+            var expectedCorrespondingType = typeof (Nullable<int>);
+            Assert.That(actualCorrespondingType, Is.EqualTo(expectedCorrespondingType));
+        }
     }
 }
